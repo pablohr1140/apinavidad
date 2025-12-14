@@ -1,0 +1,6 @@
+export declare class AppError extends Error {
+    readonly message: string;
+    readonly statusCode: number;
+    readonly metadata?: Record<string, unknown> | undefined;
+    constructor(message: string, statusCode?: number, metadata?: Record<string, unknown> | undefined);
+}

@@ -1,0 +1,25 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "docker:sqlserver-up",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"docker compose up -d sqlserver"
+			],
+			"problemMatcher": []
+		},
+		{
+			"label": "docker:sqlserver-down",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"docker compose down"
+			],
+			"problemMatcher": []
+		}
+	]
+}
