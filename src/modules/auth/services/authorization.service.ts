@@ -5,7 +5,7 @@
  * Interacciones: Repositorios, servicios externos
  */
 
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 
 import type { AuthenticatedUser } from '@/application/contracts/AuthenticatedUser';
 import type { PermissionCode, RoleKey } from '@/domain/access-control';
@@ -53,6 +53,26 @@ export class AuthorizationService {
 
   async invalidateRoleCache(roleKey: RoleKey) {
     await this.redisService.del(`${ROLE_CACHE_PREFIX}${roleKey}`);
+  }
+
+  /**
+   * Valida que el rol "actor" pueda eliminar al rol objetivo usando el rank.
+   * Si el objetivo tiene un rank mayor o igual, lanza Forbidden.
+   */
+  async assertCanDeleteRole(actorRoleKey: RoleKey, targetRoleKey: RoleKey) {
+    const [actor, target] = await Promise.all([
+      this.prisma.roles.findUnique({ where: { role_key: actorRoleKey }, select: { rank: true } }),
+      this.prisma.roles.findUnique({ where: { role_key: targetRoleKey }, select: { rank: true } })
+    ]);
+
+    if (!actor || !target) {
+      // Si no existen, dejamos que la capa superior gestione el 404/ lógica adicional.
+      return;
+    }
+
+    if (target.rank >= actor.rank) {
+      throw new ForbiddenException('No puedes eliminar un rol de igual o mayor jerarquía.');
+    }
   }
 
   private async aggregatePermissions(roleKeys: RoleKey[]) {

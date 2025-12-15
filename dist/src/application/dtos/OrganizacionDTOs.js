@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # Organizacion DTOs
+ * Propósito: DTOs para Organizacion DTOs
+ * Pertenece a: Aplicación / DTOs
+ * Interacciones: Validación y transporte de datos
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateOrganizacionSchema = exports.createOrganizacionSchema = exports.organizacionBaseSchema = void 0;
 const zod_1 = require("zod");

@@ -1,3 +1,9 @@
+/**
+ * # Periodo DTOs
+ * Propósito: DTOs para Periodo DTOs
+ * Pertenece a: Aplicación / DTOs
+ * Interacciones: Validación y transporte de datos
+ */
 import { z } from 'zod';
 export declare const periodoBaseSchema: z.ZodObject<{
     nombre: z.ZodString;

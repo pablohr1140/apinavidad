@@ -1,3 +1,9 @@
+/**
+ * # Prisma Organizacion Repository
+ * Propósito: Repositorio Prisma Prisma Organizacion Repository
+ * Pertenece a: Infraestructura / Repositorio Prisma
+ * Interacciones: PrismaService, entidades de dominio
+ */
 import { OrganizacionRepository } from '@/application/repositories/OrganizacionRepository';
 import { OrganizacionProps } from '@/domain/entities';
 import { PrismaService } from '@/infra/database/prisma/prisma.service';

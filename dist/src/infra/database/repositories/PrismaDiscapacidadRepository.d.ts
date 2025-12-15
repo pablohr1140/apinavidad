@@ -1,3 +1,9 @@
+/**
+ * # Prisma Discapacidad Repository
+ * Propósito: Repositorio Prisma Prisma Discapacidad Repository
+ * Pertenece a: Infraestructura / Repositorio Prisma
+ * Interacciones: PrismaService, entidades de dominio
+ */
 import { DiscapacidadRepository } from '@/application/repositories/DiscapacidadRepository';
 import { DiscapacidadProps } from '@/domain/entities';
 import { PrismaService } from '@/infra/database/prisma/prisma.service';

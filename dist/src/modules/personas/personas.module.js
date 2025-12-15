@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # personas.module
+ * Propósito: Módulo de agregación personas.module
+ * Pertenece a: Módulo Nest
+ * Interacciones: Providers, controllers
+ */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -9,12 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PersonasModule = void 0;
 const common_1 = require("@nestjs/common");
 const personas_controller_1 = require("./personas.controller");
-const ListPersonasUseCase_1 = require("../../application/use-cases/personas/ListPersonasUseCase");
-const CreatePersonaUseCase_1 = require("../../application/use-cases/personas/CreatePersonaUseCase");
-const GetPersonaUseCase_1 = require("../../application/use-cases/personas/GetPersonaUseCase");
-const UpdatePersonaUseCase_1 = require("../../application/use-cases/personas/UpdatePersonaUseCase");
-const DeletePersonaUseCase_1 = require("../../application/use-cases/personas/DeletePersonaUseCase");
 const PersonaRepository_1 = require("../../application/repositories/PersonaRepository");
+const CreatePersonaUseCase_1 = require("../../application/use-cases/personas/CreatePersonaUseCase");
+const DeletePersonaUseCase_1 = require("../../application/use-cases/personas/DeletePersonaUseCase");
+const GetPersonaUseCase_1 = require("../../application/use-cases/personas/GetPersonaUseCase");
+const ListPersonasUseCase_1 = require("../../application/use-cases/personas/ListPersonasUseCase");
+const UpdatePersonaUseCase_1 = require("../../application/use-cases/personas/UpdatePersonaUseCase");
 const PrismaPersonaRepository_1 = require("../../infra/database/repositories/PrismaPersonaRepository");
 const logs_module_1 = require("../logs/logs.module");
 let PersonasModule = class PersonasModule {

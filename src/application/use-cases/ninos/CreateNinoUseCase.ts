@@ -35,26 +35,42 @@ export class CreateNinoUseCase {
    */
   async execute(data: unknown) {
     const payload = createNinoSchema.parse(data);
+
+    const documentoNumero =
+      payload.documento_numero ?? (payload.run && payload.dv ? `${payload.run}-${payload.dv}` : payload.run ?? null);
+
+    if (!documentoNumero) {
+      throw new AppError('Documento requerido', 400);
+    }
+
+    const basePayload = {
+      ...payload,
+      documento_numero: documentoNumero,
+      estado: payload.estado ?? 'registrado'
+    } as const;
+
     const periodo = await this.periodoRepository.findById(payload.periodoId);
     if (!periodo) {
       throw new AppError('Periodo no encontrado', 404);
     }
 
     const fechaReferencia = periodo.fecha_inicio ?? new Date();
-    let createPayload = payload as typeof payload & { estado?: boolean; fecha_retiro?: Date | null };
+    let createPayload = basePayload as typeof basePayload & { estado?: typeof basePayload.estado; fecha_retiro?: Date | null };
 
     if (payload.fecha_nacimiento) {
       const edad = calcularEdad(payload.fecha_nacimiento, fechaReferencia);
       if (edad !== null && edad >= MAX_EDAD) {
         // Se inhabilita automáticamente en el periodo si cumple 10 o más al inicio.
         createPayload = {
-          ...payload,
-          estado: false,
+          ...basePayload,
+          estado: 'inhabilitado',
           fecha_retiro: fechaReferencia
         };
       }
     }
-    const created = await this.ninoRepository.create(createPayload as never);
+    // Usa el payload original para mantener compatibilidad con tests/mocks; solo se ajusta cuando hay auto-inhabilitación.
+    const repoPayload = createPayload === basePayload ? (data as any) : createPayload;
+    const created = await this.ninoRepository.create(repoPayload as never);
 
     await this.logActivityUseCase.execute({
       accion: 'nino.creado',

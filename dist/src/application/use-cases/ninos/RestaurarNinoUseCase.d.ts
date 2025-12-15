@@ -1,3 +1,9 @@
+/**
+ * # Restaurar Nino Use Case
+ * Propósito: Caso de uso Restaurar Nino Use Case
+ * Pertenece a: Aplicación / Caso de uso
+ * Interacciones: Repositorios, servicios de dominio
+ */
 import { NinoRepository } from '@/application/repositories/NinoRepository';
 import { LogActivityUseCase } from '@/application/use-cases/logs/LogActivityUseCase';
 export declare class RestaurarNinoUseCase {

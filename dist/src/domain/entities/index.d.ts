@@ -1,5 +1,11 @@
+/**
+ * # index
+ * Propósito: Dominio index
+ * Pertenece a: Dominio
+ * Interacciones: Entidades, reglas de negocio
+ */
 import type { RoleKey } from '../access-control';
-export type EstadoNino = 'registrado' | 'validado' | 'egresado' | 'inhabilitado';
+export type EstadoNino = 'registrado' | 'validado' | 'egresado' | 'inhabilitado' | boolean;
 export type EstadoPeriodo = 'borrador' | 'planificado' | 'abierto' | 'cerrado';
 export type EstadoOrganizacion = 'borrador' | 'activo' | 'suspendido';
 export interface PersonaProps {
@@ -8,7 +14,6 @@ export interface PersonaProps {
     apellidos: string;
     run?: string | null;
     dv?: string | null;
-    documento?: string | null;
     fecha_nacimiento?: Date | null;
     sexo?: string | null;
     telefono?: string | null;
@@ -58,14 +63,14 @@ export interface NinoProps {
     id: number;
     nombres: string;
     apellidos?: string | null;
-    run?: string | null;
-    dv?: string | null;
-    documento?: string | null;
+    documento_numero: string;
+    tipoDocumentoId?: number | null;
+    nacionalidadId?: number | null;
+    personaRegistroId?: number | null;
     fecha_nacimiento?: Date | null;
     sexo?: string | null;
     organizacionId?: number | null;
     periodoId: number;
-    providenciaId?: number | null;
     edad?: number | null;
     tiene_discapacidad: boolean;
     fecha_ingreso?: Date | null;

@@ -1,3 +1,9 @@
+/**
+ * # redis.service
+ * Propósito: Infra redis.service
+ * Pertenece a: Infraestructura
+ * Interacciones: Servicios externos / adaptadores
+ */
 import { OnModuleDestroy } from '@nestjs/common';
 export declare class RedisService implements OnModuleDestroy {
     private readonly logger;

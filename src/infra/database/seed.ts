@@ -96,19 +96,14 @@ async function seedAdminPersona(prisma: PrismaService, hashProvider: BcryptProvi
 }
 
 async function seedDiscapacidades(prisma: PrismaService): Promise<DiscapacidadMap> {
-  const items = [
-    { nombre: 'Auditiva', descripcion: 'Perdida parcial o total de audicion' },
-    { nombre: 'Visual', descripcion: 'Dificultad visual moderada o severa' },
-    { nombre: 'Motora', descripcion: 'Limitaciones de movilidad' },
-    { nombre: 'Cognitiva', descripcion: 'Dificultades cognitivas generales' }
-  ];
+  const items = [{ nombre: 'Auditiva' }, { nombre: 'Visual' }, { nombre: 'Motora' }, { nombre: 'Cognitiva' }];
 
   const records = await Promise.all(
     items.map((item) =>
       prisma.discapacidades.upsert({
         where: { nombre: item.nombre },
-        update: { descripcion: item.descripcion, activo: true },
-        create: { nombre: item.nombre, descripcion: item.descripcion, activo: true }
+        update: { activo: true },
+        create: { nombre: item.nombre, activo: true }
       })
     )
   );

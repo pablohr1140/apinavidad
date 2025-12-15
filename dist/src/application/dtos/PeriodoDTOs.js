@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # Periodo DTOs
+ * Propósito: DTOs para Periodo DTOs
+ * Pertenece a: Aplicación / DTOs
+ * Interacciones: Validación y transporte de datos
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updatePeriodoSchema = exports.createPeriodoSchema = exports.periodoBaseSchema = void 0;
 const zod_1 = require("zod");

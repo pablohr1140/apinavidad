@@ -1,3 +1,9 @@
+/**
+ * # Authenticated User
+ * Propósito: Archivo Authenticated User
+ * Pertenece a: General
+ * Interacciones: N/A
+ */
 import type { PermissionCode, RoleKey } from '@/domain/access-control';
 export interface AuthenticatedRole {
     id: number;

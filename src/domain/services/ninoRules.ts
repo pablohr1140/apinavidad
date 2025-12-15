@@ -30,7 +30,7 @@ export function prepararInhabilitacion(
   const ingreso = nino.fecha_ingreso ?? fechaReferencia;
   const fechaRetiro = isBefore(ingreso, fechaReferencia) ? fechaReferencia : ingreso;
   return {
-    estado: false,
+    estado: 'inhabilitado',
     fecha_retiro: fechaRetiro
   };
 }

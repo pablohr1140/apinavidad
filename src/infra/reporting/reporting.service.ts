@@ -36,7 +36,7 @@ const defaultFonts = {
 };
 
 export interface ReportRow {
-  [key: string]: string | number | boolean | null | undefined;
+  [key: string]: string | number | boolean | Date | null | undefined;
 }
 
 export class ReportingService {
@@ -112,7 +112,15 @@ export class ReportingService {
   private buildTableBody(rows: ReportRow[]): TableCell[][] {
     if (rows.length === 0) return [['Sin datos']];
     const headers = Object.keys(rows[0]);
-    const dataRows = rows.map((row) => headers.map((key) => row[key] ?? ''));
+    const dataRows = rows.map((row) => headers.map((key) => this.normalizeCell(row[key])));
     return [headers, ...dataRows];
+  }
+
+  private normalizeCell(value: unknown): TableCell {
+    if (value instanceof Date) return value.toISOString();
+    if (typeof value === 'boolean') return value ? 'true' : 'false';
+    if (value === null || value === undefined) return '';
+    if (Array.isArray(value) || typeof value === 'object') return JSON.stringify(value);
+    return value as TableCell;
   }
 }

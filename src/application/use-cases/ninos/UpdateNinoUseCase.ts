@@ -19,6 +19,7 @@ import { NinoRepository } from '@/application/repositories/NinoRepository';
 import { PeriodoRepository } from '@/application/repositories/PeriodoRepository';
 import { LogActivityUseCase, noopLogActivity } from '@/application/use-cases/logs/LogActivityUseCase';
 import { MAX_EDAD, calcularEdad } from '@/domain/services/ninoRules';
+import type { NinoProps } from '@/domain/entities';
 import { AppError } from '@/shared/errors/AppError';
 
 @Injectable()
@@ -41,6 +42,10 @@ export class UpdateNinoUseCase {
     }
     const payload = updateNinoSchema.parse(data);
 
+    const documentoNumero =
+      payload.documento_numero ??
+      (payload.run && payload.dv ? `${payload.run}-${payload.dv}` : payload.run ?? nino.documento_numero ?? null);
+
     const periodoId = payload.periodoId ?? nino.periodoId;
     const periodo = periodoId ? await this.periodoRepository.findById(periodoId) : null;
     if (periodoId && !periodo) {
@@ -49,23 +54,36 @@ export class UpdateNinoUseCase {
 
     const fechaReferencia = periodo?.fecha_inicio ?? new Date();
     const fechaNacimiento = payload.fecha_nacimiento ?? nino.fecha_nacimiento ?? undefined;
-    let updatePayload = payload as typeof payload & { estado?: boolean; fecha_retiro?: Date | null };
+    const basePayload: Partial<NinoProps> & Record<string, unknown> = {
+      ...payload,
+      documento_numero: payload.documento_numero ?? undefined
+    };
+
+    delete basePayload.run;
+    delete basePayload.dv;
+
+    if (documentoNumero) {
+      basePayload.documento_numero = documentoNumero;
+    } else {
+      delete basePayload.documento_numero;
+    }
+    if (payload.estado === undefined) delete basePayload.estado;
+    if (payload.fecha_retiro === undefined) delete basePayload.fecha_retiro;
+
+    const updatePayload: Partial<NinoProps> = { ...basePayload };
 
     if (fechaNacimiento) {
       const edad = calcularEdad(fechaNacimiento, fechaReferencia);
       if (edad !== null && edad >= MAX_EDAD) {
-        updatePayload = {
-          ...payload,
-          estado: false,
-          fecha_retiro: fechaReferencia
-        };
+        updatePayload.estado = 'inhabilitado';
+        updatePayload.fecha_retiro = fechaReferencia;
       }
     }
 
     const updated = await this.ninoRepository.update(id, updatePayload);
 
     await this.logActivityUseCase.execute({
-      personaId: payload.datosDomicilio?.personaId,
+      personaId: (payload as any).datosDomicilio?.personaId,
       accion: 'nino.actualizado',
       mensaje: '',
       loggableType: 'nino',

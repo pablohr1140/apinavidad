@@ -1,3 +1,9 @@
+/**
+ * # Prisma Persona Repository
+ * Propósito: Repositorio Prisma Prisma Persona Repository
+ * Pertenece a: Infraestructura / Repositorio Prisma
+ * Interacciones: PrismaService, entidades de dominio
+ */
 import { PersonaCreateInput, PersonaRepository, PersonaUpdateInput } from '@/application/repositories/PersonaRepository';
 import { PersonaProps } from '@/domain/entities';
 import { PrismaService } from '@/infra/database/prisma/prisma.service';

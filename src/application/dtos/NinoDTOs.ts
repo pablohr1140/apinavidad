@@ -9,10 +9,14 @@ import { z } from 'zod';
 
 import { MAX_EDAD } from '@/domain/services/ninoRules';
 
+const estadosNino = ['registrado', 'validado', 'egresado', 'inhabilitado'] as const;
+
 const ninoCoreSchema = z.object({
   nombres: z.string().min(3),
   apellidos: z.string().min(3).optional().nullable(),
-  documento_numero: z.string().min(3),
+  documento_numero: z.string().min(3).optional().nullable(),
+  run: z.string().min(3).optional().nullable(),
+  dv: z.string().min(1).optional().nullable(),
   tipoDocumentoId: z.number().int().optional().nullable(),
   nacionalidadId: z.number().int().optional().nullable(),
   personaRegistroId: z.number().int().optional().nullable(),
@@ -24,7 +28,7 @@ const ninoCoreSchema = z.object({
   tiene_discapacidad: z.boolean().default(false),
   fecha_ingreso: z.coerce.date().optional().nullable(),
   fecha_retiro: z.coerce.date().optional().nullable(),
-  estado: z.boolean().default(true)
+  estado: z.enum(estadosNino).default('registrado')
 });
 
 export const ninoBaseSchema = ninoCoreSchema;

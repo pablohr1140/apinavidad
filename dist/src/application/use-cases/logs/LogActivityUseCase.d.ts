@@ -1,3 +1,9 @@
+/**
+ * # Log Activity Use Case
+ * Propósito: Caso de uso Log Activity Use Case
+ * Pertenece a: Aplicación / Caso de uso
+ * Interacciones: Repositorios, servicios de dominio
+ */
 import { LogRepository } from '@/application/repositories/LogRepository';
 import { LogProps } from '@/domain/entities';
 interface LogInput {

@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # authorization.service
+ * Propósito: Servicio authorization.service
+ * Pertenece a: Servicio de módulo (Nest)
+ * Interacciones: Repositorios, servicios externos
+ */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -11,8 +17,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthorizationService = void 0;
 const common_1 = require("@nestjs/common");
-const prisma_service_1 = require("../../../infra/database/prisma/prisma.service");
 const redis_service_1 = require("../../../infra/cache/redis.service");
+const prisma_service_1 = require("../../../infra/database/prisma/prisma.service");
 const ROLE_CACHE_PREFIX = 'role-permissions:';
 const ROLE_CACHE_TTL_SECONDS = 60 * 10; // 10 minutos
 let AuthorizationService = class AuthorizationService {
@@ -48,6 +54,23 @@ let AuthorizationService = class AuthorizationService {
     }
     async invalidateRoleCache(roleKey) {
         await this.redisService.del(`${ROLE_CACHE_PREFIX}${roleKey}`);
+    }
+    /**
+     * Valida que el rol "actor" pueda eliminar al rol objetivo usando el rank.
+     * Si el objetivo tiene un rank mayor o igual, lanza Forbidden.
+     */
+    async assertCanDeleteRole(actorRoleKey, targetRoleKey) {
+        const [actor, target] = await Promise.all([
+            this.prisma.roles.findUnique({ where: { role_key: actorRoleKey }, select: { rank: true } }),
+            this.prisma.roles.findUnique({ where: { role_key: targetRoleKey }, select: { rank: true } })
+        ]);
+        if (!actor || !target) {
+            // Si no existen, dejamos que la capa superior gestione el 404/ lógica adicional.
+            return;
+        }
+        if (target.rank >= actor.rank) {
+            throw new common_1.ForbiddenException('No puedes eliminar un rol de igual o mayor jerarquía.');
+        }
     }
     async aggregatePermissions(roleKeys) {
         const codes = new Set();

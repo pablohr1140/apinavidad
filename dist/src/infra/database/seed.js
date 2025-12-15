@@ -1,12 +1,18 @@
 "use strict";
+/**
+ * # seed
+ * Propósito: Infra DB seed
+ * Pertenece a: Infraestructura / Base de datos
+ * Interacciones: Prisma, conexión a BD
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.runSeed = runSeed;
 require("reflect-metadata");
 const common_1 = require("@nestjs/common");
-const prisma_service_1 = require("./prisma/prisma.service");
 const env_1 = require("../../config/env");
-const BcryptProvider_1 = require("../security/BcryptProvider");
 const access_control_1 = require("../../domain/access-control");
+const prisma_service_1 = require("./prisma/prisma.service");
+const BcryptProvider_1 = require("../security/BcryptProvider");
 const logger = new common_1.Logger('Seed');
 async function seedPermissions(prisma) {
     const map = {};
@@ -48,7 +54,6 @@ async function seedAdminPersona(prisma, hashProvider, superadminRole) {
         apellidos: 'Principal',
         run: '99999999',
         dv: '9',
-        documento: null,
         fecha_nacimiento: new Date('1990-01-01'),
         sexo: 'M',
         telefono: null,
@@ -71,16 +76,11 @@ async function seedAdminPersona(prisma, hashProvider, superadminRole) {
     }
 }
 async function seedDiscapacidades(prisma) {
-    const items = [
-        { nombre: 'Auditiva', descripcion: 'Perdida parcial o total de audicion' },
-        { nombre: 'Visual', descripcion: 'Dificultad visual moderada o severa' },
-        { nombre: 'Motora', descripcion: 'Limitaciones de movilidad' },
-        { nombre: 'Cognitiva', descripcion: 'Dificultades cognitivas generales' }
-    ];
+    const items = [{ nombre: 'Auditiva' }, { nombre: 'Visual' }, { nombre: 'Motora' }, { nombre: 'Cognitiva' }];
     const records = await Promise.all(items.map((item) => prisma.discapacidades.upsert({
         where: { nombre: item.nombre },
-        update: { descripcion: item.descripcion, activo: true },
-        create: { nombre: item.nombre, descripcion: item.descripcion, activo: true }
+        update: { activo: true },
+        create: { nombre: item.nombre, activo: true }
     })));
     return Object.fromEntries(records.map((record) => [record.nombre, { id: record.id }]));
 }
@@ -91,7 +91,6 @@ async function seedPersonas(prisma, roles) {
             apellidos: 'Munoz',
             run: '11111111',
             dv: '1',
-            documento: null,
             fecha_nacimiento: new Date('1985-04-02'),
             sexo: 'F',
             telefono: '+56 9 1111 1111',
@@ -105,7 +104,6 @@ async function seedPersonas(prisma, roles) {
             apellidos: 'Farre',
             run: '22222222',
             dv: '2',
-            documento: null,
             fecha_nacimiento: new Date('1979-11-10'),
             sexo: 'M',
             telefono: '+56 9 2222 2222',
@@ -119,7 +117,6 @@ async function seedPersonas(prisma, roles) {
             apellidos: 'Campos',
             run: '33333333',
             dv: '3',
-            documento: null,
             fecha_nacimiento: new Date('1992-07-23'),
             sexo: 'F',
             telefono: '+56 9 3333 3333',
@@ -139,7 +136,6 @@ async function seedPersonas(prisma, roles) {
             apellidos: persona.apellidos,
             run: persona.run,
             dv: persona.dv,
-            documento: persona.documento,
             fecha_nacimiento: persona.fecha_nacimiento,
             sexo: persona.sexo,
             telefono: persona.telefono,
@@ -341,6 +337,8 @@ async function seedNinos(prisma, organizaciones, periodos) {
         }
     ];
     const records = {};
+    const tipoDocCdi = await prisma.tipo_documentos.findFirst({ where: { codigo: 'CDI' } });
+    const tipoDocId = tipoDocCdi?.id ?? null;
     for (const nino of ninos) {
         const { organizacion, periodo, ...data } = nino;
         const organizacionId = organizaciones[organizacion]?.id;
@@ -348,26 +346,32 @@ async function seedNinos(prisma, organizaciones, periodos) {
         if (!organizacionId || !periodoId) {
             continue;
         }
+        const documento_numero = data.documento
+            ? data.documento
+            : data.run && data.dv
+                ? `${data.run}-${data.dv}`
+                : data.run ?? '';
+        const estado = data.estado === 'inhabilitado' ? false : true;
         const payload = {
             nombres: data.nombres,
             apellidos: data.apellidos,
-            run: data.run,
-            dv: data.dv,
-            documento: data.documento,
+            documento_numero,
+            tipo_documento_id: tipoDocId,
+            nacionalidad_id: null,
+            persona_registro_id: null,
             fecha_nacimiento: data.fecha_nacimiento,
             sexo: data.sexo,
             organizacion_id: organizacionId,
             periodo_id: periodoId,
-            providencia_id: null,
             es_prioritario: false,
             edad: data.edad ?? null,
             tiene_discapacidad: Boolean(data.tiene_discapacidad),
             fecha_ingreso: data.fecha_ingreso,
             fecha_retiro: data.fecha_retiro,
-            estado: data.estado,
+            estado,
             updated_at: new Date()
         };
-        const existing = await prisma.ninos.findFirst({ where: { run: nino.run } });
+        const existing = await prisma.ninos.findFirst({ where: { documento_numero } });
         if (existing) {
             const updated = await prisma.ninos.update({ where: { id: existing.id }, data: payload });
             records[nino.run] = { id: updated.id };

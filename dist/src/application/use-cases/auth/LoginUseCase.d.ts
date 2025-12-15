@@ -1,6 +1,12 @@
+/**
+ * # Login Use Case
+ * Propósito: Caso de uso Login Use Case
+ * Pertenece a: Aplicación / Caso de uso
+ * Interacciones: Repositorios, servicios de dominio
+ */
+import { HashProvider, TokenProvider } from '@/application/contracts/Auth';
 import { LoginDTO } from '@/application/dtos/AuthDTOs';
 import { UserRepository } from '@/application/repositories/UserRepository';
-import { HashProvider, TokenProvider } from '@/application/contracts/Auth';
 import { LogActivityUseCase } from '@/application/use-cases/logs/LogActivityUseCase';
 export declare class LoginUseCase {
     private readonly userRepository;

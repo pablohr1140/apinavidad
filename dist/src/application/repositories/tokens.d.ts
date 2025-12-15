@@ -1,4 +1,10 @@
 /**
+ * # tokens
+ * Propósito: Contrato de repositorio tokens
+ * Pertenece a: Aplicación / Repositorio contrato
+ * Interacciones: Capa de infraestructura que implementa el contrato
+ */
+/**
  * # REPOSITORY_TOKENS
  *
  * Propósito: mapa de tokens de inyección para repositorios de la capa Application.

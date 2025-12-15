@@ -17,6 +17,7 @@ import type { Response } from 'express';
 
 import { ListNinosUseCase } from '@/application/use-cases/ninos/ListNinosUseCase';
 import { calcularEdad, MAX_EDAD } from '@/domain/services/ninoRules';
+import type { EstadoNino } from '@/domain/entities';
 import { ReportingService } from '@/infra/reporting/reporting.service';
 import { Permissions } from '@/modules/auth/decorators/permissions.decorator';
 
@@ -83,7 +84,7 @@ export class ReportesController {
     const ninos = await this.listNinosUseCase.execute({
       periodoId: this.toNumber(periodoId),
       organizacionId: this.toNumber(organizacionId),
-      estado: estado ?? undefined
+      estado: this.parseEstado(estado)
     });
 
     return ninos.map((nino) => {
@@ -101,5 +102,12 @@ export class ReportesController {
     if (!value) return undefined;
     const parsed = Number(value);
     return Number.isNaN(parsed) ? undefined : parsed;
+  }
+
+  private parseEstado(value?: string): EstadoNino | undefined {
+    if (!value) return undefined;
+    const normalized = value.trim().toLowerCase();
+    const allowed = ['registrado', 'validado', 'egresado', 'inhabilitado'];
+    return allowed.includes(normalized) ? (normalized as EstadoNino) : undefined;
   }
 }

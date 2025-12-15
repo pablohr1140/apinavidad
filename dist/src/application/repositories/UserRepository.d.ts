@@ -1,4 +1,10 @@
 /**
+ * # User Repository
+ * Propósito: Contrato de repositorio User Repository
+ * Pertenece a: Aplicación / Repositorio contrato
+ * Interacciones: Capa de infraestructura que implementa el contrato
+ */
+/**
  * # UserRepository
  *
  * Propósito: contrato de acceso a usuarios para autenticación y autorización.

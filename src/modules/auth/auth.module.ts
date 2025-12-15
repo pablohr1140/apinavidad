@@ -8,6 +8,7 @@
 import { Module } from '@nestjs/common';
 
 import { AuthController } from './auth.controller';
+import { RolesController } from './roles.controller';
 
 import { HashProvider, TokenProvider } from '@/application/contracts/Auth';
 import { UserRepository } from '@/application/repositories/UserRepository';
@@ -17,11 +18,12 @@ import { PasetoService } from '@/infra/auth/PasetoService';
 import { PrismaUserRepository } from '@/infra/database/repositories/PrismaUserRepository';
 import { BcryptProvider } from '@/infra/security/BcryptProvider';
 import { AuthorizationService } from '@/modules/auth/services/authorization.service';
+import { RoleAdminService } from '@/modules/auth/services/role-admin.service';
 import { LogsModule } from '@/modules/logs/logs.module';
 
 @Module({
   imports: [LogsModule],
-  controllers: [AuthController],
+  controllers: [AuthController, RolesController],
   providers: [
     LoginUseCase,
     RefreshTokenUseCase,
@@ -31,8 +33,9 @@ import { LogsModule } from '@/modules/logs/logs.module';
     { provide: UserRepository, useExisting: PrismaUserRepository },
     { provide: TokenProvider, useExisting: PasetoService },
     { provide: HashProvider, useExisting: BcryptProvider },
-    AuthorizationService
+    AuthorizationService,
+    RoleAdminService
   ],
-  exports: [PasetoService, AuthorizationService]
+  exports: [PasetoService, AuthorizationService, RoleAdminService]
 })
 export class AuthModule {}

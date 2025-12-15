@@ -23,6 +23,14 @@ const prisma_service_1 = require("../prisma/prisma.service");
 const AppError_1 = require("../../../shared/errors/AppError");
 const toBigInt = (value) => (value === undefined || value === null ? null : BigInt(value));
 const toDate = (value) => (value ? new Date(value) : undefined);
+const estadoToDb = (estado) => {
+    if (estado === undefined)
+        return undefined;
+    if (estado === 'inhabilitado' || estado === false)
+        return false;
+    return true; // registrado, validado, egresado map a true por compatibilidad actual (bit)
+};
+const estadoToDomain = (estadoBit) => (estadoBit ? 'validado' : 'inhabilitado');
 let PrismaNinoRepository = class PrismaNinoRepository {
     prisma;
     constructor(prisma) {
@@ -36,8 +44,8 @@ let PrismaNinoRepository = class PrismaNinoRepository {
         if (params?.organizacionId !== undefined) {
             where.organizacion_id = toBigInt(params.organizacionId);
         }
-        if (params?.estado) {
-            where.estado = params.estado;
+        if (params?.estado !== undefined) {
+            where.estado = estadoToDb(params.estado);
         }
         if (params?.edadMin !== undefined || params?.edadMax !== undefined) {
             const min = params.edadMin ?? 0;
@@ -75,19 +83,19 @@ let PrismaNinoRepository = class PrismaNinoRepository {
         }
         const updated = await this.prisma.ninos.update({
             where: { id: nino.id },
-            data: { estado: 'inhabilitado', fecha_retiro: payload.fecha }
+            data: { estado: false, fecha_retiro: payload.fecha }
         });
         return this.toDomain(updated);
     }
     async restaurar(id) {
         const updated = await this.prisma.ninos.update({
             where: { id: BigInt(id) },
-            data: { estado: 'registrado', fecha_retiro: null }
+            data: { estado: true, fecha_retiro: null }
         });
         return this.toDomain(updated);
     }
     async autoInhabilitar(fechaReferencia, dryRun = false) {
-        const candidatos = await this.prisma.ninos.findMany({ where: { estado: { not: 'inhabilitado' } } });
+        const candidatos = await this.prisma.ninos.findMany({ where: { estado: true } });
         const candidatosDomain = candidatos.map((record) => this.toDomain(record));
         const porInhabilitar = candidatosDomain.filter((nino) => {
             const nacimiento = nino.fecha_nacimiento;
@@ -100,7 +108,10 @@ let PrismaNinoRepository = class PrismaNinoRepository {
             return { afectados: porInhabilitar.length, detalles: porInhabilitar };
         }
         await this.prisma.$transaction(async (tx) => {
-            await Promise.all(porInhabilitar.map((nino) => tx.ninos.update({ where: { id: BigInt(nino.id) }, data: (0, ninoRules_1.prepararInhabilitacion)(nino, fechaReferencia) })));
+            await Promise.all(porInhabilitar.map((nino) => {
+                const data = (0, ninoRules_1.prepararInhabilitacion)(nino, fechaReferencia);
+                return tx.ninos.update({ where: { id: BigInt(nino.id) }, data: { ...data, estado: estadoToDb(data.estado) } });
+            }));
         });
         return { afectados: porInhabilitar.length };
     }
@@ -108,19 +119,19 @@ let PrismaNinoRepository = class PrismaNinoRepository {
         return {
             nombres: data.nombres,
             apellidos: data.apellidos ?? null,
-            run: data.run ?? null,
-            dv: data.dv ?? null,
-            documento: data.documento ?? null,
+            documento_numero: data.documento_numero,
+            tipo_documento_id: data.tipoDocumentoId ?? null,
+            nacionalidad_id: data.nacionalidadId ?? null,
+            persona_registro_id: data.personaRegistroId ?? null,
             fecha_nacimiento: data.fecha_nacimiento ?? null,
             sexo: data.sexo ?? null,
             organizacion_id: toBigInt(data.organizacionId),
             periodo_id: data.periodoId,
-            providencia_id: data.providenciaId ?? null,
             edad: data.edad ?? null,
             tiene_discapacidad: data.tiene_discapacidad,
             fecha_ingreso: data.fecha_ingreso ?? null,
             fecha_retiro: data.fecha_retiro ?? null,
-            estado: data.estado
+            estado: estadoToDb(data.estado) ?? true
         };
     }
     mapUpdateData(data) {
@@ -129,12 +140,14 @@ let PrismaNinoRepository = class PrismaNinoRepository {
             payload.nombres = data.nombres;
         if (data.apellidos !== undefined)
             payload.apellidos = data.apellidos ?? null;
-        if (data.run !== undefined)
-            payload.run = data.run ?? null;
-        if (data.dv !== undefined)
-            payload.dv = data.dv ?? null;
-        if (data.documento !== undefined)
-            payload.documento = data.documento ?? null;
+        if (data.documento_numero !== undefined)
+            payload.documento_numero = data.documento_numero;
+        if (data.tipoDocumentoId !== undefined)
+            payload.tipo_documento_id = data.tipoDocumentoId ?? null;
+        if (data.nacionalidadId !== undefined)
+            payload.nacionalidad_id = data.nacionalidadId ?? null;
+        if (data.personaRegistroId !== undefined)
+            payload.persona_registro_id = data.personaRegistroId ?? null;
         if (data.fecha_nacimiento !== undefined)
             payload.fecha_nacimiento = data.fecha_nacimiento ?? null;
         if (data.sexo !== undefined)
@@ -143,8 +156,6 @@ let PrismaNinoRepository = class PrismaNinoRepository {
             payload.organizacion_id = toBigInt(data.organizacionId);
         if (data.periodoId !== undefined)
             payload.periodo_id = data.periodoId;
-        if (data.providenciaId !== undefined)
-            payload.providencia_id = data.providenciaId ?? null;
         if (data.edad !== undefined)
             payload.edad = data.edad ?? null;
         if (data.tiene_discapacidad !== undefined)
@@ -154,7 +165,7 @@ let PrismaNinoRepository = class PrismaNinoRepository {
         if (data.fecha_retiro !== undefined)
             payload.fecha_retiro = data.fecha_retiro ?? null;
         if (data.estado !== undefined)
-            payload.estado = data.estado;
+            payload.estado = estadoToDb(data.estado);
         return payload;
     }
     toDomain(entity) {
@@ -162,19 +173,19 @@ let PrismaNinoRepository = class PrismaNinoRepository {
             id: Number(entity.id),
             nombres: entity.nombres,
             apellidos: entity.apellidos ?? undefined,
-            run: entity.run ?? undefined,
-            dv: entity.dv ?? undefined,
-            documento: entity.documento ?? undefined,
+            documento_numero: entity.documento_numero,
+            tipoDocumentoId: entity.tipo_documento_id ?? undefined,
+            nacionalidadId: entity.nacionalidad_id ?? undefined,
+            personaRegistroId: entity.persona_registro_id ?? undefined,
             fecha_nacimiento: toDate(entity.fecha_nacimiento),
             sexo: entity.sexo ?? undefined,
             organizacionId: entity.organizacion_id !== null && entity.organizacion_id !== undefined ? Number(entity.organizacion_id) : undefined,
             periodoId: Number(entity.periodo_id),
-            providenciaId: entity.providencia_id ?? undefined,
             edad: entity.edad ?? undefined,
             tiene_discapacidad: Boolean(entity.tiene_discapacidad),
             fecha_ingreso: toDate(entity.fecha_ingreso),
             fecha_retiro: toDate(entity.fecha_retiro),
-            estado: entity.estado,
+            estado: estadoToDomain(Boolean(entity.estado)),
             createdAt: toDate(entity.created_at) ?? new Date(),
             updatedAt: toDate(entity.updated_at) ?? new Date()
         };

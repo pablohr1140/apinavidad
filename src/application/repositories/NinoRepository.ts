@@ -13,14 +13,14 @@
  * Pertenece a: Application layer.
  * Interacciones: `NinoProps`; usado por casos de uso de niños y jobs de inhabilitación.
  */
-import { NinoProps } from '@/domain/entities';
+import { EstadoNino, NinoProps } from '@/domain/entities';
 
 export abstract class NinoRepository {
   /** Lista niños con filtros variados (periodo, organización, estado, edad, prioridad). */
   abstract findMany(params?: {
     periodoId?: number;
     organizacionId?: number;
-    estado?: boolean;
+    estado?: EstadoNino;
     edadMin?: number;
     edadMax?: number;
     prioridad?: number;

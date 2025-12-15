@@ -1,3 +1,9 @@
+/**
+ * # List Personas Use Case
+ * Propósito: Caso de uso List Personas Use Case
+ * Pertenece a: Aplicación / Caso de uso
+ * Interacciones: Repositorios, servicios de dominio
+ */
 import { PersonaRepository } from '@/application/repositories/PersonaRepository';
 export declare class ListPersonasUseCase {
     private readonly personaRepository;

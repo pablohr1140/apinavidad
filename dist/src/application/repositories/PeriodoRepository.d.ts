@@ -1,4 +1,10 @@
 /**
+ * # Periodo Repository
+ * Propósito: Contrato de repositorio Periodo Repository
+ * Pertenece a: Aplicación / Repositorio contrato
+ * Interacciones: Capa de infraestructura que implementa el contrato
+ */
+/**
  * # PeriodoRepository
  *
  * Propósito: contrato para administrar periodos y sus cambios de estado.

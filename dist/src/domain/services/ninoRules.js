@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # nino Rules
+ * Propósito: Dominio nino Rules
+ * Pertenece a: Dominio
+ * Interacciones: Entidades, reglas de negocio
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MAX_EDAD = void 0;
 exports.calcularEdad = calcularEdad;

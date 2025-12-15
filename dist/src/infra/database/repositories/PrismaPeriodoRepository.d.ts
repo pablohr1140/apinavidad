@@ -1,3 +1,9 @@
+/**
+ * # Prisma Periodo Repository
+ * Propósito: Repositorio Prisma Prisma Periodo Repository
+ * Pertenece a: Infraestructura / Repositorio Prisma
+ * Interacciones: PrismaService, entidades de dominio
+ */
 import { PeriodoRepository } from '@/application/repositories/PeriodoRepository';
 import { PeriodoProps } from '@/domain/entities';
 import { PrismaService } from '@/infra/database/prisma/prisma.service';

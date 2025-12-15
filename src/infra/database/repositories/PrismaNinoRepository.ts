@@ -15,6 +15,12 @@ import { AppError } from '@/shared/errors/AppError';
 
 const toBigInt = (value?: number | null) => (value === undefined || value === null ? null : BigInt(value));
 const toDate = (value?: Date | string | null) => (value ? new Date(value) : undefined);
+const estadoToDb = (estado?: EstadoNino) => {
+  if (estado === undefined) return undefined;
+  if (estado === 'inhabilitado' || estado === false) return false;
+  return true; // registrado, validado, egresado map a true por compatibilidad actual (bit)
+};
+const estadoToDomain = (estadoBit: boolean): EstadoNino => (estadoBit ? 'validado' : 'inhabilitado');
 
 @Injectable()
 export class PrismaNinoRepository implements NinoRepository {
@@ -23,7 +29,7 @@ export class PrismaNinoRepository implements NinoRepository {
   async findMany(params?: {
     periodoId?: number;
     organizacionId?: number;
-    estado?: boolean;
+    estado?: EstadoNino;
     edadMin?: number;
     edadMax?: number;
     prioridad?: number;
@@ -40,7 +46,7 @@ export class PrismaNinoRepository implements NinoRepository {
     }
 
     if (params?.estado !== undefined) {
-      where.estado = params.estado;
+      where.estado = estadoToDb(params.estado);
     }
 
     if (params?.edadMin !== undefined || params?.edadMax !== undefined) {
@@ -124,9 +130,10 @@ export class PrismaNinoRepository implements NinoRepository {
 
     await this.prisma.$transaction(async (tx) => {
       await Promise.all(
-        porInhabilitar.map((nino) =>
-          tx.ninos.update({ where: { id: BigInt(nino.id) }, data: prepararInhabilitacion(nino, fechaReferencia) })
-        )
+        porInhabilitar.map((nino) => {
+          const data = prepararInhabilitacion(nino, fechaReferencia);
+          return tx.ninos.update({ where: { id: BigInt(nino.id) }, data: { ...data, estado: estadoToDb(data.estado) } });
+        })
       );
     });
 
@@ -149,7 +156,7 @@ export class PrismaNinoRepository implements NinoRepository {
       tiene_discapacidad: data.tiene_discapacidad,
       fecha_ingreso: data.fecha_ingreso ?? null,
       fecha_retiro: data.fecha_retiro ?? null,
-      estado: data.estado
+      estado: estadoToDb(data.estado) ?? true
     };
   }
 
@@ -170,7 +177,7 @@ export class PrismaNinoRepository implements NinoRepository {
     if (data.tiene_discapacidad !== undefined) payload.tiene_discapacidad = data.tiene_discapacidad;
     if (data.fecha_ingreso !== undefined) payload.fecha_ingreso = data.fecha_ingreso ?? null;
     if (data.fecha_retiro !== undefined) payload.fecha_retiro = data.fecha_retiro ?? null;
-    if (data.estado !== undefined) payload.estado = data.estado;
+    if (data.estado !== undefined) payload.estado = estadoToDb(data.estado);
 
     return payload;
   }
@@ -192,7 +199,7 @@ export class PrismaNinoRepository implements NinoRepository {
       tiene_discapacidad: Boolean(entity.tiene_discapacidad),
       fecha_ingreso: toDate(entity.fecha_ingreso),
       fecha_retiro: toDate(entity.fecha_retiro),
-      estado: Boolean(entity.estado),
+      estado: estadoToDomain(Boolean(entity.estado)),
       createdAt: toDate(entity.created_at) ?? new Date(),
       updatedAt: toDate(entity.updated_at) ?? new Date()
     };

@@ -42,6 +42,7 @@ const createStore = () => ({
   role_permissions: [] as Array<{ role_id: number; permission_id: number }>,
   personas: [] as Array<{ id: number; run: string | null; email: string | null; role_id: number | null }>,
   discapacidades: [] as Array<{ id: number; nombre: string; descripcion: string | null }>,
+  tipo_documentos: [] as Array<{ id: number; codigo: string; nombre: string }>,
   organizaciones: [] as Array<{ id: bigint; nombre: string }>,
   organizacion_persona: [] as Array<{ organizacion_id: bigint; persona_id: number }>,
   periodos: [] as Array<{ id: number; nombre: string }>,
@@ -57,6 +58,7 @@ const buildPrismaMock = () => {
     role: 1,
     persona: 1,
     discapacidad: 1,
+    tipo_documento: 1,
     organizacion: 1n,
     periodo: 1,
     nino: 1n
@@ -138,6 +140,16 @@ const buildPrismaMock = () => {
         const record = { ...create, id: idCounters.discapacidad++ };
         store.discapacidades.push(record);
         return record;
+      })
+    },
+    tipo_documentos: {
+      findFirst: vi.fn(async ({ where }) => {
+        const existing = findBy(store.tipo_documentos, (d) => d.codigo === where.codigo);
+        if (existing) return existing;
+
+        const created = { id: idCounters.tipo_documento++, codigo: where.codigo, nombre: where.codigo } as (typeof store.tipo_documentos)[number];
+        store.tipo_documentos.push(created);
+        return created;
       })
     },
     organizaciones: {

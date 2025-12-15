@@ -25,6 +25,7 @@ model discapacidad_nino {
   nino_id         BigInt
   discapacidad_id Int
   porcentaje      Int?           @db.TinyInt
+  descripcion     String?        @db.NVarChar(Max)
   created_at      DateTime       @default(dbgenerated("sysdatetime()"), map: "DF_discapacidad_nino_created_at")
   updated_at      DateTime       @default(dbgenerated("sysdatetime()"), map: "DF_discapacidad_nino_updated_at")
   discapacidades  discapacidades @relation(fields: [discapacidad_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_discapacidad_nino_discapacidades")
@@ -36,9 +37,6 @@ model discapacidad_nino {
 model discapacidades {
   id                Int                 @id(map: "PK_discapacidades") @default(autoincrement())
   nombre            String              @unique(map: "UQ_discapacidades_nombre") @db.NVarChar(255)
-  categoria         String?             @db.NVarChar(150)
-  codigo            String?             @db.NVarChar(20)
-  descripcion       String?             @db.NVarChar(Max)
   activo            Boolean             @default(true, map: "DF_discapacidades_activo")
   created_at        DateTime            @default(dbgenerated("sysdatetime()"), map: "DF_discapacidades_created_at")
   updated_at        DateTime            @default(dbgenerated("sysdatetime()"), map: "DF_discapacidades_updated_at")

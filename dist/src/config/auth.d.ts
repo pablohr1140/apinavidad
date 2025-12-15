@@ -1,4 +1,10 @@
 /**
+ * # auth
+ * Propósito: Config auth
+ * Pertenece a: Configuración
+ * Interacciones: Variables de entorno, bootstrap
+ */
+/**
  * # config/auth.ts
  *
  * Propósito: centralizar configuración de autenticación basada en cookies para tokens PASETO.

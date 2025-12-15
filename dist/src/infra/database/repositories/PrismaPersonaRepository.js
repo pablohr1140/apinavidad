@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # Prisma Persona Repository
+ * Propósito: Repositorio Prisma Prisma Persona Repository
+ * Pertenece a: Infraestructura / Repositorio Prisma
+ * Interacciones: PrismaService, entidades de dominio
+ */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -105,7 +111,6 @@ let PrismaPersonaRepository = class PrismaPersonaRepository {
             nombres: persona.nombres,
             apellidos: persona.apellidos,
             run: persona.run ?? undefined,
-            documento: persona.documento ?? undefined,
             dv: persona.dv ?? undefined,
             fecha_nacimiento: persona.fecha_nacimiento ?? undefined,
             sexo: persona.sexo ?? undefined,
@@ -136,7 +141,6 @@ let PrismaPersonaRepository = class PrismaPersonaRepository {
             nombres: data.nombres,
             apellidos: data.apellidos,
             run: data.run ?? null,
-            documento: data.documento ?? null,
             dv: data.dv ?? null,
             fecha_nacimiento: data.fecha_nacimiento ?? null,
             sexo: data.sexo ?? null,
@@ -158,8 +162,6 @@ let PrismaPersonaRepository = class PrismaPersonaRepository {
             payload.apellidos = data.apellidos;
         if (data.run !== undefined)
             payload.run = data.run;
-        if (data.documento !== undefined)
-            payload.documento = data.documento;
         if (data.dv !== undefined)
             payload.dv = data.dv;
         if (data.fecha_nacimiento !== undefined)

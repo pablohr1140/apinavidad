@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # organizaciones.controller
+ * Propósito: Endpoints HTTP de organizaciones.controller
+ * Pertenece a: HTTP Controller (Nest)
+ * Interacciones: Casos de uso, pipes/decorators Nest
+ */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -22,13 +28,13 @@ exports.OrganizacionesController = void 0;
  */
 const common_1 = require("@nestjs/common");
 const OrganizacionDTOs_1 = require("../../application/dtos/OrganizacionDTOs");
-const ListOrganizacionesUseCase_1 = require("../../application/use-cases/organizaciones/ListOrganizacionesUseCase");
 const CreateOrganizacionUseCase_1 = require("../../application/use-cases/organizaciones/CreateOrganizacionUseCase");
-const UpdateOrganizacionUseCase_1 = require("../../application/use-cases/organizaciones/UpdateOrganizacionUseCase");
 const DeleteOrganizacionUseCase_1 = require("../../application/use-cases/organizaciones/DeleteOrganizacionUseCase");
 const GetOrganizacionUseCase_1 = require("../../application/use-cases/organizaciones/GetOrganizacionUseCase");
-const zod_validation_pipe_1 = require("../shared/pipes/zod-validation.pipe");
+const ListOrganizacionesUseCase_1 = require("../../application/use-cases/organizaciones/ListOrganizacionesUseCase");
+const UpdateOrganizacionUseCase_1 = require("../../application/use-cases/organizaciones/UpdateOrganizacionUseCase");
 const permissions_decorator_1 = require("../auth/decorators/permissions.decorator");
+const zod_validation_pipe_1 = require("../shared/pipes/zod-validation.pipe");
 let OrganizacionesController = class OrganizacionesController {
     listOrganizacionesUseCase;
     createOrganizacionUseCase;
@@ -49,7 +55,6 @@ let OrganizacionesController = class OrganizacionesController {
             return this.listOrganizacionesUseCase.execute({ estado: cleanEstado, tipo: cleanTipo });
         }
         catch (error) {
-            // eslint-disable-next-line no-console
             console.error('OrganizacionesController.list error', { estado: cleanEstado, tipo: cleanTipo, error });
             throw error;
         }
@@ -62,7 +67,6 @@ let OrganizacionesController = class OrganizacionesController {
             return this.getOrganizacionUseCase.execute(id);
         }
         catch (error) {
-            // eslint-disable-next-line no-console
             console.error('OrganizacionesController.getOne error', { id, error });
             throw error;
         }

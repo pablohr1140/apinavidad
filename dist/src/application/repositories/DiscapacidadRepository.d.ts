@@ -1,4 +1,10 @@
 /**
+ * # Discapacidad Repository
+ * Propósito: Contrato de repositorio Discapacidad Repository
+ * Pertenece a: Aplicación / Repositorio contrato
+ * Interacciones: Capa de infraestructura que implementa el contrato
+ */
+/**
  * # DiscapacidadRepository
  *
  * Propósito: contrato de persistencia para discapacidades/catalogo de condiciones.

@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # periodos.module
+ * Propósito: Módulo de agregación periodos.module
+ * Pertenece a: Módulo Nest
+ * Interacciones: Providers, controllers
+ */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -9,13 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PeriodosModule = void 0;
 const common_1 = require("@nestjs/common");
 const periodos_controller_1 = require("./periodos.controller");
-const ListPeriodosUseCase_1 = require("../../application/use-cases/periodos/ListPeriodosUseCase");
-const CreatePeriodoUseCase_1 = require("../../application/use-cases/periodos/CreatePeriodoUseCase");
-const UpdatePeriodoUseCase_1 = require("../../application/use-cases/periodos/UpdatePeriodoUseCase");
-const OpenPeriodoUseCase_1 = require("../../application/use-cases/periodos/OpenPeriodoUseCase");
-const ClosePeriodoUseCase_1 = require("../../application/use-cases/periodos/ClosePeriodoUseCase");
-const ActivatePeriodoUseCase_1 = require("../../application/use-cases/periodos/ActivatePeriodoUseCase");
 const PeriodoRepository_1 = require("../../application/repositories/PeriodoRepository");
+const ActivatePeriodoUseCase_1 = require("../../application/use-cases/periodos/ActivatePeriodoUseCase");
+const ClosePeriodoUseCase_1 = require("../../application/use-cases/periodos/ClosePeriodoUseCase");
+const CreatePeriodoUseCase_1 = require("../../application/use-cases/periodos/CreatePeriodoUseCase");
+const ListPeriodosUseCase_1 = require("../../application/use-cases/periodos/ListPeriodosUseCase");
+const OpenPeriodoUseCase_1 = require("../../application/use-cases/periodos/OpenPeriodoUseCase");
+const UpdatePeriodoUseCase_1 = require("../../application/use-cases/periodos/UpdatePeriodoUseCase");
 const PrismaPeriodoRepository_1 = require("../../infra/database/repositories/PrismaPeriodoRepository");
 const logs_module_1 = require("../logs/logs.module");
 let PeriodosModule = class PeriodosModule {
@@ -34,6 +40,7 @@ exports.PeriodosModule = PeriodosModule = __decorate([
             ActivatePeriodoUseCase_1.ActivatePeriodoUseCase,
             PrismaPeriodoRepository_1.PrismaPeriodoRepository,
             { provide: PeriodoRepository_1.PeriodoRepository, useExisting: PrismaPeriodoRepository_1.PrismaPeriodoRepository }
-        ]
+        ],
+        exports: [PeriodoRepository_1.PeriodoRepository]
     })
 ], PeriodosModule);

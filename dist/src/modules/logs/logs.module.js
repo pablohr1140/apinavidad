@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # logs.module
+ * Propósito: Módulo de agregación logs.module
+ * Pertenece a: Módulo Nest
+ * Interacciones: Providers, controllers
+ */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,8 +14,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LogsModule = void 0;
 const common_1 = require("@nestjs/common");
-const LogActivityUseCase_1 = require("../../application/use-cases/logs/LogActivityUseCase");
 const LogRepository_1 = require("../../application/repositories/LogRepository");
+const LogActivityUseCase_1 = require("../../application/use-cases/logs/LogActivityUseCase");
 const PrismaLogRepository_1 = require("../../infra/database/repositories/PrismaLogRepository");
 let LogsModule = class LogsModule {
 };

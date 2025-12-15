@@ -1,3 +1,9 @@
+/**
+ * # Organizacion DTOs
+ * Propósito: DTOs para Organizacion DTOs
+ * Pertenece a: Aplicación / DTOs
+ * Interacciones: Validación y transporte de datos
+ */
 import { z } from 'zod';
 export declare const organizacionBaseSchema: z.ZodObject<{
     nombre: z.ZodString;
@@ -10,25 +16,25 @@ export declare const organizacionBaseSchema: z.ZodObject<{
     providenciaId: z.ZodNullable<z.ZodOptional<z.ZodNumber>>;
     estado: z.ZodDefault<z.ZodEnum<["borrador", "activo", "suspendido"]>>;
 }, "strip", z.ZodTypeAny, {
+    estado: "borrador" | "activo" | "suspendido";
     nombre: string;
     tipo: string;
-    estado: "borrador" | "activo" | "suspendido";
     email?: string | null | undefined;
     telefono?: string | null | undefined;
     direccion?: string | null | undefined;
-    providenciaId?: number | null | undefined;
     sigla?: string | null | undefined;
     rut?: string | null | undefined;
+    providenciaId?: number | null | undefined;
 }, {
     nombre: string;
     email?: string | null | undefined;
     telefono?: string | null | undefined;
     direccion?: string | null | undefined;
-    providenciaId?: number | null | undefined;
+    estado?: "borrador" | "activo" | "suspendido" | undefined;
     sigla?: string | null | undefined;
     rut?: string | null | undefined;
     tipo?: string | undefined;
-    estado?: "borrador" | "activo" | "suspendido" | undefined;
+    providenciaId?: number | null | undefined;
 }>;
 export declare const createOrganizacionSchema: z.ZodObject<{
     nombre: z.ZodString;
@@ -41,25 +47,25 @@ export declare const createOrganizacionSchema: z.ZodObject<{
     providenciaId: z.ZodNullable<z.ZodOptional<z.ZodNumber>>;
     estado: z.ZodDefault<z.ZodEnum<["borrador", "activo", "suspendido"]>>;
 }, "strip", z.ZodTypeAny, {
+    estado: "borrador" | "activo" | "suspendido";
     nombre: string;
     tipo: string;
-    estado: "borrador" | "activo" | "suspendido";
     email?: string | null | undefined;
     telefono?: string | null | undefined;
     direccion?: string | null | undefined;
-    providenciaId?: number | null | undefined;
     sigla?: string | null | undefined;
     rut?: string | null | undefined;
+    providenciaId?: number | null | undefined;
 }, {
     nombre: string;
     email?: string | null | undefined;
     telefono?: string | null | undefined;
     direccion?: string | null | undefined;
-    providenciaId?: number | null | undefined;
+    estado?: "borrador" | "activo" | "suspendido" | undefined;
     sigla?: string | null | undefined;
     rut?: string | null | undefined;
     tipo?: string | undefined;
-    estado?: "borrador" | "activo" | "suspendido" | undefined;
+    providenciaId?: number | null | undefined;
 }>;
 export declare const updateOrganizacionSchema: z.ZodObject<{
     nombre: z.ZodOptional<z.ZodString>;
@@ -75,22 +81,22 @@ export declare const updateOrganizacionSchema: z.ZodObject<{
     email?: string | null | undefined;
     telefono?: string | null | undefined;
     direccion?: string | null | undefined;
-    providenciaId?: number | null | undefined;
+    estado?: "borrador" | "activo" | "suspendido" | undefined;
     nombre?: string | undefined;
     sigla?: string | null | undefined;
     rut?: string | null | undefined;
     tipo?: string | undefined;
-    estado?: "borrador" | "activo" | "suspendido" | undefined;
+    providenciaId?: number | null | undefined;
 }, {
     email?: string | null | undefined;
     telefono?: string | null | undefined;
     direccion?: string | null | undefined;
-    providenciaId?: number | null | undefined;
+    estado?: "borrador" | "activo" | "suspendido" | undefined;
     nombre?: string | undefined;
     sigla?: string | null | undefined;
     rut?: string | null | undefined;
     tipo?: string | undefined;
-    estado?: "borrador" | "activo" | "suspendido" | undefined;
+    providenciaId?: number | null | undefined;
 }>;
 export type CreateOrganizacionDTO = z.infer<typeof createOrganizacionSchema>;
 export type UpdateOrganizacionDTO = z.infer<typeof updateOrganizacionSchema>;

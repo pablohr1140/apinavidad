@@ -1,3 +1,9 @@
+/**
+ * # access control
+ * Propósito: Dominio access control
+ * Pertenece a: Dominio
+ * Interacciones: Entidades, reglas de negocio
+ */
 export declare const ROLE_KEYS: readonly ["SUPERADMIN", "ADMIN", "DIDECO", "REPRESENTANTE", "PROVIDENCIA"];
 export type RoleKey = typeof ROLE_KEYS[number];
 export declare const PERMISSION_RESOURCES: readonly ["ninos", "organizaciones", "personas", "discapacidad", "periodos", "perfil"];

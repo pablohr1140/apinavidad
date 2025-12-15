@@ -1,3 +1,9 @@
+/**
+ * # Auth
+ * Propósito: Archivo Auth
+ * Pertenece a: General
+ * Interacciones: N/A
+ */
 export interface TokenPayload {
     sub: string;
     email: string;

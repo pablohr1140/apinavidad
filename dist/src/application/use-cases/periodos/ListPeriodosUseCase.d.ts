@@ -1,3 +1,9 @@
+/**
+ * # List Periodos Use Case
+ * Propósito: Caso de uso List Periodos Use Case
+ * Pertenece a: Aplicación / Caso de uso
+ * Interacciones: Repositorios, servicios de dominio
+ */
 import { PeriodoRepository } from '@/application/repositories/PeriodoRepository';
 export declare class ListPeriodosUseCase {
     private readonly periodoRepository;

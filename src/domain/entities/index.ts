@@ -6,7 +6,8 @@
  */
 
 import type { RoleKey } from '../access-control';
-export type EstadoNino = boolean; // true = habilitado/registrado, false = inhabilitado
+// Se admite compatibilidad con boolean para no romper mapeos existentes a DB (bit)
+export type EstadoNino = 'registrado' | 'validado' | 'egresado' | 'inhabilitado' | boolean;
 export type EstadoPeriodo = 'borrador' | 'planificado' | 'abierto' | 'cerrado';
 export type EstadoOrganizacion = 'borrador' | 'activo' | 'suspendido';
 

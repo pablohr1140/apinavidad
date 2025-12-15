@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # Paseto Service
+ * Propósito: Servicio/Auth Paseto Service
+ * Pertenece a: Infraestructura / Auth
+ * Interacciones: Tokens, servicios de auth
+ */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -7,14 +13,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PasetoService = void 0;
-const common_1 = require("@nestjs/common");
 const crypto_1 = require("crypto");
+const common_1 = require("@nestjs/common");
 const paseto_1 = require("paseto");
 const env_1 = require("../../config/env");
 const secretKey = (0, crypto_1.createHash)('sha256').update(env_1.env.PASETO_SECRET).digest();
 let PasetoService = class PasetoService {
     async sign(payload, options) {
-        const exp = new Date(Date.now() + (options?.expiresInMinutes ?? 60) * 60 * 1000);
+        const exp = new Date(Date.now() + (options?.expiresInMinutes ?? 30) * 60 * 1000);
         return paseto_1.V3.encrypt({ ...payload, exp }, secretKey);
     }
     async verify(token) {

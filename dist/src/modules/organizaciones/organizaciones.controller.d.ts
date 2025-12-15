@@ -1,9 +1,15 @@
+/**
+ * # organizaciones.controller
+ * Propósito: Endpoints HTTP de organizaciones.controller
+ * Pertenece a: HTTP Controller (Nest)
+ * Interacciones: Casos de uso, pipes/decorators Nest
+ */
 import { type CreateOrganizacionDTO, type UpdateOrganizacionDTO } from '@/application/dtos/OrganizacionDTOs';
-import { ListOrganizacionesUseCase } from '@/application/use-cases/organizaciones/ListOrganizacionesUseCase';
 import { CreateOrganizacionUseCase } from '@/application/use-cases/organizaciones/CreateOrganizacionUseCase';
-import { UpdateOrganizacionUseCase } from '@/application/use-cases/organizaciones/UpdateOrganizacionUseCase';
 import { DeleteOrganizacionUseCase } from '@/application/use-cases/organizaciones/DeleteOrganizacionUseCase';
 import { GetOrganizacionUseCase } from '@/application/use-cases/organizaciones/GetOrganizacionUseCase';
+import { ListOrganizacionesUseCase } from '@/application/use-cases/organizaciones/ListOrganizacionesUseCase';
+import { UpdateOrganizacionUseCase } from '@/application/use-cases/organizaciones/UpdateOrganizacionUseCase';
 export declare class OrganizacionesController {
     private readonly listOrganizacionesUseCase;
     private readonly createOrganizacionUseCase;

@@ -1,4 +1,10 @@
 /**
+ * # Log Repository
+ * Propósito: Contrato de repositorio Log Repository
+ * Pertenece a: Aplicación / Repositorio contrato
+ * Interacciones: Capa de infraestructura que implementa el contrato
+ */
+/**
  * # LogRepository
  *
  * Propósito: contrato para persistir logs/auditoría.

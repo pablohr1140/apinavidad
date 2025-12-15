@@ -1,4 +1,10 @@
 /**
+ * # server
+ * Propósito: Archivo server
+ * Pertenece a: General
+ * Interacciones: N/A
+ */
+/**
  * # server.ts
  *
  * Punto de entrada legacy (Express) que quedó sustituido por el bootstrap Nest en `main.ts`.

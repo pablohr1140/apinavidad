@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # Prisma Organizacion Repository
+ * Propósito: Repositorio Prisma Prisma Organizacion Repository
+ * Pertenece a: Infraestructura / Repositorio Prisma
+ * Interacciones: PrismaService, entidades de dominio
+ */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -40,7 +46,6 @@ let PrismaOrganizacionRepository = class PrismaOrganizacionRepository {
             orderBy: { created_at: 'desc' }
         })
             .catch((error) => {
-            // eslint-disable-next-line no-console
             console.error('PrismaOrganizacionRepository.findMany error', { where, error });
             throw error;
         });
@@ -50,7 +55,6 @@ let PrismaOrganizacionRepository = class PrismaOrganizacionRepository {
         const organizacion = await this.prisma.organizaciones
             .findUnique({ where: { id } })
             .catch((error) => {
-            // eslint-disable-next-line no-console
             console.error('PrismaOrganizacionRepository.findById error', { id, error });
             throw error;
         });

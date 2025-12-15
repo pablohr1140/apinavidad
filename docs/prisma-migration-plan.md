@@ -13,6 +13,8 @@ Pertenece a: documentación de proyecto/migración.
 
 > Estado: histórico. TypeORM ya fue removido; este documento se conserva únicamente como referencia del plan ejecutado.
 
+> Nota 2025-12-14 (manual SQL): se reordenó físicamente la tabla `ninos`, se eliminaron las columnas `run` y `dv`, se recrearon las FK (`FK_ninos_periodos`, `FK_ninos_organizaciones`, `FK_ninos_tipo_documentos`, `FK_discapacidad_nino_ninos`) y se eliminó la tabla temporal `ninos_old`. Prisma Client regenerado (`npm run prisma:generate`).
+
 ## 1. Objetivos
 - Mantener la paridad funcional del backend NestJS mientras se reemplaza TypeORM por Prisma como ORM principal.
 - Reducir el tiempo de generación de tipos y mejorar la DX (autocompletado, validación estática) gracias al cliente tipado de Prisma.

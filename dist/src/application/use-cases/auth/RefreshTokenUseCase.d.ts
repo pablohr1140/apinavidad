@@ -1,3 +1,9 @@
+/**
+ * # Refresh Token Use Case
+ * Propósito: Caso de uso Refresh Token Use Case
+ * Pertenece a: Aplicación / Caso de uso
+ * Interacciones: Repositorios, servicios de dominio
+ */
 import { TokenProvider } from '@/application/contracts/Auth';
 export declare class RefreshTokenUseCase {
     private readonly tokenProvider;

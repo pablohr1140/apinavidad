@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # permissions.decorator
+ * Propósito: Decorador permissions.decorator
+ * Pertenece a: Decorador (Nest)
+ * Interacciones: Metadatos de rutas/servicios
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PERMISSIONS_KEY = void 0;
 exports.Permissions = Permissions;

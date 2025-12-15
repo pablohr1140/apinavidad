@@ -40,6 +40,7 @@ import { InhabilitarNinoUseCase } from '@/application/use-cases/ninos/Inhabilita
 import { ListNinosUseCase } from '@/application/use-cases/ninos/ListNinosUseCase';
 import { RestaurarNinoUseCase } from '@/application/use-cases/ninos/RestaurarNinoUseCase';
 import { UpdateNinoUseCase } from '@/application/use-cases/ninos/UpdateNinoUseCase';
+import type { EstadoNino } from '@/domain/entities';
 import { Permissions } from '@/modules/auth/decorators/permissions.decorator';
 import { ZodValidationPipe } from '@/modules/shared/pipes/zod-validation.pipe';
 
@@ -65,7 +66,7 @@ export class NinosController {
     return this.listNinosUseCase.execute({
       periodoId: this.parseNumber(periodoId),
       organizacionId: this.parseNumber(organizacionId),
-      estado: this.parseBoolean(estado)
+      estado: this.parseEstado(estado)
     });
   }
 
@@ -122,5 +123,12 @@ export class NinosController {
     if (value === '1' || value?.toLowerCase() === 'true') return true;
     if (value === '0' || value?.toLowerCase() === 'false') return false;
     return undefined;
+  }
+
+  private parseEstado(value?: string): EstadoNino | undefined {
+    if (!value) return undefined;
+    const normalized = value.trim().toLowerCase();
+    const allowed = ['registrado', 'validado', 'egresado', 'inhabilitado'];
+    return allowed.includes(normalized) ? (normalized as EstadoNino) : undefined;
   }
 }

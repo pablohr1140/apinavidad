@@ -17,7 +17,7 @@ export class PrismaUserRepository implements UserRepository {
   /** Busca usuario por email incluyendo rol, normaliza a `UserRecord`. */
   async findByEmail(email: string): Promise<UserRecord | null> {
     const persona = await this.prisma.personas.findFirst({
-      where: { email: { equals: email } },
+      where: { email },
       include: { roles: true }
     });
 
@@ -26,7 +26,7 @@ export class PrismaUserRepository implements UserRepository {
     }
 
     const role = persona.roles
-      ? [persona.roles].filter(Boolean).map((r) => ({ id: r!.id, key: r!.role_key as RoleKey, name: r!.name, rank: r!.rank }))
+      ? [{ id: persona.roles.id, key: persona.roles.role_key as RoleKey, name: persona.roles.name, rank: persona.roles.rank }]
       : [];
 
     return {

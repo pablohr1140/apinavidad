@@ -1,3 +1,9 @@
+/**
+ * # List Ninos Use Case
+ * Propósito: Caso de uso List Ninos Use Case
+ * Pertenece a: Aplicación / Caso de uso
+ * Interacciones: Repositorios, servicios de dominio
+ */
 import { NinoRepository } from '@/application/repositories/NinoRepository';
 export declare class ListNinosUseCase {
     private readonly ninoRepository;

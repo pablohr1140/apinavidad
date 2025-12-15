@@ -29,9 +29,6 @@ export class PrismaDiscapacidadRepository implements DiscapacidadRepository {
     const created = await this.prisma.discapacidades.create({
       data: {
         nombre: data.nombre,
-        categoria: data.categoria ?? null,
-        codigo: data.codigo ?? null,
-        descripcion: data.descripcion ?? null,
         activo: data.activo
       }
     });
@@ -40,14 +37,14 @@ export class PrismaDiscapacidadRepository implements DiscapacidadRepository {
   }
 
   private toDomain(
-    entity: Prisma.discapacidadesUncheckedCreateInput & { id: number; created_at?: Date; updated_at?: Date }
+    entity: { id: number; nombre: string; activo: boolean; created_at?: Date; updated_at?: Date }
   ): DiscapacidadProps {
     return {
       id: entity.id,
       nombre: entity.nombre,
-      categoria: entity.categoria ?? undefined,
-      codigo: entity.codigo ?? undefined,
-      descripcion: entity.descripcion ?? undefined,
+      categoria: undefined,
+      codigo: undefined,
+      descripcion: undefined,
       activo: Boolean(entity.activo),
       createdAt: (entity as any).created_at ?? new Date(),
       updatedAt: (entity as any).updated_at ?? new Date()

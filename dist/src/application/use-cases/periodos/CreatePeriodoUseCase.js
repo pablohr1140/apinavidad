@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # Create Periodo Use Case
+ * Propósito: Caso de uso Create Periodo Use Case
+ * Pertenece a: Aplicación / Caso de uso
+ * Interacciones: Repositorios, servicios de dominio
+ */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -18,8 +24,8 @@ exports.CreatePeriodoUseCase = void 0;
  * Interacciones: `createPeriodoSchema`, `PeriodoRepository`, `LogActivityUseCase`.
  */
 const common_1 = require("@nestjs/common");
-const PeriodoRepository_1 = require("../../repositories/PeriodoRepository");
 const PeriodoDTOs_1 = require("../../dtos/PeriodoDTOs");
+const PeriodoRepository_1 = require("../../repositories/PeriodoRepository");
 const LogActivityUseCase_1 = require("../logs/LogActivityUseCase");
 let CreatePeriodoUseCase = class CreatePeriodoUseCase {
     periodoRepository;

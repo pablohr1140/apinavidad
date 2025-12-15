@@ -1,3 +1,9 @@
+/**
+ * # Inhabilitar Nino Use Case
+ * Propósito: Caso de uso Inhabilitar Nino Use Case
+ * Pertenece a: Aplicación / Caso de uso
+ * Interacciones: Repositorios, servicios de dominio
+ */
 import { NinoRepository } from '@/application/repositories/NinoRepository';
 import { LogActivityUseCase } from '@/application/use-cases/logs/LogActivityUseCase';
 interface Payload {

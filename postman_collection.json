@@ -1,0 +1,130 @@
+{
+  "info": {
+    "_postman_id": "c94f62d0-7f56-4c71-93d1-07b5217b4c1a",
+    "name": "apinavidad-local",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "accessToken", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login (admin@example.com / ChangeMe123!)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"ChangeMe123!\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Refresh",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"<pega_refresh_token_aqui>\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/refresh", "host": ["{{baseUrl}}"], "path": ["auth", "refresh"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Roles",
+      "item": [
+        {
+          "name": "DELETE role (admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/roles/admin", "host": ["{{baseUrl}}"], "path": ["roles", "admin"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Niños",
+      "item": [
+        {
+          "name": "Listar niños",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ninos",
+              "host": ["{{baseUrl}}"],
+              "path": ["ninos"]
+            }
+          }
+        },
+        {
+          "name": "Crear niño (ejemplo mínimo)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombres\": \"Juan\",\n  \"apellidos\": \"Pérez\",\n  \"documento_numero\": \"12345678-9\",\n  \"periodoId\": 1,\n  \"tiene_discapacidad\": false\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/ninos", "host": ["{{baseUrl}}"], "path": ["ninos"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reportes",
+      "item": [
+        {
+          "name": "Listado JSON",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/reportes/ninos/listado", "host": ["{{baseUrl}}"], "path": ["reportes", "ninos", "listado"] }
+          }
+        },
+        {
+          "name": "Listado PDF",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/reportes/ninos/listado.pdf", "host": ["{{baseUrl}}"], "path": ["reportes", "ninos", "listado.pdf"] }
+          }
+        },
+        {
+          "name": "Listado XLSX",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/reportes/ninos/listado.xlsx", "host": ["{{baseUrl}}"], "path": ["reportes", "ninos", "listado.xlsx"] }
+          }
+        }
+      ]
+    }
+  ]
+}

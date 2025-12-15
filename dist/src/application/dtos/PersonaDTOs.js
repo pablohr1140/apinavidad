@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # Persona DTOs
+ * Propósito: DTOs para Persona DTOs
+ * Pertenece a: Aplicación / DTOs
+ * Interacciones: Validación y transporte de datos
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updatePersonaSchema = exports.createPersonaSchema = exports.personaBaseSchema = void 0;
 const zod_1 = require("zod");
@@ -9,7 +15,6 @@ exports.personaBaseSchema = zod_1.z.object({
     apellidos: zod_1.z.string().min(2),
     run: zod_1.z.string().min(5).optional().nullable(),
     dv: zod_1.z.string().min(1).max(2).optional().nullable(),
-    documento: zod_1.z.string().max(32).optional().nullable(),
     fecha_nacimiento: zod_1.z.coerce.date().optional().nullable(),
     sexo: zod_1.z.enum(['M', 'F', 'X']).optional().nullable(),
     telefono: zod_1.z.string().optional().nullable(),
