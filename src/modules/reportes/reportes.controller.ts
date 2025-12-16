@@ -12,7 +12,7 @@
  * Pertenece a: Capa HTTP (NestJS controller).
  * Interacciones: `ListNinosUseCase`, reglas de negocio de edad/inhabilitación.
  */
-import { Controller, Get, Query, Res } from '@nestjs/common';
+import { Controller, Get, Logger, Query, Res } from '@nestjs/common';
 import type { Response } from 'express';
 
 import { ListNinosUseCase } from '@/application/use-cases/ninos/ListNinosUseCase';
@@ -23,6 +23,8 @@ import { Permissions } from '@/modules/auth/decorators/permissions.decorator';
 
 @Controller('reportes')
 export class ReportesController {
+  private readonly logger = new Logger(ReportesController.name);
+
   constructor(
     private readonly listNinosUseCase: ListNinosUseCase,
     private readonly reportingService: ReportingService
@@ -55,6 +57,7 @@ export class ReportesController {
     @Res() res: Response
   ) {
     const data = await this.buildNinosData(periodoId, organizacionId, estado);
+    this.logger.log(`listadoPdf rows=${data.length}`);
     const pdf = await this.reportingService.buildPdf(data, 'Reporte de niños');
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', 'attachment; filename="reporte-ninos.pdf"');
@@ -87,6 +90,8 @@ export class ReportesController {
       estado: this.parseEstado(estado)
     });
 
+    this.logger.log(`buildNinosData rows=${ninos.length}`);
+
     return ninos.map((nino) => {
       const edadCalculada = calcularEdad(nino.fecha_nacimiento);
       const tiempoParaInhabilitar = edadCalculada != null ? Math.max(0, MAX_EDAD - edadCalculada) : null;
@@ -107,7 +112,7 @@ export class ReportesController {
   private parseEstado(value?: string): EstadoNino | undefined {
     if (!value) return undefined;
     const normalized = value.trim().toLowerCase();
-    const allowed = ['registrado', 'validado', 'egresado', 'inhabilitado'];
+    const allowed = ['registrado', 'inhabilitado'];
     return allowed.includes(normalized) ? (normalized as EstadoNino) : undefined;
   }
 }

@@ -1,5 +1,11 @@
-import { PersonaRepository } from '@/application/repositories/PersonaRepository';
+/**
+ * # Delete Persona Use Case
+ * Propósito: Caso de uso Delete Persona Use Case
+ * Pertenece a: Aplicación / Caso de uso
+ * Interacciones: Repositorios, servicios de dominio
+ */
 import { AuthenticatedUser } from '@/application/contracts/AuthenticatedUser';
+import { PersonaRepository } from '@/application/repositories/PersonaRepository';
 import { LogActivityUseCase } from '@/application/use-cases/logs/LogActivityUseCase';
 export declare class DeletePersonaUseCase {
     private readonly personaRepository;

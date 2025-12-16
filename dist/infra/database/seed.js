@@ -1,12 +1,18 @@
 "use strict";
+/**
+ * # seed
+ * Propósito: Infra DB seed
+ * Pertenece a: Infraestructura / Base de datos
+ * Interacciones: Prisma, conexión a BD
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.runSeed = runSeed;
 require("reflect-metadata");
 const common_1 = require("@nestjs/common");
-const prisma_service_1 = require("./prisma/prisma.service");
 const env_1 = require("../../config/env");
-const BcryptProvider_1 = require("../security/BcryptProvider");
 const access_control_1 = require("../../domain/access-control");
+const prisma_service_1 = require("./prisma/prisma.service");
+const BcryptProvider_1 = require("../security/BcryptProvider");
 const logger = new common_1.Logger('Seed');
 async function seedPermissions(prisma) {
     const map = {};
@@ -48,7 +54,6 @@ async function seedAdminPersona(prisma, hashProvider, superadminRole) {
         apellidos: 'Principal',
         run: '99999999',
         dv: '9',
-        documento: null,
         fecha_nacimiento: new Date('1990-01-01'),
         sexo: 'M',
         telefono: null,
@@ -71,17 +76,43 @@ async function seedAdminPersona(prisma, hashProvider, superadminRole) {
     }
 }
 async function seedDiscapacidades(prisma) {
-    const items = [
-        { nombre: 'Auditiva', descripcion: 'Perdida parcial o total de audicion' },
-        { nombre: 'Visual', descripcion: 'Dificultad visual moderada o severa' },
-        { nombre: 'Motora', descripcion: 'Limitaciones de movilidad' },
-        { nombre: 'Cognitiva', descripcion: 'Dificultades cognitivas generales' }
-    ];
+    const items = [{ nombre: 'Auditiva' }, { nombre: 'Visual' }, { nombre: 'Motora' }, { nombre: 'Cognitiva' }];
     const records = await Promise.all(items.map((item) => prisma.discapacidades.upsert({
         where: { nombre: item.nombre },
-        update: { descripcion: item.descripcion, activo: true },
-        create: { nombre: item.nombre, descripcion: item.descripcion, activo: true }
+        update: { activo: true },
+        create: { nombre: item.nombre, activo: true }
     })));
+    return Object.fromEntries(records.map((record) => [record.nombre, { id: record.id }]));
+}
+async function seedEtnias(prisma) {
+    const items = [
+        { nombre: 'Mapuche', codigo: 'MAP', descripcion: 'Pueblo Mapuche' },
+        { nombre: 'Aymara', codigo: 'AYM', descripcion: 'Pueblo Aymara' }
+    ];
+    const records = await Promise.all(items.map((item) => prisma.etnias.upsert({
+        where: { nombre: item.nombre },
+        update: { codigo: item.codigo, descripcion: item.descripcion, activo: true },
+        create: { nombre: item.nombre, codigo: item.codigo, descripcion: item.descripcion, activo: true }
+    })));
+    return Object.fromEntries(records.map((record) => [record.nombre, { id: record.id }]));
+}
+async function seedSectores(prisma) {
+    const items = [
+        { nombre: 'Norte' },
+        { nombre: 'Centro' },
+        { nombre: 'Sur' }
+    ];
+    const records = [];
+    for (const item of items) {
+        const existing = await prisma.sectores.findFirst({ where: { nombre: item.nombre } });
+        if (existing) {
+            const updated = await prisma.sectores.update({ where: { id: existing.id }, data: { estado: true } });
+            records.push({ nombre: updated.nombre, id: updated.id });
+            continue;
+        }
+        const created = await prisma.sectores.create({ data: { nombre: item.nombre, estado: true } });
+        records.push({ nombre: created.nombre, id: created.id });
+    }
     return Object.fromEntries(records.map((record) => [record.nombre, { id: record.id }]));
 }
 async function seedPersonas(prisma, roles) {
@@ -91,7 +122,6 @@ async function seedPersonas(prisma, roles) {
             apellidos: 'Munoz',
             run: '11111111',
             dv: '1',
-            documento: null,
             fecha_nacimiento: new Date('1985-04-02'),
             sexo: 'F',
             telefono: '+56 9 1111 1111',
@@ -105,7 +135,6 @@ async function seedPersonas(prisma, roles) {
             apellidos: 'Farre',
             run: '22222222',
             dv: '2',
-            documento: null,
             fecha_nacimiento: new Date('1979-11-10'),
             sexo: 'M',
             telefono: '+56 9 2222 2222',
@@ -119,7 +148,6 @@ async function seedPersonas(prisma, roles) {
             apellidos: 'Campos',
             run: '33333333',
             dv: '3',
-            documento: null,
             fecha_nacimiento: new Date('1992-07-23'),
             sexo: 'F',
             telefono: '+56 9 3333 3333',
@@ -139,7 +167,6 @@ async function seedPersonas(prisma, roles) {
             apellidos: persona.apellidos,
             run: persona.run,
             dv: persona.dv,
-            documento: persona.documento,
             fecha_nacimiento: persona.fecha_nacimiento,
             sexo: persona.sexo,
             telefono: persona.telefono,
@@ -161,7 +188,7 @@ async function seedPersonas(prisma, roles) {
     }
     return personaMap;
 }
-async function seedOrganizaciones(prisma) {
+async function seedOrganizaciones(prisma, sectores) {
     const organizaciones = [
         {
             nombre: 'Centro Esperanza',
@@ -169,7 +196,8 @@ async function seedOrganizaciones(prisma) {
             telefono: '+56 2 2345 0000',
             correo: 'contacto@esperanza.cl',
             direccion: 'Av. Matucana 120',
-            estado: 'activo'
+            estado: 'activo',
+            sector: 'Centro'
         },
         {
             nombre: 'Colegio Raices',
@@ -177,7 +205,8 @@ async function seedOrganizaciones(prisma) {
             telefono: '+56 2 2789 4567',
             correo: 'admision@raices.cl',
             direccion: 'Camino del Bosque 456',
-            estado: 'activo'
+            estado: 'activo',
+            sector: 'Sur'
         }
     ];
     const records = {};
@@ -190,9 +219,8 @@ async function seedOrganizaciones(prisma) {
             email: org.correo,
             direccion: org.direccion,
             estado: org.estado,
-            sigla: null,
-            rut: null,
             providencia_id: null,
+            sector_id: sectores[org.sector]?.id ?? null,
             updated_at: now
         };
         const existing = await prisma.organizaciones.findUnique({ where: { nombre: org.nombre } });
@@ -255,7 +283,7 @@ async function seedPeriodos(prisma) {
     const records = {};
     for (const periodo of periodos) {
         const now = new Date();
-        const data = { ...periodo, descripcion: null, updated_at: now };
+        const data = { ...periodo, updated_at: now };
         const existing = await prisma.periodos.findUnique({ where: { nombre: periodo.nombre } });
         if (existing) {
             const updated = await prisma.periodos.update({ where: { id: existing.id }, data });
@@ -272,8 +300,7 @@ async function seedOrganizacionPeriodos(prisma, organizaciones, periodos) {
     const cupos = [
         { organizacion: 'Centro Esperanza', periodo: '2023', cupos: 60 },
         { organizacion: 'Centro Esperanza', periodo: '2024', cupos: 85 },
-        { organizacion: 'Colegio Raices', periodo: '2023', cupos: 90 },
-        { organizacion: 'Colegio Raices', periodo: '2024', cupos: 120 }
+        { organizacion: 'Colegio Raices', periodo: '2023', cupos: 90 }
     ];
     await Promise.all(cupos.map(async (config) => {
         const organizacionId = organizaciones[config.organizacion]?.id;
@@ -289,7 +316,7 @@ async function seedOrganizacionPeriodos(prisma, organizaciones, periodos) {
         });
     }));
 }
-async function seedNinos(prisma, organizaciones, periodos) {
+async function seedNinos(prisma, organizaciones, periodos, etnias) {
     const ninos = [
         {
             nombres: 'Mateo',
@@ -303,8 +330,10 @@ async function seedNinos(prisma, organizaciones, periodos) {
             periodo: '2024',
             edad: 9,
             tiene_discapacidad: true,
+            tiene_RSH: false,
             fecha_ingreso: new Date('2022-03-10'),
             fecha_retiro: null,
+            etniaNombre: 'Mapuche',
             estado: 'registrado'
         },
         {
@@ -319,9 +348,11 @@ async function seedNinos(prisma, organizaciones, periodos) {
             periodo: '2024',
             edad: 10,
             tiene_discapacidad: false,
+            tiene_RSH: false,
             fecha_ingreso: new Date('2021-03-05'),
             fecha_retiro: null,
-            estado: 'validado'
+            etniaNombre: 'Aymara',
+            estado: 'registrado'
         },
         {
             nombres: 'Ignacio',
@@ -335,12 +366,16 @@ async function seedNinos(prisma, organizaciones, periodos) {
             periodo: '2023',
             edad: 10,
             tiene_discapacidad: true,
+            tiene_RSH: false,
             fecha_ingreso: new Date('2020-03-02'),
             fecha_retiro: new Date('2023-12-20'),
-            estado: 'egresado'
+            etniaNombre: null,
+            estado: 'inhabilitado'
         }
     ];
     const records = {};
+    const tipoDocCdi = await prisma.tipo_documentos.findFirst({ where: { codigo: 'CDI' } });
+    const tipoDocId = tipoDocCdi?.id ?? null;
     for (const nino of ninos) {
         const { organizacion, periodo, ...data } = nino;
         const organizacionId = organizaciones[organizacion]?.id;
@@ -348,26 +383,35 @@ async function seedNinos(prisma, organizaciones, periodos) {
         if (!organizacionId || !periodoId) {
             continue;
         }
+        const etniaId = data.etniaNombre ? etnias[data.etniaNombre]?.id ?? null : null;
+        const documento_numero = data.documento
+            ? data.documento
+            : data.run && data.dv
+                ? `${data.run}-${data.dv}`
+                : data.run ?? '';
+        const estado = data.estado === 'inhabilitado' ? false : true;
         const payload = {
             nombres: data.nombres,
             apellidos: data.apellidos,
-            run: data.run,
-            dv: data.dv,
-            documento: data.documento,
+            documento_numero,
+            tipo_documento_id: tipoDocId,
+            nacionalidad_id: null,
+            etnia_id: etniaId,
+            persona_registro_id: null,
             fecha_nacimiento: data.fecha_nacimiento,
             sexo: data.sexo,
             organizacion_id: organizacionId,
             periodo_id: periodoId,
-            providencia_id: null,
             es_prioritario: false,
             edad: data.edad ?? null,
             tiene_discapacidad: Boolean(data.tiene_discapacidad),
+            tiene_RSH: Boolean(data.tiene_RSH),
             fecha_ingreso: data.fecha_ingreso,
             fecha_retiro: data.fecha_retiro,
-            estado: data.estado,
+            estado,
             updated_at: new Date()
         };
-        const existing = await prisma.ninos.findFirst({ where: { run: nino.run } });
+        const existing = await prisma.ninos.findFirst({ where: { documento_numero } });
         if (existing) {
             const updated = await prisma.ninos.update({ where: { id: existing.id }, data: payload });
             records[nino.run] = { id: updated.id };
@@ -410,12 +454,14 @@ async function runSeed() {
         }
         await seedAdminPersona(prisma, hashProvider, superadminRole);
         const discapacidades = await seedDiscapacidades(prisma);
+        const etnias = await seedEtnias(prisma);
+        const sectores = await seedSectores(prisma);
         const personas = await seedPersonas(prisma, roles);
-        const organizaciones = await seedOrganizaciones(prisma);
+        const organizaciones = await seedOrganizaciones(prisma, sectores);
         await seedOrganizacionPersonas(prisma, organizaciones, personas);
         const periodos = await seedPeriodos(prisma);
         await seedOrganizacionPeriodos(prisma, organizaciones, periodos);
-        const ninos = await seedNinos(prisma, organizaciones, periodos);
+        const ninos = await seedNinos(prisma, organizaciones, periodos, etnias);
         await seedDiscapacidadNinos(prisma, ninos, discapacidades);
         logger.log('Seed completed');
     }

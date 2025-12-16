@@ -6,8 +6,7 @@
  */
 
 import type { RoleKey } from '../access-control';
-// Se admite compatibilidad con boolean para no romper mapeos existentes a DB (bit)
-export type EstadoNino = 'registrado' | 'validado' | 'egresado' | 'inhabilitado' | boolean;
+export type EstadoNino = 'registrado' | 'inhabilitado';
 export type EstadoPeriodo = 'borrador' | 'planificado' | 'abierto' | 'cerrado';
 export type EstadoOrganizacion = 'borrador' | 'activo' | 'suspendido';
 
@@ -42,13 +41,12 @@ export interface RoleSummary {
 export interface OrganizacionProps {
   id: number;
   nombre: string;
-  sigla?: string | null;
-  rut?: string | null;
   tipo: string;
   direccion?: string | null;
   telefono?: string | null;
   email?: string | null;
   providenciaId?: number | null;
+  sectorId?: number | null;
   estado: EstadoOrganizacion;
   createdAt: Date;
   updatedAt: Date;
@@ -61,7 +59,6 @@ export interface PeriodoProps {
   fecha_fin?: Date | null;
   estado_periodo: EstadoPeriodo;
   es_activo: boolean;
-  descripcion?: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -73,6 +70,7 @@ export interface NinoProps {
   documento_numero: string;
   tipoDocumentoId?: number | null;
   nacionalidadId?: number | null;
+  etniaId?: number | null;
   personaRegistroId?: number | null;
   fecha_nacimiento?: Date | null;
   sexo?: string | null;
@@ -80,6 +78,7 @@ export interface NinoProps {
   periodoId: number;
   edad?: number | null;
   tiene_discapacidad: boolean;
+  tiene_RSH: boolean;
   fecha_ingreso?: Date | null;
   fecha_retiro?: Date | null;
   estado: EstadoNino;

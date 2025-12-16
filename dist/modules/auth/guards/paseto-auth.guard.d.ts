@@ -1,3 +1,9 @@
+/**
+ * # paseto auth.guard
+ * Propósito: Guardia de acceso paseto auth.guard
+ * Pertenece a: Auth/Route Guard (Nest)
+ * Interacciones: Nest ExecutionContext, servicios de auth
+ */
 import { CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { PasetoService } from '@/infra/auth/PasetoService';

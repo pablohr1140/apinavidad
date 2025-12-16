@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">2.5% </span>
+                <span class="strong">2.04% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>1/40</span>
+                <span class='fraction'>1/49</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/16</span>
+                <span class='fraction'>0/28</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/12</span>
+                <span class='fraction'>0/13</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">3.03% </span>
+                <span class="strong">2.63% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>1/33</span>
+                <span class='fraction'>1/38</span>
             </div>
         
             
@@ -181,7 +181,15 @@
 <a name='L116'></a><a href='#L116'>116</a>
 <a name='L117'></a><a href='#L117'>117</a>
 <a name='L118'></a><a href='#L118'>118</a>
-<a name='L119'></a><a href='#L119'>119</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L119'></a><a href='#L119'>119</a>
+<a name='L120'></a><a href='#L120'>120</a>
+<a name='L121'></a><a href='#L121'>121</a>
+<a name='L122'></a><a href='#L122'>122</a>
+<a name='L123'></a><a href='#L123'>123</a>
+<a name='L124'></a><a href='#L124'>124</a>
+<a name='L125'></a><a href='#L125'>125</a>
+<a name='L126'></a><a href='#L126'>126</a>
+<a name='L127'></a><a href='#L127'>127</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -299,6 +307,14 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * # ReportingService
  * Propósito: Generar reportes PDF/Excel en el backend para descargas imprimibles y masivas.
@@ -337,7 +353,7 @@ const defaultFonts = {
 };
 &nbsp;
 export interface ReportRow {
-  [key: string]: string | number | boolean | null | undefined;
+  [key: string]: string | number | boolean | Date | null | undefined;
 }
 &nbsp;
 export class ReportingService {
@@ -413,8 +429,16 @@ export class ReportingService {
   private <span class="fstat-no" title="function not covered" >buildTableBody(r</span>ows: ReportRow[]): TableCell[][] {
 <span class="cstat-no" title="statement not covered" >    if (rows.length === 0) <span class="cstat-no" title="statement not covered" >return [['Sin datos']];</span></span>
     const headers = <span class="cstat-no" title="statement not covered" >Object.keys(rows[0]);</span>
-    const dataRows = <span class="cstat-no" title="statement not covered" >rows.map(<span class="fstat-no" title="function not covered" >(r</span>ow) =&gt; <span class="cstat-no" title="statement not covered" >headers.map(<span class="fstat-no" title="function not covered" >(k</span>ey) =&gt; <span class="cstat-no" title="statement not covered" >row[key] ?? '')</span>)</span>;</span>
+    const dataRows = <span class="cstat-no" title="statement not covered" >rows.map(<span class="fstat-no" title="function not covered" >(r</span>ow) =&gt; <span class="cstat-no" title="statement not covered" >headers.map(<span class="fstat-no" title="function not covered" >(k</span>ey) =&gt; <span class="cstat-no" title="statement not covered" >this.normalizeCell(row[key]))</span>)</span>;</span>
 <span class="cstat-no" title="statement not covered" >    return [headers, ...dataRows];</span>
+  }
+&nbsp;
+  private <span class="fstat-no" title="function not covered" >normalizeCell(v</span>alue: unknown): TableCell {
+<span class="cstat-no" title="statement not covered" >    if (value instanceof Date) <span class="cstat-no" title="statement not covered" >return value.toISOString();</span></span>
+<span class="cstat-no" title="statement not covered" >    if (typeof value === 'boolean') <span class="cstat-no" title="statement not covered" >return value ? 'true' : 'false';</span></span>
+<span class="cstat-no" title="statement not covered" >    if (value === null || value === undefined) <span class="cstat-no" title="statement not covered" >return '';</span></span>
+<span class="cstat-no" title="statement not covered" >    if (Array.isArray(value) || typeof value === 'object') <span class="cstat-no" title="statement not covered" >return JSON.stringify(value);</span></span>
+<span class="cstat-no" title="statement not covered" >    return value as TableCell;</span>
   }
 }
 &nbsp;</pre></td></tr></table></pre>
@@ -424,7 +448,7 @@ export class ReportingService {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-14T22:15:31.177Z
+                at 2025-12-16T15:58:00.864Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

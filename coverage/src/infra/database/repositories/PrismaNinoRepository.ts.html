@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">52.12% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>49/94</span>
+                <span class='fraction'>49/98</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">33.58% </span>
+                <span class="strong">31.65% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>44/131</span>
+                <span class='fraction'>44/139</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">60% </span>
+                <span class="strong">58.33% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>42/70</span>
+                <span class='fraction'>42/72</span>
             </div>
         
             
@@ -270,7 +270,13 @@
 <a name='L205'></a><a href='#L205'>205</a>
 <a name='L206'></a><a href='#L206'>206</a>
 <a name='L207'></a><a href='#L207'>207</a>
-<a name='L208'></a><a href='#L208'>208</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L208'></a><a href='#L208'>208</a>
+<a name='L209'></a><a href='#L209'>209</a>
+<a name='L210'></a><a href='#L210'>210</a>
+<a name='L211'></a><a href='#L211'>211</a>
+<a name='L212'></a><a href='#L212'>212</a>
+<a name='L213'></a><a href='#L213'>213</a>
+<a name='L214'></a><a href='#L214'>214</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -433,8 +439,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -477,6 +487,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * # PrismaNinoRepository
  *
@@ -496,10 +508,10 @@ const toBigInt = (value?: number | null) =&gt; (value === undefined || value ===
 const toDate = (value?: Date | string | null) =&gt; (value ? new Date(value) : undefined);
 const estadoToDb = (estado?: EstadoNino) =&gt; {
   <span class="missing-if-branch" title="if path not taken" >I</span>if (estado === undefined) <span class="cstat-no" title="statement not covered" >return undefined;</span>
-  if (estado === 'inhabilitado' || estado === false) return false;
-  return true; // registrado, validado, egresado map a true por compatibilidad actual (bit)
+  if (estado === 'inhabilitado') return false;
+  return true; // registrado -&gt; true
 };
-const estadoToDomain = (estadoBit: boolean): EstadoNino =&gt; (estadoBit ? 'validado' : <span class="branch-1 cbranch-no" title="branch not covered" >'inhabilitado');</span>
+const estadoToDomain = (estadoBit: boolean): EstadoNino =&gt; (estadoBit ? 'registrado' : <span class="branch-1 cbranch-no" title="branch not covered" >'inhabilitado');</span>
 &nbsp;
 @Injectable()
 export class PrismaNinoRepository implements NinoRepository {
@@ -626,6 +638,7 @@ export class PrismaNinoRepository implements NinoRepository {
       documento_numero: data.documento_numero,
       tipo_documento_id: data.tipoDocumentoId ?? null,
       nacionalidad_id: data.nacionalidadId ?? null,
+      etnia_id: data.etniaId ?? null,
       persona_registro_id: data.personaRegistroId ?? null,
       fecha_nacimiento: data.fecha_nacimiento ?? null,
       sexo: data.sexo ?? null,
@@ -633,6 +646,7 @@ export class PrismaNinoRepository implements NinoRepository {
       periodo_id: data.periodoId,
       edad: data.edad ?? null,
       tiene_discapacidad: data.tiene_discapacidad,
+      tiene_RSH: data.tiene_RSH,
       fecha_ingreso: data.fecha_ingreso ?? null,
       fecha_retiro: data.fecha_retiro ?? null,
       estado: estadoToDb(data.estado) ?? true
@@ -647,6 +661,7 @@ export class PrismaNinoRepository implements NinoRepository {
 <span class="cstat-no" title="statement not covered" >    if (data.documento_numero !== undefined) <span class="cstat-no" title="statement not covered" >payload.documento_numero = data.documento_numero;</span></span>
 <span class="cstat-no" title="statement not covered" >    if (data.tipoDocumentoId !== undefined) <span class="cstat-no" title="statement not covered" >payload.tipo_documento_id = data.tipoDocumentoId ?? null;</span></span>
 <span class="cstat-no" title="statement not covered" >    if (data.nacionalidadId !== undefined) <span class="cstat-no" title="statement not covered" >payload.nacionalidad_id = data.nacionalidadId ?? null;</span></span>
+<span class="cstat-no" title="statement not covered" >    if (data.etniaId !== undefined) <span class="cstat-no" title="statement not covered" >payload.etnia_id = data.etniaId ?? null;</span></span>
 <span class="cstat-no" title="statement not covered" >    if (data.personaRegistroId !== undefined) <span class="cstat-no" title="statement not covered" >payload.persona_registro_id = data.personaRegistroId ?? null;</span></span>
 <span class="cstat-no" title="statement not covered" >    if (data.fecha_nacimiento !== undefined) <span class="cstat-no" title="statement not covered" >payload.fecha_nacimiento = data.fecha_nacimiento ?? null;</span></span>
 <span class="cstat-no" title="statement not covered" >    if (data.sexo !== undefined) <span class="cstat-no" title="statement not covered" >payload.sexo = data.sexo ?? null;</span></span>
@@ -654,6 +669,7 @@ export class PrismaNinoRepository implements NinoRepository {
 <span class="cstat-no" title="statement not covered" >    if (data.periodoId !== undefined) <span class="cstat-no" title="statement not covered" >payload.periodo_id = data.periodoId;</span></span>
 <span class="cstat-no" title="statement not covered" >    if (data.edad !== undefined) <span class="cstat-no" title="statement not covered" >payload.edad = data.edad ?? null;</span></span>
 <span class="cstat-no" title="statement not covered" >    if (data.tiene_discapacidad !== undefined) <span class="cstat-no" title="statement not covered" >payload.tiene_discapacidad = data.tiene_discapacidad;</span></span>
+<span class="cstat-no" title="statement not covered" >    if (data.tiene_RSH !== undefined) <span class="cstat-no" title="statement not covered" >payload.tiene_RSH = data.tiene_RSH;</span></span>
 <span class="cstat-no" title="statement not covered" >    if (data.fecha_ingreso !== undefined) <span class="cstat-no" title="statement not covered" >payload.fecha_ingreso = data.fecha_ingreso ?? null;</span></span>
 <span class="cstat-no" title="statement not covered" >    if (data.fecha_retiro !== undefined) <span class="cstat-no" title="statement not covered" >payload.fecha_retiro = data.fecha_retiro ?? null;</span></span>
 <span class="cstat-no" title="statement not covered" >    if (data.estado !== undefined) <span class="cstat-no" title="statement not covered" >payload.estado = estadoToDb(data.estado);</span></span>
@@ -669,6 +685,7 @@ export class PrismaNinoRepository implements NinoRepository {
       documento_numero: entity.documento_numero,
       tipoDocumentoId: entity.tipo_documento_id ?? <span class="branch-1 cbranch-no" title="branch not covered" >undefined,</span>
       nacionalidadId: entity.nacionalidad_id ?? undefined,
+      etniaId: entity.etnia_id ?? undefined,
       personaRegistroId: entity.persona_registro_id ?? undefined,
       fecha_nacimiento: toDate(entity.fecha_nacimiento),
       sexo: entity.sexo ?? <span class="branch-1 cbranch-no" title="branch not covered" >undefined,</span>
@@ -676,6 +693,7 @@ export class PrismaNinoRepository implements NinoRepository {
       periodoId: Number(entity.periodo_id),
       edad: entity.edad ?? <span class="branch-1 cbranch-no" title="branch not covered" >undefined,</span>
       tiene_discapacidad: Boolean(entity.tiene_discapacidad),
+      tiene_RSH: Boolean(entity.tiene_RSH),
       fecha_ingreso: toDate(entity.fecha_ingreso),
       fecha_retiro: toDate(entity.fecha_retiro),
       estado: estadoToDomain(Boolean(entity.estado)),
@@ -691,7 +709,7 @@ export class PrismaNinoRepository implements NinoRepository {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-14T22:15:31.177Z
+                at 2025-12-16T15:58:00.864Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

@@ -1,2 +1,8 @@
+/**
+ * # auth.module
+ * Propósito: Módulo de agregación auth.module
+ * Pertenece a: Módulo Nest
+ * Interacciones: Providers, controllers
+ */
 export declare class AuthModule {
 }

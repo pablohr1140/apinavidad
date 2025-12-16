@@ -1,4 +1,11 @@
+/**
+ * # Log Activity Use Case
+ * Propósito: Caso de uso Log Activity Use Case
+ * Pertenece a: Aplicación / Caso de uso
+ * Interacciones: Repositorios, servicios de dominio
+ */
 import { LogRepository } from '@/application/repositories/LogRepository';
+import { LogProps } from '@/domain/entities';
 interface LogInput {
     personaId?: number;
     accion: string;
@@ -16,7 +23,7 @@ export declare class LogActivityUseCase {
      * Persiste la actividad con timestamp actual.
      * @param input - datos de actividad a registrar.
      */
-    execute(input: LogInput): Promise<import("../../../domain/entities").LogProps>;
+    execute(input: LogInput): Promise<LogProps>;
 }
 export declare const noopLogActivity: LogActivityUseCase;
 export {};

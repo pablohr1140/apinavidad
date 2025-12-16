@@ -17,10 +17,10 @@ const toBigInt = (value?: number | null) => (value === undefined || value === nu
 const toDate = (value?: Date | string | null) => (value ? new Date(value) : undefined);
 const estadoToDb = (estado?: EstadoNino) => {
   if (estado === undefined) return undefined;
-  if (estado === 'inhabilitado' || estado === false) return false;
-  return true; // registrado, validado, egresado map a true por compatibilidad actual (bit)
+  if (estado === 'inhabilitado') return false;
+  return true; // registrado -> true
 };
-const estadoToDomain = (estadoBit: boolean): EstadoNino => (estadoBit ? 'validado' : 'inhabilitado');
+const estadoToDomain = (estadoBit: boolean): EstadoNino => (estadoBit ? 'registrado' : 'inhabilitado');
 
 @Injectable()
 export class PrismaNinoRepository implements NinoRepository {
@@ -57,7 +57,15 @@ export class PrismaNinoRepository implements NinoRepository {
 
     // Nota: el filtro por prioridad se omite porque el esquema Prisma no expone dicho campo.
 
-    const records = await this.prisma.ninos.findMany({ where, orderBy: { created_at: 'desc' } });
+    const records = await this.prisma.ninos.findMany({
+      where,
+      orderBy: [
+        { organizacion_id: 'asc' },
+        { apellidos: 'asc' },
+        { nombres: 'asc' },
+        { id: 'asc' }
+      ]
+    });
     return records.map((record) => this.toDomain(record));
   }
 
@@ -147,6 +155,7 @@ export class PrismaNinoRepository implements NinoRepository {
       documento_numero: data.documento_numero,
       tipo_documento_id: data.tipoDocumentoId ?? null,
       nacionalidad_id: data.nacionalidadId ?? null,
+      etnia_id: data.etniaId ?? null,
       persona_registro_id: data.personaRegistroId ?? null,
       fecha_nacimiento: data.fecha_nacimiento ?? null,
       sexo: data.sexo ?? null,
@@ -154,6 +163,7 @@ export class PrismaNinoRepository implements NinoRepository {
       periodo_id: data.periodoId,
       edad: data.edad ?? null,
       tiene_discapacidad: data.tiene_discapacidad,
+      tiene_RSH: data.tiene_RSH,
       fecha_ingreso: data.fecha_ingreso ?? null,
       fecha_retiro: data.fecha_retiro ?? null,
       estado: estadoToDb(data.estado) ?? true
@@ -168,6 +178,7 @@ export class PrismaNinoRepository implements NinoRepository {
     if (data.documento_numero !== undefined) payload.documento_numero = data.documento_numero;
     if (data.tipoDocumentoId !== undefined) payload.tipo_documento_id = data.tipoDocumentoId ?? null;
     if (data.nacionalidadId !== undefined) payload.nacionalidad_id = data.nacionalidadId ?? null;
+    if (data.etniaId !== undefined) payload.etnia_id = data.etniaId ?? null;
     if (data.personaRegistroId !== undefined) payload.persona_registro_id = data.personaRegistroId ?? null;
     if (data.fecha_nacimiento !== undefined) payload.fecha_nacimiento = data.fecha_nacimiento ?? null;
     if (data.sexo !== undefined) payload.sexo = data.sexo ?? null;
@@ -175,6 +186,7 @@ export class PrismaNinoRepository implements NinoRepository {
     if (data.periodoId !== undefined) payload.periodo_id = data.periodoId;
     if (data.edad !== undefined) payload.edad = data.edad ?? null;
     if (data.tiene_discapacidad !== undefined) payload.tiene_discapacidad = data.tiene_discapacidad;
+    if (data.tiene_RSH !== undefined) payload.tiene_RSH = data.tiene_RSH;
     if (data.fecha_ingreso !== undefined) payload.fecha_ingreso = data.fecha_ingreso ?? null;
     if (data.fecha_retiro !== undefined) payload.fecha_retiro = data.fecha_retiro ?? null;
     if (data.estado !== undefined) payload.estado = estadoToDb(data.estado);
@@ -190,6 +202,7 @@ export class PrismaNinoRepository implements NinoRepository {
       documento_numero: entity.documento_numero,
       tipoDocumentoId: entity.tipo_documento_id ?? undefined,
       nacionalidadId: entity.nacionalidad_id ?? undefined,
+      etniaId: entity.etnia_id ?? undefined,
       personaRegistroId: entity.persona_registro_id ?? undefined,
       fecha_nacimiento: toDate(entity.fecha_nacimiento),
       sexo: entity.sexo ?? undefined,
@@ -197,6 +210,7 @@ export class PrismaNinoRepository implements NinoRepository {
       periodoId: Number(entity.periodo_id),
       edad: entity.edad ?? undefined,
       tiene_discapacidad: Boolean(entity.tiene_discapacidad),
+      tiene_RSH: Boolean(entity.tiene_RSH),
       fecha_ingreso: toDate(entity.fecha_ingreso),
       fecha_retiro: toDate(entity.fecha_retiro),
       estado: estadoToDomain(Boolean(entity.estado)),

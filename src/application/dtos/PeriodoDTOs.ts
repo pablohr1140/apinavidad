@@ -12,8 +12,7 @@ export const periodoBaseSchema = z.object({
   fecha_inicio: z.coerce.date().optional().nullable(),
   fecha_fin: z.coerce.date().optional().nullable(),
   estado_periodo: z.enum(['borrador', 'planificado', 'abierto', 'cerrado']).default('borrador'),
-  es_activo: z.boolean().default(false),
-  descripcion: z.string().optional().nullable()
+  es_activo: z.boolean().default(false)
 });
 
 export const createPeriodoSchema = periodoBaseSchema;

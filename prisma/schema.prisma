@@ -51,6 +51,7 @@ model etnias {
   activo      Boolean  @default(true, map: "DF_etnias_activo")
   created_at  DateTime @default(dbgenerated("sysdatetime()"), map: "DF_etnias_created_at")
   updated_at  DateTime @default(dbgenerated("sysdatetime()"), map: "DF_etnias_updated_at")
+  ninos       ninos[]
 }
 
 model logs {
@@ -96,6 +97,7 @@ model ninos {
   documento_numero   String              @db.NVarChar(50)
   tipo_documento_id  Int?
   nacionalidad_id    Int?
+  etnia_id           Int?
   persona_registro_id Int?
   fecha_nacimiento   DateTime?           @db.Date
   sexo               String?             @db.NVarChar(1)
@@ -104,6 +106,7 @@ model ninos {
   es_prioritario     Boolean             @default(false)
   edad               Int?                @db.TinyInt
   tiene_discapacidad Boolean             @default(false, map: "DF_ninos_tiene_discapacidad")
+  tiene_RSH          Boolean             @default(false, map: "DF_ninos_tiene_RSH") @db.Bit
   fecha_ingreso      DateTime?           @db.Date
   fecha_retiro       DateTime?           @db.Date
   estado             Boolean             @default(true, map: "DF_ninos_estado_bit") @db.Bit
@@ -114,6 +117,7 @@ model ninos {
   periodos           periodos            @relation(fields: [periodo_id], references: [id], onUpdate: NoAction, map: "FK_ninos_periodos")
   tipo_documentos    tipo_documentos?    @relation(fields: [tipo_documento_id], references: [id], onUpdate: NoAction, map: "FK_ninos_tipo_documentos")
   nacionalidades     nacionalidades?     @relation(fields: [nacionalidad_id], references: [id], onUpdate: NoAction, map: "FK_ninos_nacionalidades")
+  etnias             etnias?             @relation(fields: [etnia_id], references: [id], onUpdate: NoAction, map: "FK_ninos_etnias")
   personas           personas?           @relation("ninos_persona_registro_idTopersonas", fields: [persona_registro_id], references: [id], onUpdate: NoAction, map: "FK_ninos_personas_registro")
 
   @@index([estado, periodo_id], map: "IX_ninos_estado_periodo")
@@ -158,13 +162,12 @@ model organizacion_persona {
 model organizaciones {
   id                   BigInt                 @id(map: "PK_organizaciones") @default(autoincrement())
   nombre               String                 @unique(map: "UQ_organizaciones_nombre") @db.NVarChar(250)
-  sigla                String?                @db.NVarChar(50)
-  rut                  String?                @db.NVarChar(12)
   tipo                 String                 @default("otro", map: "DF_organizaciones_tipo") @db.NVarChar(100)
   direccion            String?                @db.NVarChar(300)
   telefono             String?                @db.NVarChar(20)
   email                String?                @db.NVarChar(320)
   providencia_id       Int?
+  sector_id            Int?
   estado               String                 @default("borrador", map: "DF_organizaciones_estado") @db.NVarChar(50)
   created_at           DateTime               @default(dbgenerated("sysdatetime()"), map: "DF_organizaciones_created_at")
   updated_at           DateTime               @default(dbgenerated("sysdatetime()"), map: "DF_organizaciones_updated_at")
@@ -172,6 +175,7 @@ model organizaciones {
   organizacion_periodo organizacion_periodo[]
   organizacion_persona organizacion_persona[]
   providencias         providencias?          @relation(fields: [providencia_id], references: [id], onUpdate: NoAction, map: "FK_organizaciones_providencias")
+  sectores             sectores?              @relation(fields: [sector_id], references: [id], onUpdate: NoAction, map: "FK_organizaciones_sectores")
 
   @@index([estado], map: "IX_organizaciones_estado")
 }
@@ -183,7 +187,6 @@ model periodos {
   fecha_fin            DateTime?              @db.Date
   estado_periodo       String                 @default("borrador", map: "DF_periodos_estado_periodo") @db.NVarChar(50)
   es_activo            Boolean                @default(false, map: "DF_periodos_es_activo")
-  descripcion          String?                @db.NVarChar(Max)
   created_at           DateTime               @default(dbgenerated("sysdatetime()"), map: "DF_periodos_created_at")
   updated_at           DateTime               @default(dbgenerated("sysdatetime()"), map: "DF_periodos_updated_at")
   ninos                ninos[]
@@ -233,15 +236,28 @@ model personas {
 model providencias {
   id             Int              @id(map: "PK_providencias") @default(autoincrement())
   nombre         String           @unique(map: "UQ_providencias_nombre") @db.NVarChar(255)
-  codigo         String?          @db.NVarChar(10)
-  region         String?          @db.NVarChar(150)
-  comuna         String?          @db.NVarChar(150)
-  descripcion    String?          @db.NVarChar(Max)
+  codigo         String?          @unique(map: "UQ_providencias_codigo") @db.NVarChar(10)
   activo         Boolean          @default(true, map: "DF_providencias_activo")
   created_at     DateTime         @default(dbgenerated("sysdatetime()"), map: "DF_providencias_created_at")
   updated_at     DateTime         @default(dbgenerated("sysdatetime()"), map: "DF_providencias_updated_at")
   organizaciones organizaciones[]
   personas       personas[]
+}
+
+model sectores {
+  id           Int        @id(map: "PK_sectores") @default(autoincrement())
+  nombre       String     @db.NVarChar(200)
+  estado       Boolean    @default(true, map: "DF_sectores_estado")
+  created_at   DateTime   @default(dbgenerated("sysdatetime()"), map: "DF_sectores_created_at")
+  updated_at   DateTime   @default(dbgenerated("sysdatetime()"), map: "DF_sectores_updated_at")
+  organizaciones organizaciones[]
+}
+
+model galerias {
+  id         Int      @id(map: "PK_galerias") @default(autoincrement())
+  url        String   @db.NVarChar(500)
+  created_at DateTime @default(dbgenerated("sysdatetime()"), map: "DF_galerias_created_at")
+  updated_at DateTime @default(dbgenerated("sysdatetime()"), map: "DF_galerias_updated_at")
 }
 
 model role_permissions {

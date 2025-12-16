@@ -21,17 +21,15 @@
  */
 import ExcelJS from 'exceljs';
 import PdfPrinter from 'pdfmake';
-import { vfs as pdfmakeVfs } from 'pdfmake/build/vfs_fonts';
 import type { TableCell, TDocumentDefinitions } from 'pdfmake/interfaces';
 
-// Fuentes mínimas para pdfmake; en servidores sin fuentes, Roboto debe proveerse.
+// Usa las fuentes estándar de PDFKit para evitar depender del filesystem.
 const defaultFonts = {
-  // pdfmake usa nombres lógicos; los archivos ttf viven dentro del vfs que cargamos abajo.
   Roboto: {
-    normal: 'Roboto-Regular.ttf',
-    bold: 'Roboto-Medium.ttf',
-    italics: 'Roboto-Italic.ttf',
-    bolditalics: 'Roboto-Italic.ttf'
+    normal: 'Helvetica',
+    bold: 'Helvetica-Bold',
+    italics: 'Helvetica-Oblique',
+    bolditalics: 'Helvetica-BoldOblique'
   }
 };
 
@@ -48,6 +46,7 @@ export class ReportingService {
 
     const docDefinition: TDocumentDefinitions = {
       info: { title },
+      pageOrientation: 'landscape',
       header: { text: title, alignment: 'center', margin: [0, 10, 0, 10] },
       footer: (currentPage, pageCount) => ({ text: `${currentPage} / ${pageCount}`, alignment: 'right', margin: [0, 10, 20, 0] }),
       content: [
@@ -68,8 +67,6 @@ export class ReportingService {
     };
 
     const printer = new PdfPrinter(defaultFonts as any);
-    // Carga el vfs embebido de pdfmake para disponer de las fuentes Roboto sin depender del filesystem.
-    (printer as any).vfs = pdfmakeVfs;
     const pdfDoc = printer.createPdfKitDocument(docDefinition);
 
     const chunks: Buffer[] = [];

@@ -1,4 +1,10 @@
 /**
+ * # main
+ * Propósito: Archivo main
+ * Pertenece a: General
+ * Interacciones: N/A
+ */
+/**
  * # main.ts
  *
  * Entrada de arranque de la aplicación NestJS.

@@ -10,6 +10,7 @@ import { Module } from '@nestjs/common';
 import { OrganizacionesController } from './organizaciones.controller';
 
 import { OrganizacionRepository } from '@/application/repositories/OrganizacionRepository';
+import { CreateOrganizacionConProvidenciaUseCase } from '@/application/use-cases/organizaciones/CreateOrganizacionConProvidenciaUseCase';
 import { CreateOrganizacionUseCase } from '@/application/use-cases/organizaciones/CreateOrganizacionUseCase';
 import { DeleteOrganizacionUseCase } from '@/application/use-cases/organizaciones/DeleteOrganizacionUseCase';
 import { GetOrganizacionUseCase } from '@/application/use-cases/organizaciones/GetOrganizacionUseCase';
@@ -24,6 +25,7 @@ import { LogsModule } from '@/modules/logs/logs.module';
   providers: [
     ListOrganizacionesUseCase,
     CreateOrganizacionUseCase,
+    CreateOrganizacionConProvidenciaUseCase,
     GetOrganizacionUseCase,
     UpdateOrganizacionUseCase,
     DeleteOrganizacionUseCase,

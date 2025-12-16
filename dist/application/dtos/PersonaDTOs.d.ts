@@ -1,10 +1,15 @@
+/**
+ * # Persona DTOs
+ * Propósito: DTOs para Persona DTOs
+ * Pertenece a: Aplicación / DTOs
+ * Interacciones: Validación y transporte de datos
+ */
 import { z } from 'zod';
 export declare const personaBaseSchema: z.ZodObject<{
     nombres: z.ZodString;
     apellidos: z.ZodString;
     run: z.ZodNullable<z.ZodOptional<z.ZodString>>;
     dv: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-    documento: z.ZodNullable<z.ZodOptional<z.ZodString>>;
     fecha_nacimiento: z.ZodNullable<z.ZodOptional<z.ZodDate>>;
     sexo: z.ZodNullable<z.ZodOptional<z.ZodEnum<["M", "F", "X"]>>>;
     telefono: z.ZodNullable<z.ZodOptional<z.ZodString>>;
@@ -24,15 +29,14 @@ export declare const personaBaseSchema: z.ZodObject<{
     email?: string | null | undefined;
     password?: string | null | undefined;
     run?: string | null | undefined;
-    documento?: string | null | undefined;
     dv?: string | null | undefined;
     fecha_nacimiento?: Date | null | undefined;
     sexo?: "M" | "F" | "X" | null | undefined;
     telefono?: string | null | undefined;
     email_verified_at?: Date | null | undefined;
     direccion?: string | null | undefined;
-    rememberToken?: string | null | undefined;
     providenciaId?: number | null | undefined;
+    rememberToken?: string | null | undefined;
 }, {
     nombres: string;
     apellidos: string;
@@ -40,15 +44,14 @@ export declare const personaBaseSchema: z.ZodObject<{
     email?: string | null | undefined;
     password?: string | null | undefined;
     run?: string | null | undefined;
-    documento?: string | null | undefined;
     dv?: string | null | undefined;
     fecha_nacimiento?: Date | null | undefined;
     sexo?: "M" | "F" | "X" | null | undefined;
     telefono?: string | null | undefined;
     email_verified_at?: Date | null | undefined;
     direccion?: string | null | undefined;
-    rememberToken?: string | null | undefined;
     providenciaId?: number | null | undefined;
+    rememberToken?: string | null | undefined;
     esRepresentante?: boolean | undefined;
 }>;
 export declare const createPersonaSchema: z.ZodObject<{
@@ -56,7 +59,6 @@ export declare const createPersonaSchema: z.ZodObject<{
     apellidos: z.ZodString;
     run: z.ZodNullable<z.ZodOptional<z.ZodString>>;
     dv: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-    documento: z.ZodNullable<z.ZodOptional<z.ZodString>>;
     fecha_nacimiento: z.ZodNullable<z.ZodOptional<z.ZodDate>>;
     sexo: z.ZodNullable<z.ZodOptional<z.ZodEnum<["M", "F", "X"]>>>;
     telefono: z.ZodNullable<z.ZodOptional<z.ZodString>>;
@@ -76,15 +78,14 @@ export declare const createPersonaSchema: z.ZodObject<{
     email?: string | null | undefined;
     password?: string | null | undefined;
     run?: string | null | undefined;
-    documento?: string | null | undefined;
     dv?: string | null | undefined;
     fecha_nacimiento?: Date | null | undefined;
     sexo?: "M" | "F" | "X" | null | undefined;
     telefono?: string | null | undefined;
     email_verified_at?: Date | null | undefined;
     direccion?: string | null | undefined;
-    rememberToken?: string | null | undefined;
     providenciaId?: number | null | undefined;
+    rememberToken?: string | null | undefined;
 }, {
     nombres: string;
     apellidos: string;
@@ -92,15 +93,14 @@ export declare const createPersonaSchema: z.ZodObject<{
     email?: string | null | undefined;
     password?: string | null | undefined;
     run?: string | null | undefined;
-    documento?: string | null | undefined;
     dv?: string | null | undefined;
     fecha_nacimiento?: Date | null | undefined;
     sexo?: "M" | "F" | "X" | null | undefined;
     telefono?: string | null | undefined;
     email_verified_at?: Date | null | undefined;
     direccion?: string | null | undefined;
-    rememberToken?: string | null | undefined;
     providenciaId?: number | null | undefined;
+    rememberToken?: string | null | undefined;
     esRepresentante?: boolean | undefined;
 }>;
 export declare const updatePersonaSchema: z.ZodObject<{
@@ -108,7 +108,6 @@ export declare const updatePersonaSchema: z.ZodObject<{
     apellidos: z.ZodOptional<z.ZodString>;
     run: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
     dv: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-    documento: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
     fecha_nacimiento: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodDate>>>;
     sexo: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodEnum<["M", "F", "X"]>>>>;
     telefono: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
@@ -127,15 +126,14 @@ export declare const updatePersonaSchema: z.ZodObject<{
     nombres?: string | undefined;
     apellidos?: string | undefined;
     run?: string | null | undefined;
-    documento?: string | null | undefined;
     dv?: string | null | undefined;
     fecha_nacimiento?: Date | null | undefined;
     sexo?: "M" | "F" | "X" | null | undefined;
     telefono?: string | null | undefined;
     email_verified_at?: Date | null | undefined;
     direccion?: string | null | undefined;
-    rememberToken?: string | null | undefined;
     providenciaId?: number | null | undefined;
+    rememberToken?: string | null | undefined;
     esRepresentante?: boolean | undefined;
 }, {
     roles?: ("SUPERADMIN" | "ADMIN" | "DIDECO" | "REPRESENTANTE" | "PROVIDENCIA")[] | undefined;
@@ -144,15 +142,14 @@ export declare const updatePersonaSchema: z.ZodObject<{
     nombres?: string | undefined;
     apellidos?: string | undefined;
     run?: string | null | undefined;
-    documento?: string | null | undefined;
     dv?: string | null | undefined;
     fecha_nacimiento?: Date | null | undefined;
     sexo?: "M" | "F" | "X" | null | undefined;
     telefono?: string | null | undefined;
     email_verified_at?: Date | null | undefined;
     direccion?: string | null | undefined;
-    rememberToken?: string | null | undefined;
     providenciaId?: number | null | undefined;
+    rememberToken?: string | null | undefined;
     esRepresentante?: boolean | undefined;
 }>;
 export type CreatePersonaDTO = z.infer<typeof createPersonaSchema>;

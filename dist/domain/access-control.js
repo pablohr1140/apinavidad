@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # access control
+ * Propósito: Dominio access control
+ * Pertenece a: Dominio
+ * Interacciones: Entidades, reglas de negocio
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getRoleDefinition = exports.ROLE_DEFINITIONS = exports.ALL_PERMISSION_CODES = exports.PERMISSION_ACTIONS = exports.PERMISSION_RESOURCES = exports.ROLE_KEYS = void 0;
 exports.ROLE_KEYS = ['SUPERADMIN', 'ADMIN', 'DIDECO', 'REPRESENTANTE', 'PROVIDENCIA'];

@@ -28,7 +28,7 @@ type PersonaClient = Pick<PrismaService, 'personas'>;
 
 const createPrismaStub = () => {
   const personas = {
-    findUnique: vi.fn()
+    findFirst: vi.fn()
   };
 
   const service = { personas } as unknown as PersonaClient;
@@ -46,8 +46,8 @@ describe('PrismaUserRepository', () => {
   });
 
   it('retorna null si no encuentra persona o falta password/email', async () => {
-    prismaStub.personas.findUnique.mockResolvedValueOnce(null);
-    prismaStub.personas.findUnique.mockResolvedValueOnce({ ...basePersona, password: null });
+    prismaStub.personas.findFirst.mockResolvedValueOnce(null);
+    prismaStub.personas.findFirst.mockResolvedValueOnce({ ...basePersona, password: null });
 
     const missing = await repository.findByEmail('missing@test.cl');
     const withoutPassword = await repository.findByEmail(basePersona.email);
@@ -57,11 +57,11 @@ describe('PrismaUserRepository', () => {
   });
 
   it('mapea la persona con rol a UserRecord', async () => {
-    prismaStub.personas.findUnique.mockResolvedValueOnce(basePersona);
+    prismaStub.personas.findFirst.mockResolvedValueOnce(basePersona);
 
     const user = await repository.findByEmail(basePersona.email);
 
-    expect(prismaStub.personas.findUnique).toHaveBeenCalledWith({
+    expect(prismaStub.personas.findFirst).toHaveBeenCalledWith({
       where: { email: basePersona.email },
       include: { roles: true }
     });

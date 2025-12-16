@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # Update Persona Use Case
+ * Propósito: Caso de uso Update Persona Use Case
+ * Pertenece a: Aplicación / Caso de uso
+ * Interacciones: Repositorios, servicios de dominio
+ */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -18,10 +24,10 @@ exports.UpdatePersonaUseCase = void 0;
  * Interacciones: `PersonaRepository`, `updatePersonaSchema`, `LogActivityUseCase`, `AppError`.
  */
 const common_1 = require("@nestjs/common");
-const PersonaRepository_1 = require("../../repositories/PersonaRepository");
 const PersonaDTOs_1 = require("../../dtos/PersonaDTOs");
-const AppError_1 = require("../../../shared/errors/AppError");
+const PersonaRepository_1 = require("../../repositories/PersonaRepository");
 const LogActivityUseCase_1 = require("../logs/LogActivityUseCase");
+const AppError_1 = require("../../../shared/errors/AppError");
 let UpdatePersonaUseCase = class UpdatePersonaUseCase {
     personaRepository;
     logActivityUseCase;

@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # tokens
+ * Propósito: Contrato de repositorio tokens
+ * Pertenece a: Aplicación / Repositorio contrato
+ * Interacciones: Capa de infraestructura que implementa el contrato
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.REPOSITORY_TOKENS = void 0;
 /**

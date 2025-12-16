@@ -1,3 +1,9 @@
+/**
+ * # Create Persona Use Case
+ * Propósito: Caso de uso Create Persona Use Case
+ * Pertenece a: Aplicación / Caso de uso
+ * Interacciones: Repositorios, servicios de dominio
+ */
 import { PersonaRepository } from '@/application/repositories/PersonaRepository';
 import { LogActivityUseCase } from '@/application/use-cases/logs/LogActivityUseCase';
 export declare class CreatePersonaUseCase {

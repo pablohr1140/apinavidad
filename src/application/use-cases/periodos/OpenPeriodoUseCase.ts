@@ -34,6 +34,16 @@ export class OpenPeriodoUseCase {
     if (!periodo) {
       throw new AppError('Periodo no encontrado', 404);
     }
+
+    const overlap = await this.periodoRepository.findOverlapping({
+      start: periodo.fecha_inicio ?? null,
+      end: periodo.fecha_fin ?? null,
+      excludeId: id
+    });
+    if (overlap) {
+      throw new AppError('Ya existe otro periodo que se sobrepone en fechas', 409);
+    }
+
     const opened = await this.periodoRepository.open(id);
 
     await this.logActivityUseCase.execute({

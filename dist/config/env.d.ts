@@ -1,4 +1,10 @@
 /**
+ * # env
+ * Propósito: Config env
+ * Pertenece a: Configuración
+ * Interacciones: Variables de entorno, bootstrap
+ */
+/**
  * # config/env.ts
  *
  * Propósito: cargar variables de entorno y validarlas con Zod para exponer configuración tipada.

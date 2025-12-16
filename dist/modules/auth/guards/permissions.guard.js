@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # permissions.guard
+ * Propósito: Guardia de acceso permissions.guard
+ * Pertenece a: Auth/Route Guard (Nest)
+ * Interacciones: Nest ExecutionContext, servicios de auth
+ */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);

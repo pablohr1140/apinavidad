@@ -127,7 +127,7 @@ describe('API smoke', () => {
     ]);
     listNinosUseCaseMock.execute.mockResolvedValue([]);
     getNinoUseCaseMock.execute = vi.fn().mockResolvedValue({ id: 99, nombres: 'Mock' });
-    updateNinoUseCaseMock.execute = vi.fn().mockResolvedValue({ id: 99, estado: 'validado' });
+    updateNinoUseCaseMock.execute = vi.fn().mockResolvedValue({ id: 99, estado: 'registrado' });
     inhabilitarNinoUseCaseMock.execute = vi.fn().mockResolvedValue({ id: 99, estado: 'inhabilitado' });
     restaurarNinoUseCaseMock.execute = vi.fn().mockResolvedValue({ id: 99, estado: 'registrado' });
     autoInhabilitarNinosUseCaseMock.execute = vi.fn().mockResolvedValue({ afectados: 3 });
@@ -209,10 +209,10 @@ describe('API smoke', () => {
     ]);
 
     const response = await request(app.getHttpServer())
-      .get('/ninos?periodoId=2&organizacionId=abc&estado=validado')
+      .get('/ninos?periodoId=2&organizacionId=abc&estado=registrado')
       .expect(200);
 
-    expect(listNinosUseCaseMock.execute).toHaveBeenCalledWith({ periodoId: 2, organizacionId: undefined, estado: 'validado' });
+    expect(listNinosUseCaseMock.execute).toHaveBeenCalledWith({ periodoId: 2, organizacionId: undefined, estado: 'registrado' });
     expect(response.body).toEqual([
       expect.objectContaining({ id: 10, nombres: 'Mateo' })
     ]);
@@ -252,7 +252,7 @@ describe('API smoke', () => {
   });
 
   it('actualiza un nino', async () => {
-    const body = { estado: 'validado' };
+    const body = { estado: 'registrado' };
     updateNinoUseCaseMock.execute = vi.fn().mockResolvedValue({ id: 9, ...body });
 
     const response = await request(app.getHttpServer()).put('/ninos/9').send(body).expect(200);
@@ -418,12 +418,12 @@ describe('API smoke', () => {
     ]);
 
     const response = await request(app.getHttpServer())
-      .get('/reportes/ninos/listado?periodoId=4&organizacionId=invalid&estado=validado')
+      .get('/reportes/ninos/listado?periodoId=4&organizacionId=invalid&estado=registrado')
       .expect(200);
 
     vi.useRealTimers();
 
-    expect(listNinosForReportUseCaseMock.execute).toHaveBeenCalledWith({ periodoId: 4, organizacionId: undefined, estado: 'validado' });
+    expect(listNinosForReportUseCaseMock.execute).toHaveBeenCalledWith({ periodoId: 4, organizacionId: undefined, estado: 'registrado' });
     expect(response.body.total).toBe(1);
     expect(response.body.data[0]).toEqual(
       expect.objectContaining({

@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # auth.controller
+ * Propósito: Endpoints HTTP de auth.controller
+ * Pertenece a: HTTP Controller (Nest)
+ * Interacciones: Casos de uso, pipes/decorators Nest
+ */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -21,12 +27,12 @@ exports.AuthController = void 0;
  * Interacciones: `LoginUseCase`, `RefreshTokenUseCase`, cookies de auth.
  */
 const common_1 = require("@nestjs/common");
+const AuthDTOs_1 = require("../../application/dtos/AuthDTOs");
 const LoginUseCase_1 = require("../../application/use-cases/auth/LoginUseCase");
 const RefreshTokenUseCase_1 = require("../../application/use-cases/auth/RefreshTokenUseCase");
-const AuthDTOs_1 = require("../../application/dtos/AuthDTOs");
+const auth_1 = require("../../config/auth");
 const public_decorator_1 = require("./decorators/public.decorator");
 const zod_validation_pipe_1 = require("../shared/pipes/zod-validation.pipe");
-const auth_1 = require("../../config/auth");
 let AuthController = class AuthController {
     loginUseCase;
     refreshTokenUseCase;

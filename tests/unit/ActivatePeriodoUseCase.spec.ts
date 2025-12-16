@@ -13,11 +13,13 @@ import { AppError } from '@/shared/errors/AppError';
 
 interface RepoMock extends PeriodoRepository {
   findById: ReturnType<typeof vi.fn>;
+  findOverlapping: ReturnType<typeof vi.fn>;
   activate: ReturnType<typeof vi.fn>;
 }
 
 const makeRepository = (): RepoMock => ({
   findById: vi.fn(),
+  findOverlapping: vi.fn(),
   activate: vi.fn()
 }) as unknown as RepoMock;
 
@@ -34,6 +36,7 @@ describe('ActivatePeriodoUseCase', () => {
   it('activa el periodo cuando existe', async () => {
     const repository = makeRepository();
     repository.findById.mockResolvedValue({ id: 1 } as any);
+    repository.findOverlapping.mockResolvedValue(null);
     repository.activate.mockResolvedValue({ id: 1, es_activo: true } as any);
     const useCase = new ActivatePeriodoUseCase(repository);
 

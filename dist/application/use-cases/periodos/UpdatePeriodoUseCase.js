@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # Update Periodo Use Case
+ * Propósito: Caso de uso Update Periodo Use Case
+ * Pertenece a: Aplicación / Caso de uso
+ * Interacciones: Repositorios, servicios de dominio
+ */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -18,10 +24,10 @@ exports.UpdatePeriodoUseCase = void 0;
  * Interacciones: `PeriodoRepository`, `updatePeriodoSchema`, `LogActivityUseCase`, `AppError`.
  */
 const common_1 = require("@nestjs/common");
-const PeriodoRepository_1 = require("../../repositories/PeriodoRepository");
 const PeriodoDTOs_1 = require("../../dtos/PeriodoDTOs");
-const AppError_1 = require("../../../shared/errors/AppError");
+const PeriodoRepository_1 = require("../../repositories/PeriodoRepository");
 const LogActivityUseCase_1 = require("../logs/LogActivityUseCase");
+const AppError_1 = require("../../../shared/errors/AppError");
 let UpdatePeriodoUseCase = class UpdatePeriodoUseCase {
     periodoRepository;
     logActivityUseCase;
@@ -40,7 +46,21 @@ let UpdatePeriodoUseCase = class UpdatePeriodoUseCase {
             throw new AppError_1.AppError('Periodo no encontrado', 404);
         }
         const payload = PeriodoDTOs_1.updatePeriodoSchema.parse(data);
-        const updated = await this.periodoRepository.update(id, payload);
+        const normalized = normalizeEstadoActivo(payload.estado_periodo ?? periodo.estado_periodo, payload.es_activo ?? periodo.es_activo);
+        const mergedPayload = {
+            ...payload,
+            estado_periodo: normalized.estado_periodo,
+            es_activo: normalized.es_activo
+        };
+        const overlap = await this.periodoRepository.findOverlapping({
+            start: mergedPayload.fecha_inicio ?? periodo.fecha_inicio ?? null,
+            end: mergedPayload.fecha_fin ?? periodo.fecha_fin ?? null,
+            excludeId: id
+        });
+        if (overlap) {
+            throw new AppError_1.AppError('Ya existe un periodo que se sobrepone en fechas', 409);
+        }
+        const updated = await this.periodoRepository.update(id, mergedPayload);
         await this.logActivityUseCase.execute({
             accion: 'periodo.actualizado',
             mensaje: 'Se actualizó un periodo',
@@ -57,3 +77,18 @@ exports.UpdatePeriodoUseCase = UpdatePeriodoUseCase = __decorate([
     __metadata("design:paramtypes", [PeriodoRepository_1.PeriodoRepository,
         LogActivityUseCase_1.LogActivityUseCase])
 ], UpdatePeriodoUseCase);
+function normalizeEstadoActivo(estado, activo) {
+    let nextEstado = estado;
+    let nextActivo = activo;
+    if (nextEstado === 'abierto') {
+        nextActivo = true;
+    }
+    else if (nextActivo) {
+        nextEstado = 'abierto';
+        nextActivo = true;
+    }
+    else {
+        nextActivo = false;
+    }
+    return { estado_periodo: nextEstado, es_activo: nextActivo };
+}

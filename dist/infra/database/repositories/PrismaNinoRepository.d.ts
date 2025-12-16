@@ -1,5 +1,5 @@
 import { NinoRepository } from '@/application/repositories/NinoRepository';
-import { NinoProps } from '@/domain/entities';
+import { EstadoNino, NinoProps } from '@/domain/entities';
 import { PrismaService } from '@/infra/database/prisma/prisma.service';
 export declare class PrismaNinoRepository implements NinoRepository {
     private readonly prisma;
@@ -7,7 +7,7 @@ export declare class PrismaNinoRepository implements NinoRepository {
     findMany(params?: {
         periodoId?: number;
         organizacionId?: number;
-        estado?: string;
+        estado?: EstadoNino;
         edadMin?: number;
         edadMax?: number;
         prioridad?: number;

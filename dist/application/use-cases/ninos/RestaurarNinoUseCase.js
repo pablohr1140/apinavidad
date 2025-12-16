@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # Restaurar Nino Use Case
+ * Propósito: Caso de uso Restaurar Nino Use Case
+ * Pertenece a: Aplicación / Caso de uso
+ * Interacciones: Repositorios, servicios de dominio
+ */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -19,8 +25,8 @@ exports.RestaurarNinoUseCase = void 0;
  */
 const common_1 = require("@nestjs/common");
 const NinoRepository_1 = require("../../repositories/NinoRepository");
-const AppError_1 = require("../../../shared/errors/AppError");
 const LogActivityUseCase_1 = require("../logs/LogActivityUseCase");
+const AppError_1 = require("../../../shared/errors/AppError");
 let RestaurarNinoUseCase = class RestaurarNinoUseCase {
     ninoRepository;
     logActivityUseCase;

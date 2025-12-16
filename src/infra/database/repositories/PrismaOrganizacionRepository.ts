@@ -95,13 +95,12 @@ export class PrismaOrganizacionRepository implements OrganizacionRepository {
       // Prisma returns SQL Server bigint columns as JS BigInt; normalize to number for JSON serialization
       id: Number(organizacion.id),
       nombre: organizacion.nombre,
-      sigla: organizacion.sigla ?? undefined,
-      rut: organizacion.rut ?? undefined,
       tipo: organizacion.tipo,
       direccion: organizacion.direccion ?? undefined,
       telefono: organizacion.telefono ?? undefined,
       email: organizacion.email ?? undefined,
       providenciaId: organizacion.providencia_id ?? undefined,
+      sectorId: organizacion.sector_id ?? undefined,
       estado: organizacion.estado as EstadoOrganizacion,
       createdAt: organizacion.created_at,
       updatedAt: organizacion.updated_at
@@ -111,13 +110,12 @@ export class PrismaOrganizacionRepository implements OrganizacionRepository {
   private mapCreateData(data: CreateInput): Prisma.organizacionesUncheckedCreateInput {
     return {
       nombre: data.nombre,
-      sigla: data.sigla ?? null,
-      rut: data.rut ?? null,
       tipo: data.tipo,
       direccion: data.direccion ?? null,
       telefono: data.telefono ?? null,
       email: data.email ?? null,
       providencia_id: data.providenciaId ?? null,
+      sector_id: data.sectorId ?? null,
       estado: data.estado
     };
   }
@@ -126,13 +124,12 @@ export class PrismaOrganizacionRepository implements OrganizacionRepository {
     const payload: Prisma.organizacionesUncheckedUpdateInput = {};
 
     if (data.nombre !== undefined) payload.nombre = data.nombre;
-    if (data.sigla !== undefined) payload.sigla = data.sigla;
-    if (data.rut !== undefined) payload.rut = data.rut;
     if (data.tipo !== undefined) payload.tipo = data.tipo;
     if (data.direccion !== undefined) payload.direccion = data.direccion;
     if (data.telefono !== undefined) payload.telefono = data.telefono;
     if (data.email !== undefined) payload.email = data.email;
     if (data.providenciaId !== undefined) payload.providencia_id = data.providenciaId;
+    if (data.sectorId !== undefined) payload.sector_id = data.sectorId;
     if (data.estado !== undefined) payload.estado = data.estado;
 
     return payload;

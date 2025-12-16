@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # Prisma Periodo Repository
+ * Propósito: Repositorio Prisma Prisma Periodo Repository
+ * Pertenece a: Infraestructura / Repositorio Prisma
+ * Interacciones: PrismaService, entidades de dominio
+ */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -36,6 +42,18 @@ let PrismaPeriodoRepository = class PrismaPeriodoRepository {
         const periodo = await this.prisma.periodos.findUnique({ where: { id } });
         return periodo ? this.toDomain(periodo) : null;
     }
+    async findOverlapping(params) {
+        const start = params.start ?? new Date('0001-01-01');
+        const end = params.end ?? new Date('9999-12-31');
+        const overlap = await this.prisma.periodos.findFirst({
+            where: {
+                ...(params.excludeId ? { id: { not: params.excludeId } } : {}),
+                NOT: [{ fecha_inicio: { gt: end } }, { fecha_fin: { lt: start } }]
+            },
+            orderBy: { id: 'asc' }
+        });
+        return overlap ? this.toDomain(overlap) : null;
+    }
     async create(data) {
         const created = await this.prisma.periodos.create({ data: this.mapCreateData(data) });
         return this.toDomain(created);
@@ -45,7 +63,14 @@ let PrismaPeriodoRepository = class PrismaPeriodoRepository {
         return this.toDomain(updated);
     }
     async open(id) {
-        const updated = await this.prisma.periodos.update({ where: { id }, data: { estado_periodo: 'abierto' } });
+        const updated = await this.prisma.$transaction(async (tx) => {
+            // Garantiza un único periodo abierto: cierra y desactiva los demás antes de abrir este
+            await tx.periodos.updateMany({
+                where: { id: { not: id }, estado_periodo: 'abierto' },
+                data: { estado_periodo: 'cerrado', es_activo: false }
+            });
+            return tx.periodos.update({ where: { id }, data: { estado_periodo: 'abierto', es_activo: true } });
+        });
         return this.toDomain(updated);
     }
     async close(id) {
@@ -55,7 +80,8 @@ let PrismaPeriodoRepository = class PrismaPeriodoRepository {
     /** Desactiva todos y activa el periodo dado dentro de una transacción. */
     async activate(id) {
         const periodo = await this.prisma.$transaction(async (tx) => {
-            await tx.periodos.updateMany({ data: { es_activo: false } });
+            // Desactiva y cierra cualquier otro abierto antes de activar este
+            await tx.periodos.updateMany({ data: { es_activo: false, estado_periodo: 'cerrado' }, where: { id: { not: id } } });
             return tx.periodos.update({ where: { id }, data: { es_activo: true, estado_periodo: 'abierto' } });
         });
         return this.toDomain(periodo);
@@ -66,8 +92,7 @@ let PrismaPeriodoRepository = class PrismaPeriodoRepository {
             fecha_inicio: data.fecha_inicio ?? null,
             fecha_fin: data.fecha_fin ?? null,
             estado_periodo: data.estado_periodo,
-            es_activo: data.es_activo,
-            descripcion: data.descripcion ?? null
+            es_activo: data.es_activo
         };
     }
     mapUpdateData(data) {
@@ -82,8 +107,6 @@ let PrismaPeriodoRepository = class PrismaPeriodoRepository {
             payload.estado_periodo = data.estado_periodo;
         if (data.es_activo !== undefined)
             payload.es_activo = data.es_activo;
-        if (data.descripcion !== undefined)
-            payload.descripcion = data.descripcion ?? null;
         return payload;
     }
     toDomain(entity) {
@@ -94,7 +117,6 @@ let PrismaPeriodoRepository = class PrismaPeriodoRepository {
             fecha_fin: entity.fecha_fin ? new Date(entity.fecha_fin) : undefined,
             estado_periodo: entity.estado_periodo,
             es_activo: Boolean(entity.es_activo),
-            descripcion: entity.descripcion ?? undefined,
             createdAt: entity.created_at ?? new Date(),
             updatedAt: entity.updated_at ?? new Date()
         };

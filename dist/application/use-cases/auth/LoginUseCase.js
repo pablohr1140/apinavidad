@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # Login Use Case
+ * Propósito: Caso de uso Login Use Case
+ * Pertenece a: Aplicación / Caso de uso
+ * Interacciones: Repositorios, servicios de dominio
+ */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -18,12 +24,12 @@ exports.LoginUseCase = void 0;
  * Interacciones: `UserRepository`, `HashProvider`, `TokenProvider`, `AppError`, `LogActivityUseCase`.
  */
 const common_1 = require("@nestjs/common");
-const AppError_1 = require("../../../shared/errors/AppError");
+const Auth_1 = require("../../contracts/Auth");
 const AuthDTOs_1 = require("../../dtos/AuthDTOs");
 const UserRepository_1 = require("../../repositories/UserRepository");
-const Auth_1 = require("../../contracts/Auth");
-const auth_1 = require("../../../config/auth");
 const LogActivityUseCase_1 = require("../logs/LogActivityUseCase");
+const auth_1 = require("../../../config/auth");
+const AppError_1 = require("../../../shared/errors/AppError");
 let LoginUseCase = class LoginUseCase {
     userRepository;
     hashProvider;

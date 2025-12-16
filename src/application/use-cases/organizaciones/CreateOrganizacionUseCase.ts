@@ -17,6 +17,7 @@ import { Injectable } from '@nestjs/common';
 import { createOrganizacionSchema } from '@/application/dtos/OrganizacionDTOs';
 import { OrganizacionRepository } from '@/application/repositories/OrganizacionRepository';
 import { LogActivityUseCase, noopLogActivity } from '@/application/use-cases/logs/LogActivityUseCase';
+import { AppError } from '@/shared/errors/AppError';
 
 @Injectable()
 export class CreateOrganizacionUseCase {
@@ -32,6 +33,9 @@ export class CreateOrganizacionUseCase {
    */
   execute(data: unknown) {
     const payload = createOrganizacionSchema.parse(data);
+    if (payload.tipo?.toLowerCase() === 'providencia' && (payload.providenciaId === null || payload.providenciaId === undefined)) {
+      throw new AppError('Debe enviar providenciaId cuando la organización es de tipo Providencia', 400);
+    }
     return this.organizacionRepository.create(payload as never).then((created) => {
       void this.logActivityUseCase.execute({
         accion: 'organizacion.creada',

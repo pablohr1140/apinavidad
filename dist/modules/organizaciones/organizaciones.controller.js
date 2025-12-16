@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # organizaciones.controller
+ * Propósito: Endpoints HTTP de organizaciones.controller
+ * Pertenece a: HTTP Controller (Nest)
+ * Interacciones: Casos de uso, pipes/decorators Nest
+ */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -22,22 +28,25 @@ exports.OrganizacionesController = void 0;
  */
 const common_1 = require("@nestjs/common");
 const OrganizacionDTOs_1 = require("../../application/dtos/OrganizacionDTOs");
-const ListOrganizacionesUseCase_1 = require("../../application/use-cases/organizaciones/ListOrganizacionesUseCase");
 const CreateOrganizacionUseCase_1 = require("../../application/use-cases/organizaciones/CreateOrganizacionUseCase");
-const UpdateOrganizacionUseCase_1 = require("../../application/use-cases/organizaciones/UpdateOrganizacionUseCase");
+const CreateOrganizacionConProvidenciaUseCase_1 = require("../../application/use-cases/organizaciones/CreateOrganizacionConProvidenciaUseCase");
 const DeleteOrganizacionUseCase_1 = require("../../application/use-cases/organizaciones/DeleteOrganizacionUseCase");
 const GetOrganizacionUseCase_1 = require("../../application/use-cases/organizaciones/GetOrganizacionUseCase");
-const zod_validation_pipe_1 = require("../shared/pipes/zod-validation.pipe");
+const ListOrganizacionesUseCase_1 = require("../../application/use-cases/organizaciones/ListOrganizacionesUseCase");
+const UpdateOrganizacionUseCase_1 = require("../../application/use-cases/organizaciones/UpdateOrganizacionUseCase");
 const permissions_decorator_1 = require("../auth/decorators/permissions.decorator");
+const zod_validation_pipe_1 = require("../shared/pipes/zod-validation.pipe");
 let OrganizacionesController = class OrganizacionesController {
     listOrganizacionesUseCase;
     createOrganizacionUseCase;
+    createOrganizacionConProvidenciaUseCase;
     getOrganizacionUseCase;
     updateOrganizacionUseCase;
     deleteOrganizacionUseCase;
-    constructor(listOrganizacionesUseCase, createOrganizacionUseCase, getOrganizacionUseCase, updateOrganizacionUseCase, deleteOrganizacionUseCase) {
+    constructor(listOrganizacionesUseCase, createOrganizacionUseCase, createOrganizacionConProvidenciaUseCase, getOrganizacionUseCase, updateOrganizacionUseCase, deleteOrganizacionUseCase) {
         this.listOrganizacionesUseCase = listOrganizacionesUseCase;
         this.createOrganizacionUseCase = createOrganizacionUseCase;
+        this.createOrganizacionConProvidenciaUseCase = createOrganizacionConProvidenciaUseCase;
         this.getOrganizacionUseCase = getOrganizacionUseCase;
         this.updateOrganizacionUseCase = updateOrganizacionUseCase;
         this.deleteOrganizacionUseCase = deleteOrganizacionUseCase;
@@ -49,7 +58,6 @@ let OrganizacionesController = class OrganizacionesController {
             return this.listOrganizacionesUseCase.execute({ estado: cleanEstado, tipo: cleanTipo });
         }
         catch (error) {
-            // eslint-disable-next-line no-console
             console.error('OrganizacionesController.list error', { estado: cleanEstado, tipo: cleanTipo, error });
             throw error;
         }
@@ -57,12 +65,14 @@ let OrganizacionesController = class OrganizacionesController {
     create(body) {
         return this.createOrganizacionUseCase.execute(body);
     }
+    createWithProvidencia(body) {
+        return this.createOrganizacionConProvidenciaUseCase.execute(body);
+    }
     getOne(id) {
         try {
             return this.getOrganizacionUseCase.execute(id);
         }
         catch (error) {
-            // eslint-disable-next-line no-console
             console.error('OrganizacionesController.getOne error', { id, error });
             throw error;
         }
@@ -93,6 +103,14 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], OrganizacionesController.prototype, "create", null);
 __decorate([
+    (0, permissions_decorator_1.Permissions)('organizaciones.create'),
+    (0, common_1.Post)('con-providencia'),
+    __param(0, (0, common_1.Body)(new zod_validation_pipe_1.ZodValidationPipe(OrganizacionDTOs_1.createOrganizacionConProvidenciaSchema))),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], OrganizacionesController.prototype, "createWithProvidencia", null);
+__decorate([
     (0, permissions_decorator_1.Permissions)('organizaciones.view'),
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
@@ -122,6 +140,7 @@ exports.OrganizacionesController = OrganizacionesController = __decorate([
     (0, common_1.Controller)('organizaciones'),
     __metadata("design:paramtypes", [ListOrganizacionesUseCase_1.ListOrganizacionesUseCase,
         CreateOrganizacionUseCase_1.CreateOrganizacionUseCase,
+        CreateOrganizacionConProvidenciaUseCase_1.CreateOrganizacionConProvidenciaUseCase,
         GetOrganizacionUseCase_1.GetOrganizacionUseCase,
         UpdateOrganizacionUseCase_1.UpdateOrganizacionUseCase,
         DeleteOrganizacionUseCase_1.DeleteOrganizacionUseCase])

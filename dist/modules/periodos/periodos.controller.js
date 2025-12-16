@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # periodos.controller
+ * Propósito: Endpoints HTTP de periodos.controller
+ * Pertenece a: HTTP Controller (Nest)
+ * Interacciones: Casos de uso, pipes/decorators Nest
+ */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -22,14 +28,15 @@ exports.PeriodosController = void 0;
  */
 const common_1 = require("@nestjs/common");
 const PeriodoDTOs_1 = require("../../application/dtos/PeriodoDTOs");
-const ListPeriodosUseCase_1 = require("../../application/use-cases/periodos/ListPeriodosUseCase");
-const CreatePeriodoUseCase_1 = require("../../application/use-cases/periodos/CreatePeriodoUseCase");
-const UpdatePeriodoUseCase_1 = require("../../application/use-cases/periodos/UpdatePeriodoUseCase");
-const OpenPeriodoUseCase_1 = require("../../application/use-cases/periodos/OpenPeriodoUseCase");
-const ClosePeriodoUseCase_1 = require("../../application/use-cases/periodos/ClosePeriodoUseCase");
 const ActivatePeriodoUseCase_1 = require("../../application/use-cases/periodos/ActivatePeriodoUseCase");
-const zod_validation_pipe_1 = require("../shared/pipes/zod-validation.pipe");
+const ClosePeriodoUseCase_1 = require("../../application/use-cases/periodos/ClosePeriodoUseCase");
+const CreatePeriodoUseCase_1 = require("../../application/use-cases/periodos/CreatePeriodoUseCase");
+const GetPeriodoUseCase_1 = require("../../application/use-cases/periodos/GetPeriodoUseCase");
+const ListPeriodosUseCase_1 = require("../../application/use-cases/periodos/ListPeriodosUseCase");
+const OpenPeriodoUseCase_1 = require("../../application/use-cases/periodos/OpenPeriodoUseCase");
+const UpdatePeriodoUseCase_1 = require("../../application/use-cases/periodos/UpdatePeriodoUseCase");
 const permissions_decorator_1 = require("../auth/decorators/permissions.decorator");
+const zod_validation_pipe_1 = require("../shared/pipes/zod-validation.pipe");
 let PeriodosController = class PeriodosController {
     listPeriodosUseCase;
     createPeriodoUseCase;
@@ -37,13 +44,18 @@ let PeriodosController = class PeriodosController {
     openPeriodoUseCase;
     closePeriodoUseCase;
     activatePeriodoUseCase;
-    constructor(listPeriodosUseCase, createPeriodoUseCase, updatePeriodoUseCase, openPeriodoUseCase, closePeriodoUseCase, activatePeriodoUseCase) {
+    getPeriodoUseCase;
+    constructor(listPeriodosUseCase, createPeriodoUseCase, updatePeriodoUseCase, openPeriodoUseCase, closePeriodoUseCase, activatePeriodoUseCase, getPeriodoUseCase) {
         this.listPeriodosUseCase = listPeriodosUseCase;
         this.createPeriodoUseCase = createPeriodoUseCase;
         this.updatePeriodoUseCase = updatePeriodoUseCase;
         this.openPeriodoUseCase = openPeriodoUseCase;
         this.closePeriodoUseCase = closePeriodoUseCase;
         this.activatePeriodoUseCase = activatePeriodoUseCase;
+        this.getPeriodoUseCase = getPeriodoUseCase;
+    }
+    get(id) {
+        return this.getPeriodoUseCase.execute(id);
     }
     list(estado, activo) {
         return this.listPeriodosUseCase.execute({
@@ -68,6 +80,14 @@ let PeriodosController = class PeriodosController {
     }
 };
 exports.PeriodosController = PeriodosController;
+__decorate([
+    (0, permissions_decorator_1.Permissions)('periodos.view'),
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], PeriodosController.prototype, "get", null);
 __decorate([
     (0, permissions_decorator_1.Permissions)('periodos.view'),
     (0, common_1.Get)(),
@@ -125,5 +145,6 @@ exports.PeriodosController = PeriodosController = __decorate([
         UpdatePeriodoUseCase_1.UpdatePeriodoUseCase,
         OpenPeriodoUseCase_1.OpenPeriodoUseCase,
         ClosePeriodoUseCase_1.ClosePeriodoUseCase,
-        ActivatePeriodoUseCase_1.ActivatePeriodoUseCase])
+        ActivatePeriodoUseCase_1.ActivatePeriodoUseCase,
+        GetPeriodoUseCase_1.GetPeriodoUseCase])
 ], PeriodosController);

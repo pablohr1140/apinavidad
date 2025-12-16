@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # paseto auth.guard
+ * Propósito: Guardia de acceso paseto auth.guard
+ * Pertenece a: Auth/Route Guard (Nest)
+ * Interacciones: Nest ExecutionContext, servicios de auth
+ */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -12,9 +18,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PasetoAuthGuard = void 0;
 const common_1 = require("@nestjs/common");
 const core_1 = require("@nestjs/core");
+const auth_1 = require("../../../config/auth");
 const PasetoService_1 = require("../../../infra/auth/PasetoService");
 const public_decorator_1 = require("../decorators/public.decorator");
-const auth_1 = require("../../../config/auth");
 const authorization_service_1 = require("../services/authorization.service");
 let PasetoAuthGuard = class PasetoAuthGuard {
     pasetoService;
@@ -53,7 +59,7 @@ let PasetoAuthGuard = class PasetoAuthGuard {
             Object.assign(request, { user: authUser });
             return true;
         }
-        catch (error) {
+        catch {
             throw new common_1.UnauthorizedException('Token inválido o expirado');
         }
     }

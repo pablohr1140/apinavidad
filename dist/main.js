@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # main
+ * Propósito: Archivo main
+ * Pertenece a: General
+ * Interacciones: N/A
+ */
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -15,8 +21,8 @@ exports.bootstrap = bootstrap;
  */
 require("./config/module-alias");
 const core_1 = require("@nestjs/core");
-const helmet_1 = __importDefault(require("helmet"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const helmet_1 = __importDefault(require("helmet"));
 const app_module_1 = require("./app.module");
 const env_1 = require("./config/env");
 /**

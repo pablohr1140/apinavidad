@@ -1,4 +1,10 @@
 /**
+ * # Organizacion Repository
+ * Propósito: Contrato de repositorio Organizacion Repository
+ * Pertenece a: Aplicación / Repositorio contrato
+ * Interacciones: Capa de infraestructura que implementa el contrato
+ */
+/**
  * # OrganizacionRepository
  *
  * Propósito: contrato de persistencia para organizaciones.

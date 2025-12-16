@@ -1,12 +1,18 @@
 /**
+ * # Persona Repository
+ * Propósito: Contrato de repositorio Persona Repository
+ * Pertenece a: Aplicación / Repositorio contrato
+ * Interacciones: Capa de infraestructura que implementa el contrato
+ */
+/**
  * # PersonaRepository
  *
  * Propósito: contrato de persistencia para personas (lectura/escritura y roles asociados).
  * Pertenece a: Application layer.
  * Interacciones: `PersonaProps`, `RoleKey`; usado por casos de uso de personas y auth.
  */
-import { PersonaProps } from '@/domain/entities';
 import type { RoleKey } from '@/domain/access-control';
+import { PersonaProps } from '@/domain/entities';
 type PersonaData = Omit<PersonaProps, 'id' | 'roles'>;
 export interface PersonaCreateInput extends PersonaData {
     roleKeys?: RoleKey[];

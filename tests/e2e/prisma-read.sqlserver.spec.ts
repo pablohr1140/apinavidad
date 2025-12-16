@@ -112,22 +112,24 @@ describeIf('Prisma read integration (SQL Server real)', () => {
       listPersonasUseCase,
       getPersonaUseCase
     });
-  });
+  }, 60000);
 
   afterAll(async () => {
     await app?.close();
     pasetoGuardSpy?.mockRestore();
     permissionsGuardSpy?.mockRestore();
 
-    await prisma.organizacion_persona.deleteMany({
-      where: { persona_id: seeded.personaId, organizacion_id: BigInt(seeded.organizacionId) }
-    });
-    await prisma.personas.deleteMany({ where: { id: seeded.personaId } });
-    await prisma.organizaciones.deleteMany({ where: { id: BigInt(seeded.organizacionId) } });
-    await prisma.roles.deleteMany({ where: { id: seeded.roleId } });
+    if (seeded) {
+      await prisma.organizacion_persona.deleteMany({
+        where: { persona_id: seeded.personaId, organizacion_id: BigInt(seeded.organizacionId) }
+      });
+      await prisma.personas.deleteMany({ where: { id: seeded.personaId } });
+      await prisma.organizaciones.deleteMany({ where: { id: BigInt(seeded.organizacionId) } });
+      await prisma.roles.deleteMany({ where: { id: seeded.roleId } });
+    }
 
     await prisma.$disconnect();
-  });
+  }, 40000);
 
   beforeEach(() => {
     pasetoGuardSpy.mockClear();

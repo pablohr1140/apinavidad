@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">94.11% </span>
+                <span class="strong">94.28% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>32/34</span>
+                <span class='fraction'>33/35</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75.67% </span>
+                <span class="strong">76.92% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>28/37</span>
+                <span class='fraction'>30/39</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.54% </span>
+                <span class="strong">93.75% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>29/31</span>
+                <span class='fraction'>30/32</span>
             </div>
         
             
@@ -157,7 +157,10 @@
 <a name='L92'></a><a href='#L92'>92</a>
 <a name='L93'></a><a href='#L93'>93</a>
 <a name='L94'></a><a href='#L94'>94</a>
-<a name='L95'></a><a href='#L95'>95</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -214,6 +217,9 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -224,16 +230,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -272,6 +276,7 @@ import { NinoRepository } from '@/application/repositories/NinoRepository';
 import { PeriodoRepository } from '@/application/repositories/PeriodoRepository';
 import { LogActivityUseCase, noopLogActivity } from '@/application/use-cases/logs/LogActivityUseCase';
 import { MAX_EDAD, calcularEdad } from '@/domain/services/ninoRules';
+import type { NinoProps } from '@/domain/entities';
 import { AppError } from '@/shared/errors/AppError';
 &nbsp;
 @Injectable()
@@ -306,7 +311,10 @@ export class UpdateNinoUseCase {
 &nbsp;
     const fechaReferencia = periodo?.fecha_inicio ?? new Date();
     const fechaNacimiento = payload.fecha_nacimiento ?? nino.fecha_nacimiento ?? undefined;
-    const basePayload: Record&lt;string, unknown&gt; = { ...payload };
+    const basePayload: Partial&lt;NinoProps&gt; &amp; Record&lt;string, unknown&gt; = {
+      ...payload,
+      documento_numero: payload.documento_numero ?? undefined
+    };
 &nbsp;
     delete basePayload.run;
     delete basePayload.dv;
@@ -318,23 +326,21 @@ export class UpdateNinoUseCase {
     }
     <span class="missing-if-branch" title="else path not taken" >E</span>if (payload.estado === undefined) delete basePayload.estado;
     <span class="missing-if-branch" title="else path not taken" >E</span>if (payload.fecha_retiro === undefined) delete basePayload.fecha_retiro;
-    let updatePayload = basePayload as typeof basePayload &amp; { estado?: typeof basePayload.estado; fecha_retiro?: Date | null };
+&nbsp;
+    const updatePayload: Partial&lt;NinoProps&gt; = { ...basePayload };
 &nbsp;
     if (fechaNacimiento) {
       const edad = calcularEdad(fechaNacimiento, fechaReferencia);
       <span class="missing-if-branch" title="else path not taken" >E</span>if (edad !== null &amp;&amp; edad &gt;= MAX_EDAD) {
-        updatePayload = {
-          ...basePayload,
-          estado: 'inhabilitado',
-          fecha_retiro: fechaReferencia
-        };
+        updatePayload.estado = 'inhabilitado';
+        updatePayload.fecha_retiro = fechaReferencia;
       }
     }
 &nbsp;
     const updated = await this.ninoRepository.update(id, updatePayload);
 &nbsp;
     await this.logActivityUseCase.execute({
-      personaId: payload.datosDomicilio?.personaId,
+      personaId: (payload as any).datosDomicilio?.personaId,
       accion: 'nino.actualizado',
       mensaje: '',
       loggableType: 'nino',
@@ -352,7 +358,7 @@ export class UpdateNinoUseCase {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-14T22:15:31.177Z
+                at 2025-12-16T15:58:00.864Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

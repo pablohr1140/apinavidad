@@ -1,3 +1,9 @@
+/**
+ * # Get Persona Use Case
+ * Propósito: Caso de uso Get Persona Use Case
+ * Pertenece a: Aplicación / Caso de uso
+ * Interacciones: Repositorios, servicios de dominio
+ */
 import { PersonaRepository } from '@/application/repositories/PersonaRepository';
 export declare class GetPersonaUseCase {
     private readonly personaRepository;

@@ -13,6 +13,7 @@ import { PeriodoRepository } from '@/application/repositories/PeriodoRepository'
 import { ActivatePeriodoUseCase } from '@/application/use-cases/periodos/ActivatePeriodoUseCase';
 import { ClosePeriodoUseCase } from '@/application/use-cases/periodos/ClosePeriodoUseCase';
 import { CreatePeriodoUseCase } from '@/application/use-cases/periodos/CreatePeriodoUseCase';
+import { GetPeriodoUseCase } from '@/application/use-cases/periodos/GetPeriodoUseCase';
 import { ListPeriodosUseCase } from '@/application/use-cases/periodos/ListPeriodosUseCase';
 import { OpenPeriodoUseCase } from '@/application/use-cases/periodos/OpenPeriodoUseCase';
 import { UpdatePeriodoUseCase } from '@/application/use-cases/periodos/UpdatePeriodoUseCase';
@@ -29,6 +30,7 @@ import { LogsModule } from '@/modules/logs/logs.module';
     OpenPeriodoUseCase,
     ClosePeriodoUseCase,
     ActivatePeriodoUseCase,
+    GetPeriodoUseCase,
     PrismaPeriodoRepository,
     { provide: PeriodoRepository, useExisting: PrismaPeriodoRepository }
   ],

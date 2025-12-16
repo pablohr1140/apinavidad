@@ -16,8 +16,7 @@ const baseRecord = {
   fecha_inicio: new Date('2025-01-01'),
   fecha_fin: new Date('2025-12-31'),
   estado_periodo: 'abierto',
-  es_activo: true,
-  descripcion: null
+  es_activo: true
 };
 
 type PeriodoClient = Pick<PrismaService, 'periodos' | '$transaction'>;
@@ -74,8 +73,7 @@ describe('PrismaPeriodoRepository', () => {
       fecha_inicio: undefined,
       fecha_fin: undefined,
       estado_periodo: 'borrador',
-      es_activo: false,
-      descripcion: undefined
+      es_activo: false
     });
 
     expect(prismaStub.periodos.create).toHaveBeenCalledWith({
@@ -84,10 +82,26 @@ describe('PrismaPeriodoRepository', () => {
         fecha_inicio: null,
         fecha_fin: null,
         estado_periodo: 'borrador',
-        es_activo: false,
-        descripcion: null
+        es_activo: false
       }
     });
+  });
+
+  it('open cierra otros abiertos y activa el periodo', async () => {
+    prismaStub.tx.periodos.update.mockResolvedValueOnce({ ...baseRecord, id: 42 });
+
+    const result = await repository.open(42);
+
+    expect(prismaStub.service.$transaction).toHaveBeenCalledTimes(1);
+    expect(prismaStub.tx.periodos.updateMany).toHaveBeenCalledWith({
+      where: { id: { not: 42 }, estado_periodo: 'abierto' },
+      data: { estado_periodo: 'cerrado', es_activo: false }
+    });
+    expect(prismaStub.tx.periodos.update).toHaveBeenCalledWith({
+      where: { id: 42 },
+      data: { estado_periodo: 'abierto', es_activo: true }
+    });
+    expect(result).toMatchObject({ id: 42, estado_periodo: 'abierto', es_activo: true });
   });
 
   it('activate desactiva todos y activa el solicitado en una sola transaccion', async () => {
@@ -96,7 +110,7 @@ describe('PrismaPeriodoRepository', () => {
     const result = await repository.activate(99);
 
     expect(prismaStub.service.$transaction).toHaveBeenCalledTimes(1);
-    expect(prismaStub.tx.periodos.updateMany).toHaveBeenCalledWith({ data: { es_activo: false } });
+    expect(prismaStub.tx.periodos.updateMany).toHaveBeenCalledWith({ data: { es_activo: false, estado_periodo: 'cerrado' }, where: { id: { not: 99 } } });
     expect(prismaStub.tx.periodos.update).toHaveBeenCalledWith({ where: { id: 99 }, data: { es_activo: true, estado_periodo: 'abierto' } });
     expect(result).toMatchObject({ id: 99, es_activo: true, estado_periodo: 'abierto' });
   });

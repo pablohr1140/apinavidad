@@ -14,11 +14,13 @@ import { AppError } from '@/shared/errors/AppError';
 
 interface RepoMock extends PeriodoRepository {
   findById: ReturnType<typeof vi.fn>;
+  findOverlapping: ReturnType<typeof vi.fn>;
   update: ReturnType<typeof vi.fn>;
 }
 
 const makeRepository = (): RepoMock => ({
   findById: vi.fn(),
+  findOverlapping: vi.fn(),
   update: vi.fn()
 }) as unknown as RepoMock;
 
@@ -33,14 +35,15 @@ describe('UpdatePeriodoUseCase', () => {
 
   it('actualiza el periodo', async () => {
     const repository = makeRepository();
-    repository.findById.mockResolvedValue({ id: 1 } as any);
-    repository.update.mockResolvedValue({ id: 1, es_activo: true });
+    repository.findById.mockResolvedValue({ id: 1, fecha_inicio: null, fecha_fin: null } as any);
+    repository.findOverlapping.mockResolvedValue(null);
+    repository.update.mockResolvedValue({ id: 1, nombre: 'Nuevo' });
     const useCase = new UpdatePeriodoUseCase(repository);
 
-    const result = await useCase.execute(1, { es_activo: true });
+    const result = await useCase.execute(1, { nombre: 'Nuevo' });
 
-    expect(repository.update).toHaveBeenCalledWith(1, { es_activo: true });
-    expect(result.es_activo).toBe(true);
+    expect(repository.update).toHaveBeenCalledWith(1, expect.objectContaining({ nombre: 'Nuevo' }));
+    expect(result.nombre).toBe('Nuevo');
   });
 
   it('lanza ZodError si payload inválido', async () => {

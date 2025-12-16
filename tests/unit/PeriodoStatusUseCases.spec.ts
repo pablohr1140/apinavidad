@@ -15,6 +15,7 @@ import { AppError } from '@/shared/errors/AppError';
 
 type RepoMock = PeriodoRepository & {
   findById: ReturnType<typeof vi.fn>;
+  findOverlapping: ReturnType<typeof vi.fn>;
   open: ReturnType<typeof vi.fn>;
   close: ReturnType<typeof vi.fn>;
   activate: ReturnType<typeof vi.fn>;
@@ -23,6 +24,7 @@ type RepoMock = PeriodoRepository & {
 const makeRepository = (): RepoMock =>
   ({
     findById: vi.fn(),
+    findOverlapping: vi.fn(),
     open: vi.fn(),
     close: vi.fn(),
     activate: vi.fn()
@@ -40,12 +42,14 @@ describe('Cambio de estado de periodos', () => {
 
   it('OpenPeriodoUseCase delega en el repositorio', async () => {
     const repo = makeRepository();
-    repo.findById.mockResolvedValue({ id: 1 });
+    repo.findById.mockResolvedValue({ id: 1, fecha_inicio: null, fecha_fin: null });
+    repo.findOverlapping.mockResolvedValue(null);
     repo.open.mockResolvedValue({ id: 1, estado: 'abierto' });
     const sut = new OpenPeriodoUseCase(repo);
 
     await sut.execute(1);
 
+    expect(repo.findOverlapping).toHaveBeenCalledWith({ start: null, end: null, excludeId: 1 });
     expect(repo.open).toHaveBeenCalledWith(1);
   });
 
@@ -66,5 +70,15 @@ describe('Cambio de estado de periodos', () => {
     const sut = new ActivatePeriodoUseCase(repo);
 
     await expect(() => sut.execute(2)).rejects.toBeInstanceOf(AppError);
+  });
+
+  it('ActivatePeriodoUseCase bloquea solapamiento', async () => {
+    const repo = makeRepository();
+    repo.findById.mockResolvedValue({ id: 2, fecha_inicio: null, fecha_fin: null });
+    repo.findOverlapping.mockResolvedValue({ id: 99 });
+    const sut = new ActivatePeriodoUseCase(repo);
+
+    await expect(() => sut.execute(2)).rejects.toBeInstanceOf(AppError);
+    expect(repo.activate).not.toHaveBeenCalled();
   });
 });

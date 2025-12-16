@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # Activate Periodo Use Case
+ * Propósito: Caso de uso Activate Periodo Use Case
+ * Pertenece a: Aplicación / Caso de uso
+ * Interacciones: Repositorios, servicios de dominio
+ */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -19,8 +25,8 @@ exports.ActivatePeriodoUseCase = void 0;
  */
 const common_1 = require("@nestjs/common");
 const PeriodoRepository_1 = require("../../repositories/PeriodoRepository");
-const AppError_1 = require("../../../shared/errors/AppError");
 const LogActivityUseCase_1 = require("../logs/LogActivityUseCase");
+const AppError_1 = require("../../../shared/errors/AppError");
 let ActivatePeriodoUseCase = class ActivatePeriodoUseCase {
     periodoRepository;
     logActivityUseCase;
@@ -36,6 +42,14 @@ let ActivatePeriodoUseCase = class ActivatePeriodoUseCase {
         const periodo = await this.periodoRepository.findById(id);
         if (!periodo) {
             throw new AppError_1.AppError('Periodo no encontrado', 404);
+        }
+        const overlap = await this.periodoRepository.findOverlapping({
+            start: periodo.fecha_inicio ?? null,
+            end: periodo.fecha_fin ?? null,
+            excludeId: id
+        });
+        if (overlap) {
+            throw new AppError_1.AppError('Ya existe otro periodo que se sobrepone en fechas', 409);
         }
         const activated = await this.periodoRepository.activate(id);
         await this.logActivityUseCase.execute({

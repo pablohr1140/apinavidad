@@ -1,3 +1,9 @@
+/**
+ * # Close Periodo Use Case
+ * Propósito: Caso de uso Close Periodo Use Case
+ * Pertenece a: Aplicación / Caso de uso
+ * Interacciones: Repositorios, servicios de dominio
+ */
 import { PeriodoRepository } from '@/application/repositories/PeriodoRepository';
 import { LogActivityUseCase } from '@/application/use-cases/logs/LogActivityUseCase';
 export declare class ClosePeriodoUseCase {

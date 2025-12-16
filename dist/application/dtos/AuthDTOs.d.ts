@@ -1,3 +1,9 @@
+/**
+ * # Auth DTOs
+ * Propósito: DTOs para Auth DTOs
+ * Pertenece a: Aplicación / DTOs
+ * Interacciones: Validación y transporte de datos
+ */
 import { z } from 'zod';
 export declare const loginSchema: z.ZodObject<{
     email: z.ZodString;

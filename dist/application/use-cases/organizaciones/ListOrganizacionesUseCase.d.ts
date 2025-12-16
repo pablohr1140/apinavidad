@@ -1,3 +1,9 @@
+/**
+ * # List Organizaciones Use Case
+ * Propósito: Caso de uso List Organizaciones Use Case
+ * Pertenece a: Aplicación / Caso de uso
+ * Interacciones: Repositorios, servicios de dominio
+ */
 import { OrganizacionRepository } from '@/application/repositories/OrganizacionRepository';
 export declare class ListOrganizacionesUseCase {
     private readonly organizacionRepository;

@@ -42,6 +42,8 @@ const createStore = () => ({
   role_permissions: [] as Array<{ role_id: number; permission_id: number }>,
   personas: [] as Array<{ id: number; run: string | null; email: string | null; role_id: number | null }>,
   discapacidades: [] as Array<{ id: number; nombre: string; descripcion: string | null }>,
+  etnias: [] as Array<{ id: number; nombre: string; codigo: string | null; descripcion: string | null }>,
+  sectores: [] as Array<{ id: number; nombre: string; estado: string }>,
   tipo_documentos: [] as Array<{ id: number; codigo: string; nombre: string }>,
   organizaciones: [] as Array<{ id: bigint; nombre: string }>,
   organizacion_persona: [] as Array<{ organizacion_id: bigint; persona_id: number }>,
@@ -58,6 +60,8 @@ const buildPrismaMock = () => {
     role: 1,
     persona: 1,
     discapacidad: 1,
+    etnia: 1,
+    sector: 1,
     tipo_documento: 1,
     organizacion: 1n,
     periodo: 1,
@@ -139,6 +143,32 @@ const buildPrismaMock = () => {
         }
         const record = { ...create, id: idCounters.discapacidad++ };
         store.discapacidades.push(record);
+        return record;
+      })
+    },
+    etnias: {
+      upsert: vi.fn(async ({ where, update, create }) => {
+        const existing = findBy(store.etnias, (e) => e.nombre === where.nombre);
+        if (existing) {
+          Object.assign(existing, update);
+          return existing;
+        }
+        const record = { ...create, id: idCounters.etnia++ };
+        store.etnias.push(record);
+        return record;
+      })
+    },
+    sectores: {
+      findFirst: vi.fn(async ({ where }) => findBy(store.sectores, (s) => s.nombre === where.nombre)),
+      update: vi.fn(async ({ where, data }) => {
+        const sector = findBy(store.sectores, (s) => s.id === where.id);
+        if (!sector) return null;
+        Object.assign(sector, data);
+        return sector;
+      }),
+      create: vi.fn(async ({ data }) => {
+        const record = { ...data, id: idCounters.sector++ } as (typeof store.sectores)[number];
+        store.sectores.push(record);
         return record;
       })
     },

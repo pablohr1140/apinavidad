@@ -23,13 +23,12 @@ type OrganizacionRecord = Prisma.organizacionesGetPayload<Record<string, never>>
 const createOrganizacionRecord = (overrides?: Partial<OrganizacionRecord>): OrganizacionRecord => ({
   id: 1,
   nombre: 'Organización Uno',
-  sigla: null,
-  rut: null,
   tipo: 'ONG',
   direccion: null,
   telefono: null,
   email: 'contacto@orguno.cl',
   providencia_id: 5,
+  sector_id: 2,
   estado: 'activo',
   created_at: ORGANIZACION_DATES.createdAt,
   updated_at: ORGANIZACION_DATES.updatedAt,
@@ -72,14 +71,14 @@ describe('PrismaOrganizacionRepository', () => {
     });
     expect(organizaciones[0]).toMatchObject<OrganizacionProps>({
       nombre: 'Organización Uno',
-      sigla: undefined,
       providenciaId: 5,
+      sectorId: 2,
       estado: 'activo'
     });
   });
 
   it('findById retorna dominio cuando existe y null en caso contrario', async () => {
-    const record = createOrganizacionRecord({ id: 99, sigla: 'ORG' });
+    const record = createOrganizacionRecord({ id: 99, sector_id: 3 });
     prismaStub.organizaciones.findUnique
       .mockResolvedValueOnce(record)
       .mockResolvedValueOnce(null);
@@ -89,7 +88,7 @@ describe('PrismaOrganizacionRepository', () => {
 
     expect(prismaStub.organizaciones.findUnique).toHaveBeenNthCalledWith(1, { where: { id: 99 } });
     expect(prismaStub.organizaciones.findUnique).toHaveBeenNthCalledWith(2, { where: { id: 100 } });
-    expect(found).toMatchObject({ id: 99, sigla: 'ORG' });
+    expect(found).toMatchObject({ id: 99, sectorId: 3 });
     expect(missing).toBeNull();
   });
 
@@ -106,13 +105,12 @@ describe('PrismaOrganizacionRepository', () => {
     expect(prismaStub.organizaciones.create).toHaveBeenCalledWith({
       data: {
         nombre: 'Org Nueva',
-        sigla: null,
-        rut: null,
         tipo: 'ONG',
         direccion: null,
         telefono: null,
         email: null,
         providencia_id: null,
+        sector_id: null,
         estado: 'borrador'
       }
     });

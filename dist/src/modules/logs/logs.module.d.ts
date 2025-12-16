@@ -1,8 +1,0 @@
-/**
- * # logs.module
- * Propósito: Módulo de agregación logs.module
- * Pertenece a: Módulo Nest
- * Interacciones: Providers, controllers
- */
-export declare class LogsModule {
-}

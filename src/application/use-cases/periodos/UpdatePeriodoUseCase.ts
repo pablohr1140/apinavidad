@@ -37,7 +37,26 @@ export class UpdatePeriodoUseCase {
       throw new AppError('Periodo no encontrado', 404);
     }
     const payload = updatePeriodoSchema.parse(data);
-    const updated = await this.periodoRepository.update(id, payload);
+    const normalized = normalizeEstadoActivo(
+      payload.estado_periodo ?? periodo.estado_periodo,
+      payload.es_activo ?? periodo.es_activo
+    );
+    const mergedPayload = {
+      ...payload,
+      estado_periodo: normalized.estado_periodo,
+      es_activo: normalized.es_activo
+    } as typeof payload;
+
+    const overlap = await this.periodoRepository.findOverlapping({
+      start: mergedPayload.fecha_inicio ?? periodo.fecha_inicio ?? null,
+      end: mergedPayload.fecha_fin ?? periodo.fecha_fin ?? null,
+      excludeId: id
+    });
+    if (overlap) {
+      throw new AppError('Ya existe un periodo que se sobrepone en fechas', 409);
+    }
+
+    const updated = await this.periodoRepository.update(id, mergedPayload);
 
     await this.logActivityUseCase.execute({
       accion: 'periodo.actualizado',
@@ -49,4 +68,23 @@ export class UpdatePeriodoUseCase {
 
     return updated;
   }
+}
+
+function normalizeEstadoActivo(
+  estado: 'borrador' | 'planificado' | 'abierto' | 'cerrado',
+  activo: boolean
+): { estado_periodo: 'borrador' | 'planificado' | 'abierto' | 'cerrado'; es_activo: boolean } {
+  let nextEstado = estado;
+  let nextActivo = activo;
+
+  if (nextEstado === 'abierto') {
+    nextActivo = true;
+  } else if (nextActivo) {
+    nextEstado = 'abierto';
+    nextActivo = true;
+  } else {
+    nextActivo = false;
+  }
+
+  return { estado_periodo: nextEstado, es_activo: nextActivo };
 }

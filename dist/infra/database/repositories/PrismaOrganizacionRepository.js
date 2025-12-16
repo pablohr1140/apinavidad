@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # Prisma Organizacion Repository
+ * Propósito: Repositorio Prisma Prisma Organizacion Repository
+ * Pertenece a: Infraestructura / Repositorio Prisma
+ * Interacciones: PrismaService, entidades de dominio
+ */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -40,7 +46,6 @@ let PrismaOrganizacionRepository = class PrismaOrganizacionRepository {
             orderBy: { created_at: 'desc' }
         })
             .catch((error) => {
-            // eslint-disable-next-line no-console
             console.error('PrismaOrganizacionRepository.findMany error', { where, error });
             throw error;
         });
@@ -50,7 +55,6 @@ let PrismaOrganizacionRepository = class PrismaOrganizacionRepository {
         const organizacion = await this.prisma.organizaciones
             .findUnique({ where: { id } })
             .catch((error) => {
-            // eslint-disable-next-line no-console
             console.error('PrismaOrganizacionRepository.findById error', { id, error });
             throw error;
         });
@@ -84,13 +88,12 @@ let PrismaOrganizacionRepository = class PrismaOrganizacionRepository {
             // Prisma returns SQL Server bigint columns as JS BigInt; normalize to number for JSON serialization
             id: Number(organizacion.id),
             nombre: organizacion.nombre,
-            sigla: organizacion.sigla ?? undefined,
-            rut: organizacion.rut ?? undefined,
             tipo: organizacion.tipo,
             direccion: organizacion.direccion ?? undefined,
             telefono: organizacion.telefono ?? undefined,
             email: organizacion.email ?? undefined,
             providenciaId: organizacion.providencia_id ?? undefined,
+            sectorId: organizacion.sector_id ?? undefined,
             estado: organizacion.estado,
             createdAt: organizacion.created_at,
             updatedAt: organizacion.updated_at
@@ -99,13 +102,12 @@ let PrismaOrganizacionRepository = class PrismaOrganizacionRepository {
     mapCreateData(data) {
         return {
             nombre: data.nombre,
-            sigla: data.sigla ?? null,
-            rut: data.rut ?? null,
             tipo: data.tipo,
             direccion: data.direccion ?? null,
             telefono: data.telefono ?? null,
             email: data.email ?? null,
             providencia_id: data.providenciaId ?? null,
+            sector_id: data.sectorId ?? null,
             estado: data.estado
         };
     }
@@ -113,10 +115,6 @@ let PrismaOrganizacionRepository = class PrismaOrganizacionRepository {
         const payload = {};
         if (data.nombre !== undefined)
             payload.nombre = data.nombre;
-        if (data.sigla !== undefined)
-            payload.sigla = data.sigla;
-        if (data.rut !== undefined)
-            payload.rut = data.rut;
         if (data.tipo !== undefined)
             payload.tipo = data.tipo;
         if (data.direccion !== undefined)
@@ -127,6 +125,8 @@ let PrismaOrganizacionRepository = class PrismaOrganizacionRepository {
             payload.email = data.email;
         if (data.providenciaId !== undefined)
             payload.providencia_id = data.providenciaId;
+        if (data.sectorId !== undefined)
+            payload.sector_id = data.sectorId;
         if (data.estado !== undefined)
             payload.estado = data.estado;
         return payload;

@@ -1,4 +1,10 @@
 /**
+ * # Discapacidad Repository
+ * Propósito: Contrato de repositorio Discapacidad Repository
+ * Pertenece a: Aplicación / Repositorio contrato
+ * Interacciones: Capa de infraestructura que implementa el contrato
+ */
+/**
  * # DiscapacidadRepository
  *
  * Propósito: contrato de persistencia para discapacidades/catalogo de condiciones.
@@ -9,7 +15,7 @@ import { DiscapacidadProps } from '@/domain/entities';
 export declare abstract class DiscapacidadRepository {
     /** Lista discapacidades con filtro por estado activo. */
     abstract findMany(params?: {
-        es_activa?: boolean;
+        activo?: boolean;
     }): Promise<DiscapacidadProps[]>;
     /** Crea una discapacidad. */
     abstract create(data: Omit<DiscapacidadProps, 'id' | 'createdAt' | 'updatedAt'>): Promise<DiscapacidadProps>;

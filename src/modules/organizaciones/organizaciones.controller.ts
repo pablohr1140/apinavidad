@@ -16,11 +16,14 @@ import { Body, Controller, Delete, Get, HttpCode, Param, ParseIntPipe, Post, Put
 
 import {
   createOrganizacionSchema,
+  createOrganizacionConProvidenciaSchema,
   updateOrganizacionSchema,
   type CreateOrganizacionDTO,
+  type CreateOrganizacionConProvidenciaDTO,
   type UpdateOrganizacionDTO
 } from '@/application/dtos/OrganizacionDTOs';
 import { CreateOrganizacionUseCase } from '@/application/use-cases/organizaciones/CreateOrganizacionUseCase';
+import { CreateOrganizacionConProvidenciaUseCase } from '@/application/use-cases/organizaciones/CreateOrganizacionConProvidenciaUseCase';
 import { DeleteOrganizacionUseCase } from '@/application/use-cases/organizaciones/DeleteOrganizacionUseCase';
 import { GetOrganizacionUseCase } from '@/application/use-cases/organizaciones/GetOrganizacionUseCase';
 import { ListOrganizacionesUseCase } from '@/application/use-cases/organizaciones/ListOrganizacionesUseCase';
@@ -33,6 +36,7 @@ export class OrganizacionesController {
   constructor(
     private readonly listOrganizacionesUseCase: ListOrganizacionesUseCase,
     private readonly createOrganizacionUseCase: CreateOrganizacionUseCase,
+    private readonly createOrganizacionConProvidenciaUseCase: CreateOrganizacionConProvidenciaUseCase,
     private readonly getOrganizacionUseCase: GetOrganizacionUseCase,
     private readonly updateOrganizacionUseCase: UpdateOrganizacionUseCase,
     private readonly deleteOrganizacionUseCase: DeleteOrganizacionUseCase
@@ -55,6 +59,14 @@ export class OrganizacionesController {
   @Post()
   create(@Body(new ZodValidationPipe(createOrganizacionSchema)) body: CreateOrganizacionDTO) {
     return this.createOrganizacionUseCase.execute(body);
+  }
+
+  @Permissions('organizaciones.create')
+  @Post('con-providencia')
+  createWithProvidencia(
+    @Body(new ZodValidationPipe(createOrganizacionConProvidenciaSchema)) body: CreateOrganizacionConProvidenciaDTO
+  ) {
+    return this.createOrganizacionConProvidenciaUseCase.execute(body);
   }
 
   @Permissions('organizaciones.view')

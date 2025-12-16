@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # organizaciones.module
+ * Propósito: Módulo de agregación organizaciones.module
+ * Pertenece a: Módulo Nest
+ * Interacciones: Providers, controllers
+ */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -9,12 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrganizacionesModule = void 0;
 const common_1 = require("@nestjs/common");
 const organizaciones_controller_1 = require("./organizaciones.controller");
-const ListOrganizacionesUseCase_1 = require("../../application/use-cases/organizaciones/ListOrganizacionesUseCase");
+const OrganizacionRepository_1 = require("../../application/repositories/OrganizacionRepository");
+const CreateOrganizacionConProvidenciaUseCase_1 = require("../../application/use-cases/organizaciones/CreateOrganizacionConProvidenciaUseCase");
 const CreateOrganizacionUseCase_1 = require("../../application/use-cases/organizaciones/CreateOrganizacionUseCase");
-const UpdateOrganizacionUseCase_1 = require("../../application/use-cases/organizaciones/UpdateOrganizacionUseCase");
 const DeleteOrganizacionUseCase_1 = require("../../application/use-cases/organizaciones/DeleteOrganizacionUseCase");
 const GetOrganizacionUseCase_1 = require("../../application/use-cases/organizaciones/GetOrganizacionUseCase");
-const OrganizacionRepository_1 = require("../../application/repositories/OrganizacionRepository");
+const ListOrganizacionesUseCase_1 = require("../../application/use-cases/organizaciones/ListOrganizacionesUseCase");
+const UpdateOrganizacionUseCase_1 = require("../../application/use-cases/organizaciones/UpdateOrganizacionUseCase");
 const PrismaOrganizacionRepository_1 = require("../../infra/database/repositories/PrismaOrganizacionRepository");
 const logs_module_1 = require("../logs/logs.module");
 let OrganizacionesModule = class OrganizacionesModule {
@@ -27,6 +34,7 @@ exports.OrganizacionesModule = OrganizacionesModule = __decorate([
         providers: [
             ListOrganizacionesUseCase_1.ListOrganizacionesUseCase,
             CreateOrganizacionUseCase_1.CreateOrganizacionUseCase,
+            CreateOrganizacionConProvidenciaUseCase_1.CreateOrganizacionConProvidenciaUseCase,
             GetOrganizacionUseCase_1.GetOrganizacionUseCase,
             UpdateOrganizacionUseCase_1.UpdateOrganizacionUseCase,
             DeleteOrganizacionUseCase_1.DeleteOrganizacionUseCase,

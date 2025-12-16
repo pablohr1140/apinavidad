@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # Prisma Discapacidad Repository
+ * Propósito: Repositorio Prisma Prisma Discapacidad Repository
+ * Pertenece a: Infraestructura / Repositorio Prisma
+ * Interacciones: PrismaService, entidades de dominio
+ */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -28,9 +34,6 @@ let PrismaDiscapacidadRepository = class PrismaDiscapacidadRepository {
         const created = await this.prisma.discapacidades.create({
             data: {
                 nombre: data.nombre,
-                categoria: data.categoria ?? null,
-                codigo: data.codigo ?? null,
-                descripcion: data.descripcion ?? null,
                 activo: data.activo
             }
         });
@@ -40,9 +43,9 @@ let PrismaDiscapacidadRepository = class PrismaDiscapacidadRepository {
         return {
             id: entity.id,
             nombre: entity.nombre,
-            categoria: entity.categoria ?? undefined,
-            codigo: entity.codigo ?? undefined,
-            descripcion: entity.descripcion ?? undefined,
+            categoria: undefined,
+            codigo: undefined,
+            descripcion: undefined,
             activo: Boolean(entity.activo),
             createdAt: entity.created_at ?? new Date(),
             updatedAt: entity.updated_at ?? new Date()

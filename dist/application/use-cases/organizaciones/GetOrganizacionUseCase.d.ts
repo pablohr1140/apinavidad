@@ -1,3 +1,9 @@
+/**
+ * # Get Organizacion Use Case
+ * Propósito: Caso de uso Get Organizacion Use Case
+ * Pertenece a: Aplicación / Caso de uso
+ * Interacciones: Repositorios, servicios de dominio
+ */
 import { OrganizacionRepository } from '@/application/repositories/OrganizacionRepository';
 export declare class GetOrganizacionUseCase {
     private readonly organizacionRepository;

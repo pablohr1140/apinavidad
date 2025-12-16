@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # ninos.module
+ * Propósito: Módulo de agregación ninos.module
+ * Pertenece a: Módulo Nest
+ * Interacciones: Providers, controllers
+ */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -9,22 +15,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.NinosModule = void 0;
 const common_1 = require("@nestjs/common");
 const ninos_controller_1 = require("./ninos.controller");
-const ListNinosUseCase_1 = require("../../application/use-cases/ninos/ListNinosUseCase");
+const NinoRepository_1 = require("../../application/repositories/NinoRepository");
+const AutoInhabilitarNinosUseCase_1 = require("../../application/use-cases/ninos/AutoInhabilitarNinosUseCase");
 const CreateNinoUseCase_1 = require("../../application/use-cases/ninos/CreateNinoUseCase");
 const GetNinoUseCase_1 = require("../../application/use-cases/ninos/GetNinoUseCase");
-const UpdateNinoUseCase_1 = require("../../application/use-cases/ninos/UpdateNinoUseCase");
 const InhabilitarNinoUseCase_1 = require("../../application/use-cases/ninos/InhabilitarNinoUseCase");
+const ListNinosUseCase_1 = require("../../application/use-cases/ninos/ListNinosUseCase");
 const RestaurarNinoUseCase_1 = require("../../application/use-cases/ninos/RestaurarNinoUseCase");
-const AutoInhabilitarNinosUseCase_1 = require("../../application/use-cases/ninos/AutoInhabilitarNinosUseCase");
-const NinoRepository_1 = require("../../application/repositories/NinoRepository");
+const UpdateNinoUseCase_1 = require("../../application/use-cases/ninos/UpdateNinoUseCase");
 const PrismaNinoRepository_1 = require("../../infra/database/repositories/PrismaNinoRepository");
 const logs_module_1 = require("../logs/logs.module");
+const periodos_module_1 = require("../periodos/periodos.module");
 let NinosModule = class NinosModule {
 };
 exports.NinosModule = NinosModule;
 exports.NinosModule = NinosModule = __decorate([
     (0, common_1.Module)({
-        imports: [logs_module_1.LogsModule],
+        imports: [logs_module_1.LogsModule, periodos_module_1.PeriodosModule],
         controllers: [ninos_controller_1.NinosController],
         providers: [
             ListNinosUseCase_1.ListNinosUseCase,

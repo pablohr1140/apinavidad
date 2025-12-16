@@ -1,3 +1,9 @@
+/**
+ * # nino Rules
+ * Propósito: Dominio nino Rules
+ * Pertenece a: Dominio
+ * Interacciones: Entidades, reglas de negocio
+ */
 import { NinoProps } from '@/domain/entities';
 export declare const MAX_EDAD = 10;
 export declare function calcularEdad(fechaNacimiento?: Date | null, fechaReferencia?: Date): number | null;

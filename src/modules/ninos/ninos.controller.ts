@@ -128,7 +128,7 @@ export class NinosController {
   private parseEstado(value?: string): EstadoNino | undefined {
     if (!value) return undefined;
     const normalized = value.trim().toLowerCase();
-    const allowed = ['registrado', 'validado', 'egresado', 'inhabilitado'];
+    const allowed = ['registrado', 'inhabilitado'];
     return allowed.includes(normalized) ? (normalized as EstadoNino) : undefined;
   }
 }

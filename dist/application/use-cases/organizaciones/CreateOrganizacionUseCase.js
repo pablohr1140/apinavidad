@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # Create Organizacion Use Case
+ * Propósito: Caso de uso Create Organizacion Use Case
+ * Pertenece a: Aplicación / Caso de uso
+ * Interacciones: Repositorios, servicios de dominio
+ */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -18,9 +24,10 @@ exports.CreateOrganizacionUseCase = void 0;
  * Interacciones: usa `createOrganizacionSchema`, `OrganizacionRepository` y `LogActivityUseCase`.
  */
 const common_1 = require("@nestjs/common");
-const OrganizacionRepository_1 = require("../../repositories/OrganizacionRepository");
 const OrganizacionDTOs_1 = require("../../dtos/OrganizacionDTOs");
+const OrganizacionRepository_1 = require("../../repositories/OrganizacionRepository");
 const LogActivityUseCase_1 = require("../logs/LogActivityUseCase");
+const AppError_1 = require("../../../shared/errors/AppError");
 let CreateOrganizacionUseCase = class CreateOrganizacionUseCase {
     organizacionRepository;
     logActivityUseCase;
@@ -35,6 +42,9 @@ let CreateOrganizacionUseCase = class CreateOrganizacionUseCase {
      */
     execute(data) {
         const payload = OrganizacionDTOs_1.createOrganizacionSchema.parse(data);
+        if (payload.tipo?.toLowerCase() === 'providencia' && (payload.providenciaId === null || payload.providenciaId === undefined)) {
+            throw new AppError_1.AppError('Debe enviar providenciaId cuando la organización es de tipo Providencia', 400);
+        }
         return this.organizacionRepository.create(payload).then((created) => {
             void this.logActivityUseCase.execute({
                 accion: 'organizacion.creada',

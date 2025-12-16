@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # ninos.controller
+ * Propósito: Endpoints HTTP de ninos.controller
+ * Pertenece a: HTTP Controller (Nest)
+ * Interacciones: Casos de uso, pipes/decorators Nest
+ */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -22,15 +28,15 @@ exports.NinosController = void 0;
  */
 const common_1 = require("@nestjs/common");
 const NinoDTOs_1 = require("../../application/dtos/NinoDTOs");
-const ListNinosUseCase_1 = require("../../application/use-cases/ninos/ListNinosUseCase");
+const AutoInhabilitarNinosUseCase_1 = require("../../application/use-cases/ninos/AutoInhabilitarNinosUseCase");
 const CreateNinoUseCase_1 = require("../../application/use-cases/ninos/CreateNinoUseCase");
 const GetNinoUseCase_1 = require("../../application/use-cases/ninos/GetNinoUseCase");
-const UpdateNinoUseCase_1 = require("../../application/use-cases/ninos/UpdateNinoUseCase");
 const InhabilitarNinoUseCase_1 = require("../../application/use-cases/ninos/InhabilitarNinoUseCase");
+const ListNinosUseCase_1 = require("../../application/use-cases/ninos/ListNinosUseCase");
 const RestaurarNinoUseCase_1 = require("../../application/use-cases/ninos/RestaurarNinoUseCase");
-const AutoInhabilitarNinosUseCase_1 = require("../../application/use-cases/ninos/AutoInhabilitarNinosUseCase");
-const zod_validation_pipe_1 = require("../shared/pipes/zod-validation.pipe");
+const UpdateNinoUseCase_1 = require("../../application/use-cases/ninos/UpdateNinoUseCase");
 const permissions_decorator_1 = require("../auth/decorators/permissions.decorator");
+const zod_validation_pipe_1 = require("../shared/pipes/zod-validation.pipe");
 let NinosController = class NinosController {
     listNinosUseCase;
     createNinoUseCase;
@@ -52,7 +58,7 @@ let NinosController = class NinosController {
         return this.listNinosUseCase.execute({
             periodoId: this.parseNumber(periodoId),
             organizacionId: this.parseNumber(organizacionId),
-            estado: estado ?? undefined
+            estado: this.parseEstado(estado)
         });
     }
     create(body) {
@@ -78,6 +84,22 @@ let NinosController = class NinosController {
             return undefined;
         const parsed = Number(value);
         return Number.isNaN(parsed) ? undefined : parsed;
+    }
+    parseBoolean(value) {
+        if (value === undefined)
+            return undefined;
+        if (value === '1' || value?.toLowerCase() === 'true')
+            return true;
+        if (value === '0' || value?.toLowerCase() === 'false')
+            return false;
+        return undefined;
+    }
+    parseEstado(value) {
+        if (!value)
+            return undefined;
+        const normalized = value.trim().toLowerCase();
+        const allowed = ['registrado', 'inhabilitado'];
+        return allowed.includes(normalized) ? normalized : undefined;
     }
 };
 exports.NinosController = NinosController;

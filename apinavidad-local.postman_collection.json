@@ -1,0 +1,947 @@
+{
+	"info": {
+		"_postman_id": "c1f12794-273b-4813-9557-ffb6b149e508",
+		"name": "apinavidad-local",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36579700"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"ChangeMe123!\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/refresh",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Roles",
+			"item": [
+				{
+					"name": "Eliminar role admin",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/roles/admin",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"roles",
+								"admin"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Personas",
+			"item": [
+				{
+					"name": "Listar personas",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/personas",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"personas"
+							],
+							"query": [
+								{
+									"key": "organizacionId",
+									"value": "{{organizacionId}}",
+									"disabled": true
+								},
+								{
+									"key": "search",
+									"value": "juan",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear persona",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombres\": \"Juan\",\n  \"apellidos\": \"Perez\",\n  \"run\": \"12345678\",\n  \"dv\": \"9\",\n  \"fecha_nacimiento\": \"1990-01-01\",\n  \"sexo\": \"M\",\n  \"telefono\": \"+56911112222\",\n  \"email\": \"juan@example.com\",\n  \"password\": \"ChangeMe123!\",\n  \"direccion\": \"Calle 123\",\n  \"providenciaId\": 1,\n  \"esRepresentante\": false,\n  \"roles\": [\"admin\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/personas",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"personas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener persona",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/personas/{{personaId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"personas",
+								"{{personaId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar persona",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombres\": \"Juan\",\n  \"apellidos\": \"Perez\",\n  \"telefono\": \"+56999998888\",\n  \"roles\": [\"admin\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/personas/{{personaId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"personas",
+								"{{personaId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar persona",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/personas/{{personaId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"personas",
+								"{{personaId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Organizaciones",
+			"item": [
+				{
+					"name": "Listar organizaciones",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/organizaciones",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"organizaciones"
+							],
+							"query": [
+								{
+									"key": "estado",
+									"value": "activo",
+									"disabled": true
+								},
+								{
+									"key": "tipo",
+									"value": "fundacion",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear organizacion",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombre\": \"Org Ejemplo\",\n  \"sigla\": \"ORG\",\n  \"rut\": \"76123456-7\",\n  \"tipo\": \"fundacion\",\n  \"direccion\": \"Av Principal 123\",\n  \"telefono\": \"+56223456789\",\n  \"email\": \"contacto@org.com\",\n  \"providenciaId\": 1,\n  \"estado\": \"activo\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/organizaciones",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"organizaciones"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener organizacion",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/organizaciones/{{organizacionId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"organizaciones",
+								"{{organizacionId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar organizacion",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombre\": \"Org Ejemplo\",\n  \"estado\": \"suspendido\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/organizaciones/{{organizacionId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"organizaciones",
+								"{{organizacionId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar organizacion",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/organizaciones/{{organizacionId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"organizaciones",
+								"{{organizacionId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Periodos",
+			"item": [
+				{
+					"name": "Listar periodos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/periodos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"periodos"
+							],
+							"query": [
+								{
+									"key": "estado",
+									"value": "planificado",
+									"disabled": true
+								},
+								{
+									"key": "activo",
+									"value": "true",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear periodo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombre\": \"Periodo 2025\",\n  \"fecha_inicio\": \"2025-01-01\",\n  \"fecha_fin\": \"2025-12-31\",\n  \"estado_periodo\": \"planificado\",\n  \"es_activo\": false,\n  \"descripcion\": \"Periodo anual 2025\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/periodos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"periodos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener periodo",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/periodos/{{periodoId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"periodos",
+								"{{periodoId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar periodo",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombre\": \"Periodo 2025\",\n  \"estado_periodo\": \"abierto\",\n  \"es_activo\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/periodos/{{periodoId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"periodos",
+								"{{periodoId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Abrir periodo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/periodos/{{periodoId}}/open",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"periodos",
+								"{{periodoId}}",
+								"open"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cerrar periodo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/periodos/{{periodoId}}/close",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"periodos",
+								"{{periodoId}}",
+								"close"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Activar periodo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/periodos/{{periodoId}}/activate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"periodos",
+								"{{periodoId}}",
+								"activate"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ninos",
+			"item": [
+				{
+					"name": "Listar ninos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/ninos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ninos"
+							],
+							"query": [
+								{
+									"key": "periodoId",
+									"value": "{{periodoId}}",
+									"disabled": true
+								},
+								{
+									"key": "organizacionId",
+									"value": "{{organizacionId}}",
+									"disabled": true
+								},
+								{
+									"key": "estado",
+									"value": "registrado",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear nino",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombres\": \"Juan\",\n  \"apellidos\": \"Perez\",\n  \"documento_numero\": \"12345678-9\",\n  \"run\": \"12345678\",\n  \"dv\": \"9\",\n  \"tipoDocumentoId\": 1,\n  \"nacionalidadId\": 1,\n  \"personaRegistroId\": 1,\n  \"fecha_nacimiento\": \"2018-01-01\",\n  \"sexo\": \"M\",\n  \"organizacionId\": 1,\n  \"periodoId\": 1,\n  \"edad\": 7,\n  \"tiene_discapacidad\": false,\n  \"fecha_ingreso\": \"2024-03-01\",\n  \"fecha_retiro\": null,\n  \"estado\": \"registrado\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/ninos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ninos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener nino",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/ninos/33764",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ninos",
+								"33764"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar nino",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombres\": \"Juan Actualizado\",\n  \"estado\": \"validado\",\n  \"tiene_discapacidad\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/ninos/{{ninoId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ninos",
+								"{{ninoId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Inhabilitar nino",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fecha\": \"2025-01-01\",\n  \"motivo\": \"Supera edad máxima\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/ninos/{{ninoId}}/inhabilitar",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ninos",
+								"{{ninoId}}",
+								"inhabilitar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurar nino",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/ninos/{{ninoId}}/restaurar",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ninos",
+								"{{ninoId}}",
+								"restaurar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Auto-inhabilitar (batch)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"dryRun\": true,\n  \"fechaReferencia\": \"2025-12-31\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/ninos/auto-inhabilitar",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ninos",
+								"auto-inhabilitar"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reportes",
+			"item": [
+				{
+					"name": "Ninos inhabilitados",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/reportes/ninos/inhabilitados",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"reportes",
+								"ninos",
+								"inhabilitados"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listado JSON",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/reportes/ninos/listado",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"reportes",
+								"ninos",
+								"listado"
+							],
+							"query": [
+								{
+									"key": "periodoId",
+									"value": "{{periodoId}}",
+									"disabled": true
+								},
+								{
+									"key": "organizacionId",
+									"value": "{{organizacionId}}",
+									"disabled": true
+								},
+								{
+									"key": "estado",
+									"value": "registrado",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listado PDF",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/reportes/ninos/listado.pdf",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"reportes",
+								"ninos",
+								"listado.pdf"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listado XLSX",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/reportes/ninos/listado.xlsx",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"reportes",
+								"ninos",
+								"listado.xlsx"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000"
+		},
+		{
+			"key": "accessToken",
+			"value": ""
+		},
+		{
+			"key": "refreshToken",
+			"value": ""
+		},
+		{
+			"key": "personaId",
+			"value": "1"
+		},
+		{
+			"key": "organizacionId",
+			"value": "1"
+		},
+		{
+			"key": "periodoId",
+			"value": "1"
+		},
+		{
+			"key": "ninoId",
+			"value": "1"
+		}
+	]
+}

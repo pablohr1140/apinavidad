@@ -1,8 +1,0 @@
-/**
- * # periodos.module
- * Propósito: Módulo de agregación periodos.module
- * Pertenece a: Módulo Nest
- * Interacciones: Providers, controllers
- */
-export declare class PeriodosModule {
-}

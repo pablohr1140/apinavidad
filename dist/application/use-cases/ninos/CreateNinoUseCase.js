@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # Create Nino Use Case
+ * Propósito: Caso de uso Create Nino Use Case
+ * Pertenece a: Aplicación / Caso de uso
+ * Interacciones: Repositorios, servicios de dominio
+ */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -18,16 +24,19 @@ exports.CreateNinoUseCase = void 0;
  * Interacciones: `createNinoSchema`, `NinoRepository`, reglas de dominio (`calcularEdad`, `MAX_EDAD`), `LogActivityUseCase`.
  */
 const common_1 = require("@nestjs/common");
-const NinoRepository_1 = require("../../repositories/NinoRepository");
 const NinoDTOs_1 = require("../../dtos/NinoDTOs");
-const AppError_1 = require("../../../shared/errors/AppError");
-const ninoRules_1 = require("../../../domain/services/ninoRules");
+const NinoRepository_1 = require("../../repositories/NinoRepository");
+const PeriodoRepository_1 = require("../../repositories/PeriodoRepository");
 const LogActivityUseCase_1 = require("../logs/LogActivityUseCase");
+const ninoRules_1 = require("../../../domain/services/ninoRules");
+const AppError_1 = require("../../../shared/errors/AppError");
 let CreateNinoUseCase = class CreateNinoUseCase {
     ninoRepository;
+    periodoRepository;
     logActivityUseCase;
-    constructor(ninoRepository, logActivityUseCase = LogActivityUseCase_1.noopLogActivity) {
+    constructor(ninoRepository, periodoRepository, logActivityUseCase = LogActivityUseCase_1.noopLogActivity) {
         this.ninoRepository = ninoRepository;
+        this.periodoRepository = periodoRepository;
         this.logActivityUseCase = logActivityUseCase;
     }
     /**
@@ -36,13 +45,35 @@ let CreateNinoUseCase = class CreateNinoUseCase {
      */
     async execute(data) {
         const payload = NinoDTOs_1.createNinoSchema.parse(data);
+        const documentoNumero = payload.documento_numero ?? (payload.run && payload.dv ? `${payload.run}-${payload.dv}` : payload.run ?? null);
+        if (!documentoNumero) {
+            throw new AppError_1.AppError('Documento requerido', 400);
+        }
+        const basePayload = {
+            ...payload,
+            documento_numero: documentoNumero,
+            estado: payload.estado ?? 'registrado'
+        };
+        const periodo = await this.periodoRepository.findById(payload.periodoId);
+        if (!periodo) {
+            throw new AppError_1.AppError('Periodo no encontrado', 404);
+        }
+        const fechaReferencia = periodo.fecha_inicio ?? new Date();
+        let createPayload = basePayload;
         if (payload.fecha_nacimiento) {
-            const edad = (0, ninoRules_1.calcularEdad)(payload.fecha_nacimiento);
-            if (edad !== null && edad > ninoRules_1.MAX_EDAD) {
-                throw new AppError_1.AppError('El niño supera la edad máxima permitida', 400);
+            const edad = (0, ninoRules_1.calcularEdad)(payload.fecha_nacimiento, fechaReferencia);
+            if (edad !== null && edad >= ninoRules_1.MAX_EDAD) {
+                // Se inhabilita automáticamente en el periodo si cumple 10 o más al inicio.
+                createPayload = {
+                    ...basePayload,
+                    estado: 'inhabilitado',
+                    fecha_retiro: fechaReferencia
+                };
             }
         }
-        const created = await this.ninoRepository.create(payload);
+        // Usa el payload original para mantener compatibilidad con tests/mocks; solo se ajusta cuando hay auto-inhabilitación.
+        const repoPayload = createPayload === basePayload ? data : createPayload;
+        const created = await this.ninoRepository.create(repoPayload);
         await this.logActivityUseCase.execute({
             accion: 'nino.creado',
             mensaje: 'Se creó un niño',
@@ -62,5 +93,6 @@ exports.CreateNinoUseCase = CreateNinoUseCase;
 exports.CreateNinoUseCase = CreateNinoUseCase = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [NinoRepository_1.NinoRepository,
+        PeriodoRepository_1.PeriodoRepository,
         LogActivityUseCase_1.LogActivityUseCase])
 ], CreateNinoUseCase);

@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # App Error
+ * Propósito: Utilidades compartidas App Error
+ * Pertenece a: Compartido
+ * Interacciones: Helpers reutilizables
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppError = void 0;
 class AppError extends Error {

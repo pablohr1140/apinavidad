@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # auth
+ * Propósito: Config auth
+ * Pertenece a: Configuración
+ * Interacciones: Variables de entorno, bootstrap
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.buildCookieOptions = exports.REFRESH_TOKEN_COOKIE_NAME = exports.ACCESS_TOKEN_COOKIE_NAME = exports.REFRESH_TOKEN_TTL_MINUTES = exports.ACCESS_TOKEN_TTL_MINUTES = void 0;
 const env_1 = require("./env");

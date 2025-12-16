@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # personas.controller
+ * Propósito: Endpoints HTTP de personas.controller
+ * Pertenece a: HTTP Controller (Nest)
+ * Interacciones: Casos de uso, pipes/decorators Nest
+ */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -22,14 +28,14 @@ exports.PersonasController = void 0;
  */
 const common_1 = require("@nestjs/common");
 const PersonaDTOs_1 = require("../../application/dtos/PersonaDTOs");
-const ListPersonasUseCase_1 = require("../../application/use-cases/personas/ListPersonasUseCase");
 const CreatePersonaUseCase_1 = require("../../application/use-cases/personas/CreatePersonaUseCase");
-const GetPersonaUseCase_1 = require("../../application/use-cases/personas/GetPersonaUseCase");
-const UpdatePersonaUseCase_1 = require("../../application/use-cases/personas/UpdatePersonaUseCase");
 const DeletePersonaUseCase_1 = require("../../application/use-cases/personas/DeletePersonaUseCase");
-const zod_validation_pipe_1 = require("../shared/pipes/zod-validation.pipe");
-const permissions_decorator_1 = require("../auth/decorators/permissions.decorator");
+const GetPersonaUseCase_1 = require("../../application/use-cases/personas/GetPersonaUseCase");
+const ListPersonasUseCase_1 = require("../../application/use-cases/personas/ListPersonasUseCase");
+const UpdatePersonaUseCase_1 = require("../../application/use-cases/personas/UpdatePersonaUseCase");
 const auth_user_decorator_1 = require("../auth/decorators/auth-user.decorator");
+const permissions_decorator_1 = require("../auth/decorators/permissions.decorator");
+const zod_validation_pipe_1 = require("../shared/pipes/zod-validation.pipe");
 let PersonasController = class PersonasController {
     listPersonasUseCase;
     createPersonaUseCase;

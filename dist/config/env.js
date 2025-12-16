@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # env
+ * Propósito: Config env
+ * Pertenece a: Configuración
+ * Interacciones: Variables de entorno, bootstrap
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.env = void 0;
 /**

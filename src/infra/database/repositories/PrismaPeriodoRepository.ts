@@ -38,6 +38,21 @@ export class PrismaPeriodoRepository implements PeriodoRepository {
     return periodo ? this.toDomain(periodo) : null;
   }
 
+  async findOverlapping(params: { start?: Date | null; end?: Date | null; excludeId?: number }): Promise<PeriodoProps | null> {
+    const start = params.start ?? new Date('0001-01-01');
+    const end = params.end ?? new Date('9999-12-31');
+
+    const overlap = await this.prisma.periodos.findFirst({
+      where: {
+        ...(params.excludeId ? { id: { not: params.excludeId } } : {}),
+        NOT: [{ fecha_inicio: { gt: end } }, { fecha_fin: { lt: start } }]
+      },
+      orderBy: { id: 'asc' }
+    });
+
+    return overlap ? this.toDomain(overlap) : null;
+  }
+
   async create(data: Omit<PeriodoProps, 'id' | 'createdAt' | 'updatedAt'>): Promise<PeriodoProps> {
     const created = await this.prisma.periodos.create({ data: this.mapCreateData(data) });
     return this.toDomain(created);
@@ -49,7 +64,16 @@ export class PrismaPeriodoRepository implements PeriodoRepository {
   }
 
   async open(id: number): Promise<PeriodoProps> {
-    const updated = await this.prisma.periodos.update({ where: { id }, data: { estado_periodo: 'abierto' } });
+    const updated = await this.prisma.$transaction(async (tx) => {
+      // Garantiza un único periodo abierto: cierra y desactiva los demás antes de abrir este
+      await tx.periodos.updateMany({
+        where: { id: { not: id }, estado_periodo: 'abierto' },
+        data: { estado_periodo: 'cerrado', es_activo: false }
+      });
+
+      return tx.periodos.update({ where: { id }, data: { estado_periodo: 'abierto', es_activo: true } });
+    });
+
     return this.toDomain(updated);
   }
 
@@ -61,7 +85,8 @@ export class PrismaPeriodoRepository implements PeriodoRepository {
   /** Desactiva todos y activa el periodo dado dentro de una transacción. */
   async activate(id: number): Promise<PeriodoProps> {
     const periodo = await this.prisma.$transaction(async (tx) => {
-      await tx.periodos.updateMany({ data: { es_activo: false } });
+      // Desactiva y cierra cualquier otro abierto antes de activar este
+      await tx.periodos.updateMany({ data: { es_activo: false, estado_periodo: 'cerrado' }, where: { id: { not: id } } });
       return tx.periodos.update({ where: { id }, data: { es_activo: true, estado_periodo: 'abierto' } });
     });
 
@@ -74,8 +99,7 @@ export class PrismaPeriodoRepository implements PeriodoRepository {
       fecha_inicio: data.fecha_inicio ?? null,
       fecha_fin: data.fecha_fin ?? null,
       estado_periodo: data.estado_periodo,
-      es_activo: data.es_activo,
-      descripcion: data.descripcion ?? null
+      es_activo: data.es_activo
     };
   }
 
@@ -86,7 +110,6 @@ export class PrismaPeriodoRepository implements PeriodoRepository {
     if (data.fecha_fin !== undefined) payload.fecha_fin = data.fecha_fin ?? null;
     if (data.estado_periodo !== undefined) payload.estado_periodo = data.estado_periodo;
     if (data.es_activo !== undefined) payload.es_activo = data.es_activo;
-    if (data.descripcion !== undefined) payload.descripcion = data.descripcion ?? null;
     return payload;
   }
 
@@ -100,7 +123,6 @@ export class PrismaPeriodoRepository implements PeriodoRepository {
       fecha_fin: entity.fecha_fin ? new Date(entity.fecha_fin) : undefined,
       estado_periodo: entity.estado_periodo as EstadoPeriodo,
       es_activo: Boolean(entity.es_activo),
-      descripcion: entity.descripcion ?? undefined,
       createdAt: (entity as any).created_at ?? new Date(),
       updatedAt: (entity as any).updated_at ?? new Date()
     };

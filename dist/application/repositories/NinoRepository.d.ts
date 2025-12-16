@@ -1,17 +1,23 @@
 /**
+ * # Nino Repository
+ * Propósito: Contrato de repositorio Nino Repository
+ * Pertenece a: Aplicación / Repositorio contrato
+ * Interacciones: Capa de infraestructura que implementa el contrato
+ */
+/**
  * # NinoRepository
  *
  * Propósito: contrato de persistencia para niños y gestión de su estado.
  * Pertenece a: Application layer.
  * Interacciones: `NinoProps`; usado por casos de uso de niños y jobs de inhabilitación.
  */
-import { NinoProps } from '@/domain/entities';
+import { EstadoNino, NinoProps } from '@/domain/entities';
 export declare abstract class NinoRepository {
     /** Lista niños con filtros variados (periodo, organización, estado, edad, prioridad). */
     abstract findMany(params?: {
         periodoId?: number;
         organizacionId?: number;
-        estado?: string;
+        estado?: EstadoNino;
         edadMin?: number;
         edadMax?: number;
         prioridad?: number;

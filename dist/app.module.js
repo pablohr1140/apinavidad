@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * # app.module
+ * Propósito: Archivo app.module
+ * Pertenece a: General
+ * Interacciones: N/A
+ */
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -16,20 +22,20 @@ exports.AppModule = void 0;
  * Pertenece a: capa de infraestructura/orquestación Nest.
  */
 const common_1 = require("@nestjs/common");
-const core_1 = require("@nestjs/core");
 const config_1 = require("@nestjs/config");
-const database_module_1 = require("./infra/database/database.module");
+const core_1 = require("@nestjs/core");
 const cache_module_1 = require("./infra/cache/cache.module");
+const database_module_1 = require("./infra/database/database.module");
 const auth_module_1 = require("./modules/auth/auth.module");
-const personas_module_1 = require("./modules/personas/personas.module");
+const paseto_auth_guard_1 = require("./modules/auth/guards/paseto-auth.guard");
+const permissions_guard_1 = require("./modules/auth/guards/permissions.guard");
+const logs_module_1 = require("./modules/logs/logs.module");
+const ninos_module_1 = require("./modules/ninos/ninos.module");
 const organizaciones_module_1 = require("./modules/organizaciones/organizaciones.module");
 const periodos_module_1 = require("./modules/periodos/periodos.module");
-const ninos_module_1 = require("./modules/ninos/ninos.module");
+const personas_module_1 = require("./modules/personas/personas.module");
 const reportes_module_1 = require("./modules/reportes/reportes.module");
-const logs_module_1 = require("./modules/logs/logs.module");
-const paseto_auth_guard_1 = require("./modules/auth/guards/paseto-auth.guard");
 const health_controller_1 = require("./modules/shared/health.controller");
-const permissions_guard_1 = require("./modules/auth/guards/permissions.guard");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;

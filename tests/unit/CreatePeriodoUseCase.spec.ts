@@ -20,12 +20,14 @@ const buildPayload = () => ({
 });
 
 const makeRepository = () => ({
-  create: vi.fn()
-}) as Pick<PeriodoRepository, 'create'> as PeriodoRepository;
+  create: vi.fn(),
+  findOverlapping: vi.fn()
+}) as Pick<PeriodoRepository, 'create' | 'findOverlapping'> as PeriodoRepository;
 
 describe('CreatePeriodoUseCase', () => {
   it('crea periodo válido', async () => {
     const repository = makeRepository();
+    repository.findOverlapping = vi.fn().mockResolvedValue(null);
     repository.create = vi.fn().mockResolvedValue({ id: 1 } as any);
     const useCase = new CreatePeriodoUseCase(repository);
 

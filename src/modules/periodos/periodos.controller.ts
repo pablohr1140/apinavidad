@@ -23,6 +23,7 @@ import {
 import { ActivatePeriodoUseCase } from '@/application/use-cases/periodos/ActivatePeriodoUseCase';
 import { ClosePeriodoUseCase } from '@/application/use-cases/periodos/ClosePeriodoUseCase';
 import { CreatePeriodoUseCase } from '@/application/use-cases/periodos/CreatePeriodoUseCase';
+import { GetPeriodoUseCase } from '@/application/use-cases/periodos/GetPeriodoUseCase';
 import { ListPeriodosUseCase } from '@/application/use-cases/periodos/ListPeriodosUseCase';
 import { OpenPeriodoUseCase } from '@/application/use-cases/periodos/OpenPeriodoUseCase';
 import { UpdatePeriodoUseCase } from '@/application/use-cases/periodos/UpdatePeriodoUseCase';
@@ -37,8 +38,15 @@ export class PeriodosController {
     private readonly updatePeriodoUseCase: UpdatePeriodoUseCase,
     private readonly openPeriodoUseCase: OpenPeriodoUseCase,
     private readonly closePeriodoUseCase: ClosePeriodoUseCase,
-    private readonly activatePeriodoUseCase: ActivatePeriodoUseCase
+    private readonly activatePeriodoUseCase: ActivatePeriodoUseCase,
+    private readonly getPeriodoUseCase: GetPeriodoUseCase
   ) {}
+
+  @Permissions('periodos.view')
+  @Get(':id')
+  get(@Param('id', ParseIntPipe) id: number) {
+    return this.getPeriodoUseCase.execute(id);
+  }
 
   @Permissions('periodos.view')
   @Get()

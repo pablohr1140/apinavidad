@@ -19,14 +19,17 @@ const mockUseCase = <T>(execute = vi.fn()) => ({ execute }) as unknown as T;
 describe('OrganizacionesController', () => {
   let listExecute: ReturnType<typeof vi.fn>;
   let getExecute: ReturnType<typeof vi.fn>;
+  let createWithProvExecute: ReturnType<typeof vi.fn>;
   let controller: OrganizacionesController;
 
   beforeEach(() => {
     listExecute = vi.fn();
     getExecute = vi.fn();
+    createWithProvExecute = vi.fn();
     controller = new OrganizacionesController(
       { execute: listExecute } as unknown as ListOrganizacionesUseCase,
       mockUseCase<CreateOrganizacionUseCase>(),
+      { execute: createWithProvExecute } as unknown as any,
       { execute: getExecute } as unknown as GetOrganizacionUseCase,
       mockUseCase<UpdateOrganizacionUseCase>(),
       mockUseCase<DeleteOrganizacionUseCase>()
