@@ -1,16 +1,10 @@
 /**
- * # periodos.controller
- * Propósito: Endpoints HTTP de periodos.controller
- * Pertenece a: HTTP Controller (Nest)
- * Interacciones: Casos de uso, pipes/decorators Nest
- */
-
-/**
- * # PeriodosController
- *
- * Propósito: administra endpoints de periodos (listado, creación, actualización y cambios de estado).
- * Pertenece a: Capa HTTP (NestJS controller).
- * Interacciones: casos de uso de periodos, validación Zod y permisos.
+ * PeriodosController
+ * Capa: HTTP
+ * Responsabilidad: Gestionar periodos (listar, crear, leer, actualizar, abrir/cerrar/activar) con DTOs Zod.
+ * Seguridad actual: Guards globales + `@Permissions` por acción (`periodos.view/create/update`).
+ * Interacciones: casos de uso de periodos, pipes de parseo (bool/int), decorador `@Permissions`.
+ * Notas: filtrado por estado/activo en listado; acciones de cambio de estado reutilizan permisos de update.
  */
 import { Body, Controller, Get, Param, ParseBoolPipe, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
 

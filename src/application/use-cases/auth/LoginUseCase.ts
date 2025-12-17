@@ -1,16 +1,11 @@
 /**
- * # Login Use Case
- * Propósito: Caso de uso Login Use Case
- * Pertenece a: Aplicación / Caso de uso
- * Interacciones: Repositorios, servicios de dominio
- */
-
-/**
- * # LoginUseCase
- *
- * Propósito: autenticar usuarios, generar tokens y auditar inicio de sesión.
- * Pertenece a: Application layer.
- * Interacciones: `UserRepository`, `HashProvider`, `TokenProvider`, `AppError`, `LogActivityUseCase`.
+ * LoginUseCase
+ * Capa: Aplicación / Caso de uso
+ * Responsabilidad: Autenticar credenciales, generar access/refresh PASETO, crear sesión (sessionId/tokenVersion) y registrar auditoría.
+ * Dependencias: UserRepository (DB), HashProvider (bcrypt), TokenProvider (PasetoService), RefreshTokenStore (Redis), LogActivityUseCase.
+ * Flujo: valida DTO -> busca usuario -> compara hash -> genera tokens con metadatos -> persiste sesión en Redis -> audita login.
+ * Efectos: lectura DB, escritura Redis (sesión refresh), log de actividad.
+ * Endpoints impactados: POST /auth/login (AuthController).
  */
 import { Injectable } from '@nestjs/common';
 
@@ -20,6 +15,7 @@ import { UserRepository } from '@/application/repositories/UserRepository';
 import { LogActivityUseCase, noopLogActivity } from '@/application/use-cases/logs/LogActivityUseCase';
 import { ACCESS_TOKEN_TTL_MINUTES, REFRESH_TOKEN_TTL_MINUTES } from '@/config/auth';
 import { AppError } from '@/shared/errors/AppError';
+import { RefreshTokenStore } from '@/modules/auth/services/refresh-token.store';
 
 @Injectable()
 export class LoginUseCase {
@@ -27,12 +23,15 @@ export class LoginUseCase {
     private readonly userRepository: UserRepository,
     private readonly hashProvider: HashProvider,
     private readonly tokenProvider: TokenProvider,
+    private readonly refreshTokenStore: RefreshTokenStore,
     private readonly logActivityUseCase: LogActivityUseCase = noopLogActivity
   ) {}
 
   /**
-   * Valida credenciales, genera tokens de acceso/refresh y registra auditoría.
-   * @param data - DTO de login a validar.
+    * Valida credenciales, genera tokens de acceso/refresh con sessionId/tokenVersion y registra auditoría.
+    * @param data DTO de login (email, password)
+    * @returns accessToken, refreshToken y datos del usuario (id, email, roles)
+    * Efectos colaterales: escritura en Redis (sesión refresh) y log de actividad.
    */
   async execute(data: LoginDTO) {
     const payload = loginSchema.parse(data);
@@ -46,12 +45,21 @@ export class LoginUseCase {
       throw new AppError('Credenciales inválidas', 401);
     }
 
-    const tokenPayload = { sub: user.id.toString(), email: user.email };
+    const basePayload = { sub: user.id.toString(), email: user.email };
+    const { sessionId, tokenVersion } = this.refreshTokenStore.buildNewSession();
 
     const [accessToken, refreshToken] = await Promise.all([
-      this.tokenProvider.sign(tokenPayload, { expiresInMinutes: ACCESS_TOKEN_TTL_MINUTES }),
-      this.tokenProvider.sign(tokenPayload, { expiresInMinutes: REFRESH_TOKEN_TTL_MINUTES })
+      this.tokenProvider.sign(
+        { ...basePayload, sessionId, tokenType: 'access' },
+        { expiresInMinutes: ACCESS_TOKEN_TTL_MINUTES }
+      ),
+      this.tokenProvider.sign(
+        { ...basePayload, sessionId, tokenVersion, tokenType: 'refresh' },
+        { expiresInMinutes: REFRESH_TOKEN_TTL_MINUTES }
+      )
     ]);
+
+    await this.refreshTokenStore.persistSession(basePayload.sub, sessionId, tokenVersion);
 
     await this.logActivityUseCase.execute({
       personaId: user.id,

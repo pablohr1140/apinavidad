@@ -34,6 +34,8 @@ export class PrismaNinoRepository implements NinoRepository {
     edadMax?: number;
     prioridad?: number;
     tiempoParaInhabilitar?: number;
+    skip?: number;
+    take?: number;
   }): Promise<NinoProps[]> {
     const where: Prisma.ninosWhereInput = {};
 
@@ -57,6 +59,9 @@ export class PrismaNinoRepository implements NinoRepository {
 
     // Nota: el filtro por prioridad se omite porque el esquema Prisma no expone dicho campo.
 
+    const take = params?.take !== undefined ? Math.min(Math.max(params.take, 1), 500) : 100;
+    const skip = params?.skip ?? 0;
+
     const records = await this.prisma.ninos.findMany({
       where,
       orderBy: [
@@ -64,7 +69,9 @@ export class PrismaNinoRepository implements NinoRepository {
         { apellidos: 'asc' },
         { nombres: 'asc' },
         { id: 'asc' }
-      ]
+      ],
+      skip,
+      take
     });
     return records.map((record) => this.toDomain(record));
   }

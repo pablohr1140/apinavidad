@@ -1,16 +1,10 @@
 /**
- * # personas.controller
- * Propósito: Endpoints HTTP de personas.controller
- * Pertenece a: HTTP Controller (Nest)
- * Interacciones: Casos de uso, pipes/decorators Nest
- */
-
-/**
- * # PersonasController
- *
- * Propósito: gestiona endpoints de personas (listado, CRUD) con validación y permisos.
- * Pertenece a: Capa HTTP (NestJS controller).
- * Interacciones: casos de uso de personas, decoradores de permisos y usuario autenticado.
+ * PersonasController
+ * Capa: HTTP
+ * Responsabilidad: CRUD de personas (listar, crear, leer, actualizar, borrar) con validación Zod.
+ * Seguridad actual: Guards globales + `@Permissions` por acción (`personas.view/create/update/delete`). Delete exige usuario autenticado via `@AuthUser`.
+ * Interacciones: casos de uso de personas, decoradores `@Permissions` y `@AuthUser`, pipes Nest/Zod.
+ * Notas: el borrado devuelve 204; lanza Forbidden si no hay user en contexto (asumido poblado por PasetoAuthGuard).
  */
 import { Body, Controller, Delete, ForbiddenException, Get, HttpCode, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
 

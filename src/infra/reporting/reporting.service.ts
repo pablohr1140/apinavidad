@@ -1,23 +1,11 @@
 /**
- * # ReportingService
- * Propósito: Generar reportes PDF/Excel en el backend para descargas imprimibles y masivas.
- * Pertenece a: Infraestructura / Reporting.
- * Interacciones: pdfmake para PDF, ExcelJS para XLSX; se ejecuta en el servidor porque ~18k registros serían costosos en el frontend.
- *
- * Notas PDF (pdfmake):
- * - Construye documentos declarando un docDefinition (content, styles, header, footer, tables).
- * - Tablas: usar `table.body` con filas/columnas; se pueden agregar widths, layout y estilos.
- * - Cabeceras/pies: `header`/`footer` pueden ser strings o funciones que reciben página actual.
- * - Exportable: `printer.createPdfKitDocument(docDefinition)` y acumular buffers para devolver un `Buffer` descargable.
- *
- * Notas Excel (ExcelJS):
- * - Crear workbook: `const workbook = new ExcelJS.Workbook();`.
- * - Hojas: `const sheet = workbook.addWorksheet('Nombre');`.
- * - Datos masivos: `sheet.addRows(rowsArray);` (stream interno, evita loops manuales gigantes).
- * - Estilos: `sheet.getRow(1).font = { bold: true };`, widths con `sheet.columns`.
- * - Exportable: `await workbook.xlsx.writeBuffer()` produce un `Buffer` .xlsx listo para respuesta HTTP.
- *
- * Consideración crítica: todo se genera en el servidor para soportar ~18k registros sin bloquear el frontend.
+ * ReportingService
+ * Capa: Infraestructura / Reporting
+ * Responsabilidad: Construir buffers PDF (pdfmake) y Excel (exceljs) a partir de filas ya preparadas.
+ * Dependencias: pdfmake, exceljs.
+ * Flujo: buildPdf/buildExcel -> formatea headers/rows -> devuelve Buffer listo para envío HTTP/archivo.
+ * Endpoints/servicios impactados: ReportesController (descargas síncronas) y ReportExportService (export async).
+ * Frontend: recibe archivos binarios desde los endpoints de reportes/exportes.
  */
 import ExcelJS from 'exceljs';
 import PdfPrinter from 'pdfmake';
@@ -48,7 +36,7 @@ export class ReportingService {
       info: { title },
       pageOrientation: 'landscape',
       header: { text: title, alignment: 'center', margin: [0, 10, 0, 10] },
-      footer: (currentPage, pageCount) => ({ text: `${currentPage} / ${pageCount}`, alignment: 'right', margin: [0, 10, 20, 0] }),
+      footer: (currentPage: number, pageCount: number) => ({ text: `${currentPage} / ${pageCount}`, alignment: 'right', margin: [0, 10, 20, 0] }),
       content: [
         { text: title, style: 'title', margin: [0, 0, 0, 10] },
         {
@@ -71,7 +59,7 @@ export class ReportingService {
 
     const chunks: Buffer[] = [];
     return await new Promise<Buffer>((resolve, reject) => {
-      pdfDoc.on('data', (chunk) => chunks.push(chunk as Buffer));
+      pdfDoc.on('data', (chunk: Buffer) => chunks.push(chunk as Buffer));
       pdfDoc.on('end', () => resolve(Buffer.concat(chunks)));
       pdfDoc.on('error', reject);
       pdfDoc.end();
@@ -98,8 +86,9 @@ export class ReportingService {
     const data = rows.map((row) => headers.map((key) => row[key]));
     sheet.addRows(data);
 
-    sheet.columns?.forEach((col) => {
-      col.width = Math.min(30, Math.max(12, col.header?.toString().length ?? 12));
+    sheet.columns?.forEach((col: Partial<ExcelJS.Column>) => {
+      const header = col.header as string | number | undefined;
+      col.width = Math.min(30, Math.max(12, header?.toString().length ?? 12));
     });
 
     const excelBuffer = await workbook.xlsx.writeBuffer();

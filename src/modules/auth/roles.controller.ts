@@ -1,3 +1,11 @@
+/**
+ * RolesController
+ * Capa: HTTP
+ * Responsabilidad: Exponer la eliminación de roles por clave.
+ * Seguridad actual: Protegido solo por guards globales (Paseto + Permissions). No usa `@Permissions` específico; requiere que el guard de auth pueble `user` con rol.
+ * Flujo: DELETE /roles/:roleKey -> extrae actor vía `@AuthUser` -> delega a `RoleAdminService.deleteRole` pasando rol del actor y rol objetivo.
+ * Interacciones: `AuthUser` decorator lee del request poblado por `PasetoAuthGuard`; `RoleAdminService` aplica la política interna existente.
+ */
 import { Controller, Delete, HttpCode, HttpStatus, Param, UnauthorizedException } from '@nestjs/common';
 
 import type { AuthenticatedUser } from '@/application/contracts/AuthenticatedUser';

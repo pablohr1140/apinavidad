@@ -8,6 +8,7 @@
 import { Module } from '@nestjs/common';
 
 import { ReportesController } from './reportes.controller';
+import { ReportExportService } from './report-export.service';
 
 import { ReportingService } from '@/infra/reporting/reporting.service';
 import { NinosModule } from '@/modules/ninos/ninos.module';
@@ -15,6 +16,6 @@ import { NinosModule } from '@/modules/ninos/ninos.module';
 @Module({
   imports: [NinosModule],
   controllers: [ReportesController],
-  providers: [ReportingService]
+  providers: [ReportingService, ReportExportService]
 })
 export class ReportesModule {}

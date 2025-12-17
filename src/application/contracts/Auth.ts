@@ -9,6 +9,12 @@
 export interface TokenPayload {
   sub: string;
   email: string;
+  /** Opcional: identifica la sesión de refresh en curso. */
+  sessionId?: string;
+  /** Opcional: versión incremental para rotación de refresh tokens. */
+  tokenVersion?: number;
+  /** Diferencia access vs refresh para evitar uso cruzado. */
+  tokenType?: 'access' | 'refresh';
 }
 
 export abstract class TokenProvider {

@@ -1,16 +1,18 @@
 /**
- * # ninos.controller
- * Propósito: Endpoints HTTP de ninos.controller
- * Pertenece a: HTTP Controller (Nest)
- * Interacciones: Casos de uso, pipes/decorators Nest
- */
-
-/**
- * # NinosController
- *
- * Propósito: expone CRUD y acciones de niños (inhabilitar/restaurar/auto-inhabilitar).
- * Pertenece a: Capa HTTP (NestJS controller).
- * Interacciones: casos de uso de niños, validación Zod y permisos.
+ * NinosController
+ * Capa: HTTP
+ * Responsabilidad: Exponer CRUD y acciones de niños (listado, alta, lectura, edición, inhabilitar/restaurar, auto-inhabilitar lote).
+ * Seguridad actual: guardias globales + `@Permissions` según acción (view/create/update). Sin endpoints públicos.
+ * Endpoints y contratos:
+ *  - GET /ninos: Query { periodoId?, organizacionId?, estado?, page?, limit? } -> resp paginada según use case.
+ *  - POST /ninos: Body CreateNinoDTO (Zod) -> resp niño creado.
+ *  - GET /ninos/:id: Param id (int) -> resp detalle.
+ *  - PUT /ninos/:id: Body UpdateNinoDTO -> resp niño actualizado.
+ *  - POST /ninos/:id/inhabilitar: Body InhabilitarNinoDTO -> resp resultado de inhabilitación.
+ *  - POST /ninos/:id/restaurar: sin body -> resp restauración.
+ *  - POST /ninos/auto-inhabilitar: Body AutoInhabilitarNinosDTO -> resp lote procesado.
+ * Headers/cookies: requiere cookies de auth; `X-CSRF-Token` en mutaciones POST/PUT; Authorization Bearer opcional.
+ * Ejemplo de integración frontend (descriptivo): usar GET paginado para listados; para editar, enviar PUT con DTO validado; inhabilitar/restaurar via POST a la acción con CSRF y cookies.
  */
 import {
   Body,
@@ -33,6 +35,7 @@ import {
   type InhabilitarNinoDTO,
   type AutoInhabilitarNinosDTO
 } from '@/application/dtos/NinoDTOs';
+import { ListNinosQueryDto } from '@/application/dtos/NinoListDTO';
 import { AutoInhabilitarNinosUseCase } from '@/application/use-cases/ninos/AutoInhabilitarNinosUseCase';
 import { CreateNinoUseCase } from '@/application/use-cases/ninos/CreateNinoUseCase';
 import { GetNinoUseCase } from '@/application/use-cases/ninos/GetNinoUseCase';
@@ -58,15 +61,17 @@ export class NinosController {
 
   @Permissions('ninos.view')
   @Get()
-  list(
-    @Query('periodoId') periodoId?: string,
-    @Query('organizacionId') organizacionId?: string,
-    @Query('estado') estado?: string
-  ) {
+  list(@Query() query: ListNinosQueryDto) {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 100;
+    const skip = (page - 1) * limit;
+
     return this.listNinosUseCase.execute({
-      periodoId: this.parseNumber(periodoId),
-      organizacionId: this.parseNumber(organizacionId),
-      estado: this.parseEstado(estado)
+      periodoId: query.periodoId,
+      organizacionId: query.organizacionId,
+      estado: this.parseEstado(query.estado),
+      skip,
+      take: limit
     });
   }
 
@@ -110,12 +115,6 @@ export class NinosController {
   @Post('auto-inhabilitar')
   autoInhabilitar(@Body(new ZodValidationPipe(autoInhabilitarSchema)) body: AutoInhabilitarNinosDTO) {
     return this.autoInhabilitarNinosUseCase.execute(body);
-  }
-
-  private parseNumber(value?: string) {
-    if (!value) return undefined;
-    const parsed = Number(value);
-    return Number.isNaN(parsed) ? undefined : parsed;
   }
 
   private parseBoolean(value?: string) {

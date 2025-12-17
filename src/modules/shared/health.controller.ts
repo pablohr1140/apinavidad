@@ -1,16 +1,9 @@
 /**
- * # health.controller
- * Propósito: Endpoints HTTP de health.controller
- * Pertenece a: HTTP Controller (Nest)
- * Interacciones: Casos de uso, pipes/decorators Nest
- */
-
-/**
- * # HealthController
- *
- * Propósito: endpoint público de liveness/healthcheck.
- * Pertenece a: Capa HTTP (NestJS controller).
- * Interacciones: decorador `Public` para omitir guard de auth.
+ * HealthController
+ * Capa: HTTP / Observabilidad
+ * Responsabilidad: Exponer `/health` como endpoint de liveness sin requerir autenticación.
+ * Interacciones: usa el decorador `@Public` para saltar los guards globales (Paseto + Permissions).
+ * Notas: diseñado para probes de load balancer/monitoring; no incluir lógica de negocio aquí.
  */
 import { Controller, Get } from '@nestjs/common';
 

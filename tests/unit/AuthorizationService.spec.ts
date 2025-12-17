@@ -94,4 +94,10 @@ describe('AuthorizationService', () => {
     await service.invalidateRoleCache('ADMIN');
     expect(redisService.del).toHaveBeenCalledWith('role-permissions:ADMIN');
   });
+
+  it('invalidates multiple caches when requested', async () => {
+    await service.invalidateRolesCache(['ADMIN', 'SUP']);
+    expect(redisService.del).toHaveBeenCalledWith('role-permissions:ADMIN');
+    expect(redisService.del).toHaveBeenCalledWith('role-permissions:SUP');
+  });
 });

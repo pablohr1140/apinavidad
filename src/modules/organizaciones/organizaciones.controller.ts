@@ -1,16 +1,17 @@
 /**
- * # organizaciones.controller
- * Propósito: Endpoints HTTP de organizaciones.controller
- * Pertenece a: HTTP Controller (Nest)
- * Interacciones: Casos de uso, pipes/decorators Nest
- */
-
-/**
- * # OrganizacionesController
- *
- * Propósito: expone endpoints CRUD para organizaciones con validación y permisos.
- * Pertenece a: Capa HTTP (NestJS controller).
- * Interacciones: casos de uso de organizaciones, pipe Zod, decorator de permisos.
+ * OrganizacionesController
+ * Capa: HTTP
+ * Responsabilidad: CRUD de organizaciones y alta con providencia; valida DTOs y orquesta casos de uso.
+ * Seguridad actual: guardias globales + `@Permissions` (view/create/update/delete). Sin endpoints públicos.
+ * Endpoints y contratos:
+ *  - GET /organizaciones: Query { estado?, tipo? } -> resp lista filtrada.
+ *  - POST /organizaciones: Body CreateOrganizacionDTO -> resp organización creada.
+ *  - POST /organizaciones/con-providencia: Body CreateOrganizacionConProvidenciaDTO -> crea organización + providencia.
+ *  - GET /organizaciones/:id: Param id -> resp detalle.
+ *  - PUT /organizaciones/:id: Body UpdateOrganizacionDTO -> resp organización actualizada.
+ *  - DELETE /organizaciones/:id: sin body, 204 No Content.
+ * Headers/cookies: requiere cookies de auth; `X-CSRF-Token` en POST/PUT/DELETE; Authorization Bearer opcional.
+ * Ejemplo de integración frontend (descriptivo): listar con filtros simples; crear enviando DTO; para delete enviar DELETE con CSRF y cookies, esperar 204.
  */
 import { Body, Controller, Delete, Get, HttpCode, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
 

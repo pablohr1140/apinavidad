@@ -1,17 +1,9 @@
 /**
- * # app.module
- * Propósito: Archivo app.module
- * Pertenece a: General
- * Interacciones: N/A
- */
-
-/**
- * # app.module.ts
- *
- * Módulo raíz de NestJS: orquesta módulos de infraestructura y dominio (DB, caché, auth, features).
- * Responsibilities: carga `ConfigModule` global, registra módulos de dominio y aplica guards globales (Paseto + Permissions).
- * Interactions: depende de `DatabaseModule`, `CacheModule`, módulos de negocio y guards de auth.
- * Pertenece a: capa de infraestructura/orquestación Nest.
+ * app.module.ts
+ * Capa: Orquestación Nest
+ * Responsabilidad: Ensamblar módulos de infraestructura y dominio, cargar configuración global y aplicar guards globales.
+ * Interacciones: `ConfigModule` global para leer `env`; módulos de DB/Cache/Auth/negocio; registra APP_GUARD en orden (Paseto luego Permissions) para exigir sesión antes de evaluar permisos.
+ * Notas: Cambiar este orden afecta seguridad; `HealthController` también queda bajo guards globales a menos que se excluya con metadata.
  */
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -29,6 +21,7 @@ import { PeriodosModule } from '@/modules/periodos/periodos.module';
 import { PersonasModule } from '@/modules/personas/personas.module';
 import { ReportesModule } from '@/modules/reportes/reportes.module';
 import { HealthController } from '@/modules/shared/health.controller';
+import { env } from '@/config/env';
 
 @Module({
   imports: [

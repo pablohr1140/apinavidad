@@ -1,16 +1,8 @@
 /**
- * # server
- * Propósito: Archivo server
- * Pertenece a: General
- * Interacciones: N/A
- */
-
-/**
- * # server.ts
- *
- * Punto de entrada legacy (Express) que quedó sustituido por el bootstrap Nest en `main.ts`.
- * Responsibilities: mantener compatibilidad con imports antiguos sin exponer lógica.
- * Interactions: redirige a `main.ts` como entrada real de la aplicación NestJS.
- * Pertenece a: capa de infraestructura/bootstrap.
+ * server.ts
+ * Capa: Bootstrap / Compatibilidad
+ * Responsabilidad: Mantener el entrypoint legacy para imports antiguos; el arranque real vive en `main.ts`.
+ * Interacciones: No inicia servidor ni registra middlewares; sirve solo para no romper referencias previas.
+ * Notas: Evitar agregar lógica aquí para prevenir arranques duplicados; conservar hasta eliminar dependencias externas.
  */
 export {};

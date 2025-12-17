@@ -3,12 +3,15 @@
  * Propósito: Servicio authorization.service
  * Pertenece a: Servicio de módulo (Nest)
  * Interacciones: Repositorios, servicios externos
+/**
+ * AuthorizationService
+ * Capa: Módulo Auth / Servicio Nest
+ * Responsabilidad: Construir contexto de usuario autenticado y resolver permisos por rol con caché en Redis.
+ * Dependencias: PrismaService (roles/personas), RedisService (cache permisos), types de dominio.
+ * Flujo: buildUserContext -> obtiene persona/roles -> agrega permisos agregados (con cache por rol) -> devuelve AuthenticatedUser.
+ * Efectos: lecturas Prisma; lecturas/escrituras Redis (cache permisos, invalidaciones).
+ * Endpoints impactados: todas las rutas protegidas (usado por PasetoAuthGuard); administración de roles.
  */
-
-import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
-
-import type { AuthenticatedUser } from '@/application/contracts/AuthenticatedUser';
-import type { PermissionCode, RoleKey } from '@/domain/access-control';
 import { RedisService } from '@/infra/cache/redis.service';
 import { PrismaService } from '@/infra/database/prisma/prisma.service';
 
@@ -23,6 +26,7 @@ export class AuthorizationService {
   ) {}
 
   async buildUserContext(userId: number, fallbackEmail?: string): Promise<AuthenticatedUser> {
+    // Construye AuthenticatedUser: persona + roles + permisos agregados (cacheables por rol)
     const persona = await this.prisma.personas.findUnique({
       where: { id: userId },
       include: { roles: true }
@@ -52,7 +56,12 @@ export class AuthorizationService {
   }
 
   async invalidateRoleCache(roleKey: RoleKey) {
+    // Invalida cache de permisos de un rol específico
     await this.redisService.del(`${ROLE_CACHE_PREFIX}${roleKey}`);
+  }
+
+  async invalidateRolesCache(roleKeys: RoleKey[]) {
+    await Promise.all(roleKeys.map((key) => this.invalidateRoleCache(key)));
   }
 
   /**
@@ -60,6 +69,7 @@ export class AuthorizationService {
    * Si el objetivo tiene un rank mayor o igual, lanza Forbidden.
    */
   async assertCanDeleteRole(actorRoleKey: RoleKey, targetRoleKey: RoleKey) {
+    // Verifica jerarquía de roles por rank antes de eliminar
     const [actor, target] = await Promise.all([
       this.prisma.roles.findUnique({ where: { role_key: actorRoleKey }, select: { rank: true } }),
       this.prisma.roles.findUnique({ where: { role_key: targetRoleKey }, select: { rank: true } })

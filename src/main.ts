@@ -6,21 +6,24 @@
  */
 
 /**
- * # main.ts
- *
- * Entrada de arranque de la aplicación NestJS.
- * Responsibilities: bootstrap de la app HTTP, habilitar CORS, cookies y seguridad básica.
- * Interactions: crea la instancia de `AppModule`, lee `env` para puerto y orígenes, aplica middlewares globales.
- * Depende de: `@nestjs/core`, `helmet`, `cookie-parser`, configuración en `env` y alias en `config/module-alias`.
- * Pertenece a: Capa de infraestructura/bootstrap (orquestación de inicio).
+ * main.ts
+ * Capa: Bootstrap / Infraestructura
+ * Responsabilidad: Inicializar NestJS, configurar CORS, cookies, helmet, CSRF, ValidationPipe global, logging y filtros de errores.
+ * Dependencias: AppModule, env (WEB_APP_ORIGIN, PORT), middlewares compartidos (requestId, csrf), interceptores/filtros globales.
+ * Impacto en frontend: define orígenes permitidos y habilita cookies con credenciales; entrega header y cookie CSRF.
  */
 import './config/module-alias';
 import { NestFactory } from '@nestjs/core';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
+import { ValidationPipe } from '@nestjs/common';
 
 import { AppModule } from './app.module';
 import { env } from './config/env';
+import { requestIdMiddleware } from './modules/shared/middleware/request-id.middleware';
+import { csrfProtection, attachCsrfToken } from './modules/shared/middleware/csrf.middleware';
+import { RequestLoggingInterceptor } from './modules/shared/interceptors/request-logging.interceptor';
+import { AllExceptionsFilter } from './modules/shared/filters/all-exceptions.filter';
 
 /**
  * Inicializa la aplicación NestJS.
@@ -34,8 +37,21 @@ export async function bootstrap() {
     origin: allowedOrigins,
     credentials: true
   });
+  app.use(requestIdMiddleware);
   app.use(cookieParser());
   app.use(helmet());
+  app.use(csrfProtection);
+  app.use(attachCsrfToken);
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+      transformOptions: { enableImplicitConversion: true }
+    })
+  );
+  app.useGlobalInterceptors(new RequestLoggingInterceptor());
+  app.useGlobalFilters(new AllExceptionsFilter());
   await app.listen(env.PORT);
 }
 

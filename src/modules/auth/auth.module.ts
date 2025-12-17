@@ -18,6 +18,7 @@ import { PasetoService } from '@/infra/auth/PasetoService';
 import { PrismaUserRepository } from '@/infra/database/repositories/PrismaUserRepository';
 import { BcryptProvider } from '@/infra/security/BcryptProvider';
 import { AuthorizationService } from '@/modules/auth/services/authorization.service';
+import { RefreshTokenStore } from '@/modules/auth/services/refresh-token.store';
 import { RoleAdminService } from '@/modules/auth/services/role-admin.service';
 import { LogsModule } from '@/modules/logs/logs.module';
 
@@ -29,6 +30,7 @@ import { LogsModule } from '@/modules/logs/logs.module';
     RefreshTokenUseCase,
     PasetoService,
     BcryptProvider,
+    RefreshTokenStore,
     PrismaUserRepository,
     { provide: UserRepository, useExisting: PrismaUserRepository },
     { provide: TokenProvider, useExisting: PasetoService },

@@ -3,12 +3,14 @@
  * Propósito: Servicio/Auth Paseto Service
  * Pertenece a: Infraestructura / Auth
  * Interacciones: Tokens, servicios de auth
+/**
+ * PasetoService
+ * Capa: Infraestructura / Auth
+ * Responsabilidad: Firmar y verificar tokens PASETO v3 (local) para access/refresh, incluyendo expiración y tokenVersion.
+ * Dependencias: `paseto` lib, env.PASETO_SECRET (hash sha256), TokenProvider contract.
+ * Flujo: sign(payload, exp opcional) -> agrega exp; verify(token) -> valida exp, normaliza tokenVersion.
+ * Endpoints impactados: /auth/login, /auth/refresh y cualquier guard que valide tokens.
  */
-
-import { createHash } from 'crypto';
-
-import { Injectable } from '@nestjs/common';
-import { V3 } from 'paseto';
 
 import { TokenPayload, TokenProvider } from '@/application/contracts/Auth';
 import { env } from '@/config/env';
@@ -23,10 +25,15 @@ export class PasetoService implements TokenProvider {
   }
 
   async verify(token: string) {
-    const { exp, ...payload } = await V3.decrypt<TokenPayload & { exp: string | Date }>(token, secretKey);
+    const { exp, tokenVersion, ...payload } = await V3.decrypt<
+      TokenPayload & { exp: string | Date; tokenVersion?: number | string }
+    >(token, secretKey);
     if (new Date(exp) < new Date()) {
       throw new Error('Token expirado');
     }
-    return payload;
+    const parsedVersion =
+      tokenVersion === undefined || tokenVersion === null ? undefined : Number(tokenVersion);
+
+    return { ...payload, tokenVersion: parsedVersion };
   }
 }

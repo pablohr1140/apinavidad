@@ -11,6 +11,7 @@ import { HashProvider, TokenProvider } from '@/application/contracts/Auth';
 import { UserRepository } from '@/application/repositories/UserRepository';
 import { LoginUseCase } from '@/application/use-cases/auth/LoginUseCase';
 import { AppError } from '@/shared/errors/AppError';
+import { RefreshTokenStore } from '@/modules/auth/services/refresh-token.store';
 
 const makeUser = () => ({
   id: 1,
@@ -35,6 +36,11 @@ const makeTokenProvider = () => ({
   verify: vi.fn()
 }) as unknown as TokenProvider;
 
+const makeRefreshStore = () => ({
+  buildNewSession: vi.fn().mockReturnValue({ sessionId: 's1', tokenVersion: 1 }),
+  persistSession: vi.fn()
+}) as unknown as RefreshTokenStore;
+
 describe('LoginUseCase', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -44,7 +50,8 @@ describe('LoginUseCase', () => {
     const userRepository = makeUserRepository();
     const hashProvider = makeHashProvider();
     const tokenProvider = makeTokenProvider();
-    const useCase = new LoginUseCase(userRepository, hashProvider, tokenProvider);
+    const refreshStore = makeRefreshStore();
+    const useCase = new LoginUseCase(userRepository, hashProvider, tokenProvider, refreshStore);
     const user = makeUser();
 
     (userRepository.findByEmail as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(user);
@@ -56,6 +63,7 @@ describe('LoginUseCase', () => {
     const response = await useCase.execute({ email: user.email, password: 'secret123' } as any);
 
     expect(tokenProvider.sign).toHaveBeenCalledTimes(2);
+    expect(refreshStore.persistSession).toHaveBeenCalledWith(user.id.toString(), 's1', 1);
     expect(response).toMatchObject({
       accessToken: 'access-token',
       refreshToken: 'refresh-token',
@@ -65,7 +73,12 @@ describe('LoginUseCase', () => {
 
   it('lanza AppError si el usuario no existe', async () => {
     const userRepository = makeUserRepository();
-    const useCase = new LoginUseCase(userRepository, makeHashProvider(), makeTokenProvider());
+    const useCase = new LoginUseCase(
+      userRepository,
+      makeHashProvider(),
+      makeTokenProvider(),
+      makeRefreshStore()
+    );
     (userRepository.findByEmail as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(null);
 
     await expect(useCase.execute({ email: 'missing@example.com', password: 'secret123' } as any)).rejects.toBeInstanceOf(AppError);
@@ -74,7 +87,7 @@ describe('LoginUseCase', () => {
   it('lanza AppError si la contraseña no coincide', async () => {
     const userRepository = makeUserRepository();
     const hashProvider = makeHashProvider();
-    const useCase = new LoginUseCase(userRepository, hashProvider, makeTokenProvider());
+    const useCase = new LoginUseCase(userRepository, hashProvider, makeTokenProvider(), makeRefreshStore());
     (userRepository.findByEmail as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(makeUser());
     (hashProvider.compare as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(false);
 
