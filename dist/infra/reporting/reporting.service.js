@@ -44,6 +44,7 @@ class ReportingService {
         const body = this.buildTableBody(rows);
         const docDefinition = {
             info: { title },
+            pageOrientation: 'landscape',
             header: { text: title, alignment: 'center', margin: [0, 10, 0, 10] },
             footer: (currentPage, pageCount) => ({ text: `${currentPage} / ${pageCount}`, alignment: 'right', margin: [0, 10, 20, 0] }),
             content: [
@@ -89,7 +90,8 @@ class ReportingService {
         const data = rows.map((row) => headers.map((key) => row[key]));
         sheet.addRows(data);
         sheet.columns?.forEach((col) => {
-            col.width = Math.min(30, Math.max(12, col.header?.toString().length ?? 12));
+            const header = col.header;
+            col.width = Math.min(30, Math.max(12, header?.toString().length ?? 12));
         });
         const excelBuffer = await workbook.xlsx.writeBuffer();
         return Buffer.isBuffer(excelBuffer) ? excelBuffer : Buffer.from(excelBuffer);

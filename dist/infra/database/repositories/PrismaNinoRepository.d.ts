@@ -12,6 +12,8 @@ export declare class PrismaNinoRepository implements NinoRepository {
         edadMax?: number;
         prioridad?: number;
         tiempoParaInhabilitar?: number;
+        skip?: number;
+        take?: number;
     }): Promise<NinoProps[]>;
     findById(id: number): Promise<NinoProps | null>;
     create(data: Omit<NinoProps, 'id' | 'createdAt' | 'updatedAt'>): Promise<NinoProps>;

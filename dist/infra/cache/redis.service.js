@@ -86,6 +86,35 @@ let RedisService = RedisService_1 = class RedisService {
             this.logger.warn(`Redis del falló para ${key}: ${error.message}`);
         }
     }
+    async incr(key, ttlSeconds) {
+        if (!this.client) {
+            return this.fallbackIncr(key, ttlSeconds);
+        }
+        try {
+            const value = await this.client.incr(key);
+            if (value === 1) {
+                await this.client.expire(key, ttlSeconds);
+            }
+            return value;
+        }
+        catch (error) {
+            this.logger.warn(`Redis incr falló para ${key}: ${error.message}`);
+            return this.fallbackIncr(key, ttlSeconds);
+        }
+    }
+    // Fallback in-memory counter when Redis is disabled or falla.
+    fallbackCounters = new Map();
+    fallbackIncr(key, ttlSeconds) {
+        const now = Date.now();
+        const existing = this.fallbackCounters.get(key);
+        if (!existing || existing.expiresAt < now) {
+            const entry = { count: 1, expiresAt: now + ttlSeconds * 1000 };
+            this.fallbackCounters.set(key, entry);
+            return 1;
+        }
+        existing.count += 1;
+        return existing.count;
+    }
     async onModuleDestroy() {
         await this.client?.quit();
     }

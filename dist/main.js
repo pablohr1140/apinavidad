@@ -23,8 +23,13 @@ require("./config/module-alias");
 const core_1 = require("@nestjs/core");
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const helmet_1 = __importDefault(require("helmet"));
+const common_1 = require("@nestjs/common");
 const app_module_1 = require("./app.module");
 const env_1 = require("./config/env");
+const request_id_middleware_1 = require("./modules/shared/middleware/request-id.middleware");
+const csrf_middleware_1 = require("./modules/shared/middleware/csrf.middleware");
+const request_logging_interceptor_1 = require("./modules/shared/interceptors/request-logging.interceptor");
+const all_exceptions_filter_1 = require("./modules/shared/filters/all-exceptions.filter");
 /**
  * Inicializa la aplicación NestJS.
  * Crea el `AppModule`, configura CORS con orígenes permitidos desde `env`, habilita cookies y cabeceras de seguridad,
@@ -37,8 +42,19 @@ async function bootstrap() {
         origin: allowedOrigins,
         credentials: true
     });
+    app.use(request_id_middleware_1.requestIdMiddleware);
     app.use((0, cookie_parser_1.default)());
     app.use((0, helmet_1.default)());
+    app.use(csrf_middleware_1.csrfProtection);
+    app.use(csrf_middleware_1.attachCsrfToken);
+    app.useGlobalPipes(new common_1.ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        transform: true,
+        transformOptions: { enableImplicitConversion: true }
+    }));
+    app.useGlobalInterceptors(new request_logging_interceptor_1.RequestLoggingInterceptor());
+    app.useGlobalFilters(new all_exceptions_filter_1.AllExceptionsFilter());
     await app.listen(env_1.env.PORT);
 }
 if (require.main === module) {

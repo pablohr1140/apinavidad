@@ -28,6 +28,7 @@ exports.NinosController = void 0;
  */
 const common_1 = require("@nestjs/common");
 const NinoDTOs_1 = require("../../application/dtos/NinoDTOs");
+const NinoListDTO_1 = require("../../application/dtos/NinoListDTO");
 const AutoInhabilitarNinosUseCase_1 = require("../../application/use-cases/ninos/AutoInhabilitarNinosUseCase");
 const CreateNinoUseCase_1 = require("../../application/use-cases/ninos/CreateNinoUseCase");
 const GetNinoUseCase_1 = require("../../application/use-cases/ninos/GetNinoUseCase");
@@ -54,11 +55,16 @@ let NinosController = class NinosController {
         this.restaurarNinoUseCase = restaurarNinoUseCase;
         this.autoInhabilitarNinosUseCase = autoInhabilitarNinosUseCase;
     }
-    list(periodoId, organizacionId, estado) {
+    list(query) {
+        const page = query.page ?? 1;
+        const limit = query.limit ?? 100;
+        const skip = (page - 1) * limit;
         return this.listNinosUseCase.execute({
-            periodoId: this.parseNumber(periodoId),
-            organizacionId: this.parseNumber(organizacionId),
-            estado: this.parseEstado(estado)
+            periodoId: query.periodoId,
+            organizacionId: query.organizacionId,
+            estado: this.parseEstado(query.estado),
+            skip,
+            take: limit
         });
     }
     create(body) {
@@ -78,12 +84,6 @@ let NinosController = class NinosController {
     }
     autoInhabilitar(body) {
         return this.autoInhabilitarNinosUseCase.execute(body);
-    }
-    parseNumber(value) {
-        if (!value)
-            return undefined;
-        const parsed = Number(value);
-        return Number.isNaN(parsed) ? undefined : parsed;
     }
     parseBoolean(value) {
         if (value === undefined)
@@ -106,11 +106,9 @@ exports.NinosController = NinosController;
 __decorate([
     (0, permissions_decorator_1.Permissions)('ninos.view'),
     (0, common_1.Get)(),
-    __param(0, (0, common_1.Query)('periodoId')),
-    __param(1, (0, common_1.Query)('organizacionId')),
-    __param(2, (0, common_1.Query)('estado')),
+    __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:paramtypes", [NinoListDTO_1.ListNinosQueryDto]),
     __metadata("design:returntype", void 0)
 ], NinosController.prototype, "list", null);
 __decorate([

@@ -5,18 +5,20 @@
  * Interacciones: Casos de uso, pipes/decorators Nest
  */
 import type { Response } from 'express';
+import { ListadoReportesQueryDto } from '@/application/dtos/ReporteDTOs';
 import { ListNinosUseCase } from '@/application/use-cases/ninos/ListNinosUseCase';
 import type { EstadoNino } from '@/domain/entities';
 import { ReportingService } from '@/infra/reporting/reporting.service';
 export declare class ReportesController {
     private readonly listNinosUseCase;
     private readonly reportingService;
+    private readonly logger;
     constructor(listNinosUseCase: ListNinosUseCase, reportingService: ReportingService);
     listInhabilitados(): Promise<{
         total: number;
         data: import("@/domain/entities").NinoProps[];
     }>;
-    listado(periodoId?: string, organizacionId?: string, estado?: string): Promise<{
+    listado(query: ListadoReportesQueryDto): Promise<{
         total: number;
         data: {
             edad_calculada: number | null;
@@ -43,9 +45,8 @@ export declare class ReportesController {
             updatedAt: Date;
         }[];
     }>;
-    listadoPdf(periodoId: string | undefined, organizacionId: string | undefined, estado: string | undefined, res: Response): Promise<void>;
-    listadoExcel(periodoId: string | undefined, organizacionId: string | undefined, estado: string | undefined, res: Response): Promise<void>;
+    listadoPdf(query: ListadoReportesQueryDto, res: Response): Promise<void>;
+    listadoExcel(query: ListadoReportesQueryDto, res: Response): Promise<void>;
     private buildNinosData;
-    private toNumber;
     private parseEstado;
 }

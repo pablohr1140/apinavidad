@@ -22,6 +22,8 @@ export declare abstract class NinoRepository {
         edadMax?: number;
         prioridad?: number;
         tiempoParaInhabilitar?: number;
+        skip?: number;
+        take?: number;
     }): Promise<NinoProps[]>;
     /** Busca un niño por id. */
     abstract findById(id: number): Promise<NinoProps | null>;

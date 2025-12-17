@@ -5,6 +5,7 @@
  * Interacciones: Casos de uso, pipes/decorators Nest
  */
 import { type CreateNinoDTO, type UpdateNinoDTO, type InhabilitarNinoDTO, type AutoInhabilitarNinosDTO } from '@/application/dtos/NinoDTOs';
+import { ListNinosQueryDto } from '@/application/dtos/NinoListDTO';
 import { AutoInhabilitarNinosUseCase } from '@/application/use-cases/ninos/AutoInhabilitarNinosUseCase';
 import { CreateNinoUseCase } from '@/application/use-cases/ninos/CreateNinoUseCase';
 import { GetNinoUseCase } from '@/application/use-cases/ninos/GetNinoUseCase';
@@ -21,7 +22,7 @@ export declare class NinosController {
     private readonly restaurarNinoUseCase;
     private readonly autoInhabilitarNinosUseCase;
     constructor(listNinosUseCase: ListNinosUseCase, createNinoUseCase: CreateNinoUseCase, getNinoUseCase: GetNinoUseCase, updateNinoUseCase: UpdateNinoUseCase, inhabilitarNinoUseCase: InhabilitarNinoUseCase, restaurarNinoUseCase: RestaurarNinoUseCase, autoInhabilitarNinosUseCase: AutoInhabilitarNinosUseCase);
-    list(periodoId?: string, organizacionId?: string, estado?: string): Promise<import("@/domain/entities").NinoProps[]>;
+    list(query: ListNinosQueryDto): Promise<import("@/domain/entities").NinoProps[]>;
     create(body: CreateNinoDTO): Promise<import("@/domain/entities").NinoProps>;
     findOne(id: number): Promise<import("@/domain/entities").NinoProps>;
     update(id: number, body: UpdateNinoDTO): Promise<import("@/domain/entities").NinoProps>;
@@ -32,7 +33,6 @@ export declare class NinosController {
     } & {
         detalles?: import("@/domain/entities").NinoProps[];
     }>;
-    private parseNumber;
     private parseBoolean;
     private parseEstado;
 }

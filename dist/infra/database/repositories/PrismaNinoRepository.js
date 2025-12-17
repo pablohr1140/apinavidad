@@ -53,7 +53,19 @@ let PrismaNinoRepository = class PrismaNinoRepository {
             where.edad = { gte: min, lte: max };
         }
         // Nota: el filtro por prioridad se omite porque el esquema Prisma no expone dicho campo.
-        const records = await this.prisma.ninos.findMany({ where, orderBy: { created_at: 'desc' } });
+        const take = params?.take !== undefined ? Math.min(Math.max(params.take, 1), 500) : 100;
+        const skip = params?.skip ?? 0;
+        const records = await this.prisma.ninos.findMany({
+            where,
+            orderBy: [
+                { organizacion_id: 'asc' },
+                { apellidos: 'asc' },
+                { nombres: 'asc' },
+                { id: 'asc' }
+            ],
+            skip,
+            take
+        });
         return records.map((record) => this.toDomain(record));
     }
     async findById(id) {

@@ -32,6 +32,8 @@ const LoginUseCase_1 = require("../../application/use-cases/auth/LoginUseCase");
 const RefreshTokenUseCase_1 = require("../../application/use-cases/auth/RefreshTokenUseCase");
 const auth_1 = require("../../config/auth");
 const public_decorator_1 = require("./decorators/public.decorator");
+const rate_limit_decorator_1 = require("./decorators/rate-limit.decorator");
+const rate_limit_guard_1 = require("./guards/rate-limit.guard");
 const zod_validation_pipe_1 = require("../shared/pipes/zod-validation.pipe");
 let AuthController = class AuthController {
     loginUseCase;
@@ -63,6 +65,8 @@ exports.AuthController = AuthController;
 __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Post)('login'),
+    (0, rate_limit_decorator_1.RateLimit)('auth:login', 5, 60),
+    (0, common_1.UseGuards)(rate_limit_guard_1.RateLimitGuard),
     __param(0, (0, common_1.Body)(new zod_validation_pipe_1.ZodValidationPipe(AuthDTOs_1.loginSchema))),
     __param(1, (0, common_1.Res)({ passthrough: true })),
     __metadata("design:type", Function),
@@ -72,6 +76,8 @@ __decorate([
 __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Post)('refresh'),
+    (0, rate_limit_decorator_1.RateLimit)('auth:refresh', 10, 60),
+    (0, common_1.UseGuards)(rate_limit_guard_1.RateLimitGuard),
     __param(0, (0, common_1.Body)(new zod_validation_pipe_1.ZodValidationPipe(AuthDTOs_1.refreshRequestSchema))),
     __param(1, (0, common_1.Req)()),
     __param(2, (0, common_1.Res)({ passthrough: true })),
